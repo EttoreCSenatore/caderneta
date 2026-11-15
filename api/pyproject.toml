@@ -1,0 +1,45 @@
+[project]
+name = "caderneta-api"
+version = "0.1.0"
+description = "Caderneta: API da plataforma escolar"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi>=0.118",
+    "uvicorn[standard]>=0.37",
+    "sqlalchemy>=2.0.43",
+    "psycopg[binary]>=3.2.10",
+    "alembic>=1.16",
+    "pydantic-settings>=2.11",
+    "email-validator>=2.3",
+    "python-multipart>=0.0.20",
+    "argon2-cffi>=25.1",
+    "pyotp>=2.9",
+    "cryptography>=46",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.4", "httpx>=0.28", "ruff>=0.14", "pip-audit>=2.9"]
+
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["app*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+pythonpath = ["."]
+
+[tool.ruff]
+line-length = 120
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "S", "SIM"]
+ignore = ["B008", "S101", "SIM108"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S105", "S106", "S608", "E501"]
+"app/seed.py" = ["S105", "S106", "S311"]

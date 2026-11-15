@@ -5,7 +5,7 @@ sidebar_label: "ADR 0001: Stack"
 
 # ADR 0001: FastAPI + PostgreSQL + React PWA
 
-- **Status:** proposta (2026-11-15), aguardando confirmação
+- **Status:** aceita (2026-11-15), implementada no M1
 - **Contexto:** precisamos de um web app leve, acessível no navegador e no celular, com regras de negócio fortes
   (médias, permissões) e dados sensíveis. Equipe pequena, que já usa FastAPI e React no Sentinela do Fogo.
 

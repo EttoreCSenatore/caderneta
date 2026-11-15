@@ -14,6 +14,8 @@ const sidebars: SidebarsConfig = {
       label: 'Funcionalidades',
       collapsed: false,
       items: [
+        'funcionalidades/acesso-e-convites',
+        'funcionalidades/escola-e-turmas',
         'funcionalidades/cadastro-de-alunos',
         'funcionalidades/notas-e-medias',
         'funcionalidades/frequencia',
@@ -30,6 +32,7 @@ const sidebars: SidebarsConfig = {
         'tecnico/arquitetura',
         'tecnico/modelo-de-dados',
         'tecnico/seguranca-e-lgpd',
+        'tecnico/desenvolvimento',
       ],
     },
     {

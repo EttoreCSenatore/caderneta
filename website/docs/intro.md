@@ -18,9 +18,11 @@ diário de papel, planilhas, grupos de WhatsApp e murais:
   acompanham o aluno de um ano para o outro.
 
 :::info Status
-**M0 (planejamento)** concluído: visão, perfis, funcionalidades, arquitetura e [roadmap](./roadmap.md).
-As telas ainda não existem; cada página de funcionalidade ganha screenshots quando o marco correspondente for entregue.
+**M1 (fundação)** concluído: login com 2FA, convites, perfis, escola, turmas, alunos, responsáveis, ficha de saúde
+criptografada e importação por planilha. Próximo: **M2**, notas, médias e frequência. Veja o [roadmap](./roadmap.md).
 :::
+
+![Painel da direção](/img/screenshots/admin-inicio.png)
 
 ## Quem usa
 
@@ -46,7 +48,7 @@ Detalhes em [Perfis e permissões](./produto/perfis.md).
 
 - **Produto**: [visão](./produto/visao.md), [perfis](./produto/perfis.md) e [jornadas](./produto/jornadas.md) de cada usuário.
 - **Funcionalidades**: uma página por área, com regras, telas e critérios de pronto.
-- **Técnico**: [arquitetura](./tecnico/arquitetura.md), [modelo de dados](./tecnico/modelo-de-dados.md) e
-  [segurança e LGPD](./tecnico/seguranca-e-lgpd.md).
+- **Técnico**: [arquitetura](./tecnico/arquitetura.md), [modelo de dados](./tecnico/modelo-de-dados.md),
+  [segurança e LGPD](./tecnico/seguranca-e-lgpd.md) e [como rodar localmente](./tecnico/desenvolvimento.md).
 - **Decisões (ADRs)**: o porquê das escolhas técnicas.
 - **[Roadmap](./roadmap.md)**: os marcos de entrega.
