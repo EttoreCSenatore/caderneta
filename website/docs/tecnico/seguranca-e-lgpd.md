@@ -14,6 +14,18 @@ Segurança é requisito desde o primeiro marco, não etapa final.
 - **Operadora**: quem opera a plataforma, seguindo as instruções da escola (contrato de operação de dados).
 - **Titulares**: alunos, responsáveis e funcionários.
 
+## O que já está implementado (M1)
+
+- Argon2id, bloqueio progressivo, 2FA obrigatório para direção e coordenação, convites de uso único.
+- Sessões no servidor (só o hash do token é guardado), cookie `HttpOnly` + `SameSite=Lax`, proteção CSRF por cabeçalho.
+- Row-Level Security por escola com papel de banco sem privilégios; testes de isolamento pela API e direto no banco.
+- Ficha de saúde e segredo do 2FA criptografados com AES-256-GCM, usando o id do aluno/usuário como dado associado.
+- Professores veem só o alerta resumido; leituras completas da ficha de saúde são auditadas.
+- Auditoria só de inserção; service worker do PWA nunca guarda respostas da API (dados pessoais) em cache.
+- Cabeçalhos `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy` e `Cache-Control: no-store` na API.
+
+Detalhes do login em [Acesso, convites e 2FA](../funcionalidades/acesso-e-convites.md).
+
 ## Medidas
 
 ### Acesso

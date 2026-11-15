@@ -5,7 +5,7 @@ sidebar_label: "ADR 0003: PWA primeiro"
 
 # ADR 0003: PWA primeiro, lojas depois
 
-- **Status:** proposta (2026-11-15)
+- **Status:** aceita (2026-11-15)
 - **Contexto:** o pedido é um web app e um app de celular. Manter dois códigos (web e nativo) dobra o trabalho.
 
 ## Decisão

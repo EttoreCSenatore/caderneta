@@ -1,0 +1,30 @@
+# Ambiente de desenvolvimento: Postgres + Mailpit (e-mails de teste).
+# A API e o web app rodam fora do Docker em dev (ver README).
+name: caderneta-dev
+
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: caderneta_owner
+      POSTGRES_PASSWORD: ${OWNER_DB_PASSWORD:-dev-owner}
+      POSTGRES_DB: caderneta
+      APP_DB_PASSWORD: ${APP_DB_PASSWORD:-dev-app}
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - caderneta-db:/var/lib/postgresql/data
+      - ./postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U caderneta_owner -d caderneta"]
+      interval: 3s
+      retries: 20
+
+  mail:
+    image: axllent/mailpit:v1.27
+    ports:
+      - "127.0.0.1:8025:8025"
+      - "127.0.0.1:1025:1025"
+
+volumes:
+  caderneta-db:

@@ -1,0 +1,46 @@
+"""Configuração por variáveis de ambiente (prefixo CADERNETA_)."""
+
+from functools import lru_cache
+
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+class Settings(BaseSettings):
+    model_config = SettingsConfigDict(env_prefix="CADERNETA_", env_file=".env", extra="ignore")
+
+    # Papel da API: não é dono das tabelas, então o RLS vale.
+    database_url: str = "postgresql+psycopg://caderneta_app:dev-app@127.0.0.1:5433/caderneta"
+    # Papel dono: só para migrações e para o seed de demonstração.
+    owner_database_url: str = "postgresql+psycopg://caderneta_owner:dev-owner@127.0.0.1:5433/caderneta"
+
+    # Chave AES-256 (base64 urlsafe, 32 bytes) para dados sensíveis. Em produção é obrigatória.
+    data_key: str = ""
+    env: str = "dev"  # dev | test | prod
+
+    public_url: str = "http://localhost:5173"
+    cookie_secure: bool = False
+    session_idle_hours: int = 12
+    session_max_days: int = 30
+    require_staff_2fa: bool = True
+
+    smtp_host: str = "127.0.0.1"
+    smtp_port: int = 1025
+    smtp_user: str = ""
+    smtp_password: str = ""
+    smtp_starttls: bool = False
+    mail_from: str = "Caderneta <nao-responda@caderneta.local>"
+    mail_backend: str = "smtp"  # smtp | memory
+
+    invite_days: int = 7
+    max_upload_bytes: int = 2_000_000
+
+
+@lru_cache
+def get_settings() -> Settings:
+    s = Settings()
+    if s.env == "prod":
+        if not s.data_key:
+            raise RuntimeError("CADERNETA_DATA_KEY é obrigatória em produção")
+        if not s.cookie_secure:
+            raise RuntimeError("CADERNETA_COOKIE_SECURE deve ser true em produção")
+    return s
