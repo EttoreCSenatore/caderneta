@@ -60,7 +60,7 @@ e [Cadastro de alunos](./funcionalidades/cadastro-de-alunos.md).
 - [x] Screenshots nas páginas de [Cadastro de alunos](./funcionalidades/cadastro-de-alunos.md) e [Perfis](./produto/perfis.md)
 
 :::note Notas do M1
-- 30 testes de API rodam contra um PostgreSQL real com o papel restrito da aplicação, então o isolamento por escola (RLS)
+- 31 testes de API rodam contra um PostgreSQL real com o papel restrito da aplicação, então o isolamento por escola (RLS)
   é testado de verdade, inclusive direto no banco.
 - Bug encontrado nos testes manuais: no FastAPI atual, o commit de dependências com `yield` rodava **depois** de a
   resposta sair, e o navegador às vezes chamava `/auth/me` antes de a sessão existir. Corrigido com

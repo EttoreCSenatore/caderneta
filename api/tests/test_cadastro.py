@@ -93,3 +93,22 @@ def test_convite_de_responsavel_vincula_e_conta_existente_pede_senha(mundo, entr
     resp = next(p for p in me["perfis"] if p["papel"] == "responsavel")
     c.post("/api/auth/perfil", json={"perfil_id": resp["id"]})
     assert {x["nome"] for x in c.get("/api/alunos").json()} == {"Maria"}
+
+
+def test_convite_para_conta_existente_respeita_bloqueio(mundo, entrar):
+    a, _ = mundo
+    adm = entrar("admin.a@teste.com")
+    v = adm.post(
+        f"/api/alunos/{a.alunos['maria'].id}/responsaveis",
+        json={"nome": "Prof A", "tipo": "pai", "email": "prof.a@teste.com"},
+    ).json()
+    adm.post(f"/api/responsaveis/{v['id']}/convite")
+    token = _link_token()
+    from tests.conftest import SENHA, Cliente
+
+    c = Cliente()
+    for _ in range(5):
+        assert c.post(f"/api/convites/abrir/{token}", json={"senha": "errada-123"}).status_code == 401
+    assert c.post(f"/api/convites/abrir/{token}", json={"senha": SENHA}).status_code == 429
+    # e o login normal da conta também fica bloqueado
+    assert c.post("/api/auth/login", json={"email": "prof.a@teste.com", "senha": SENHA}).status_code == 429

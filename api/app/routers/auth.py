@@ -56,7 +56,7 @@ class RedefinirIn(BaseModel):
     senha: str = Field(max_length=200)
 
 
-def _registra_falha(db: Session, usuario: Usuario) -> None:
+def registra_falha(db: Session, usuario: Usuario) -> None:
     usuario.falhas_login += 1
     if usuario.falhas_login >= MAX_FALHAS:
         # Bloqueio progressivo: 1, 2, 4, 8... minutos, até 1 hora.
@@ -120,7 +120,7 @@ def login(dados: LoginIn, request: Request, response: Response, db: Session = De
     ok = verifica_senha(usuario.senha_hash if usuario else None, dados.senha)
     if not usuario or not ok or not usuario.ativo:
         if usuario:
-            _registra_falha(db, usuario)
+            registra_falha(db, usuario)
             registrar(db, "login_falhou", escola_id=None, usuario_id=usuario.id, ip=ip_de(request))
         return JSONResponse({"detail": ERRO_LOGIN}, 401)  # sem exceção: o contador de falhas é salvo
     usuario.falhas_login = 0
@@ -138,7 +138,7 @@ def confirma_codigo(dados: CodigoIn, request: Request, ctx: Contexto = Depends(s
     if bloqueado(u):
         return JSONResponse({"detail": "Muitas tentativas. Tente de novo em alguns minutos."}, 429)
     if not verifica_totp(decifra(u.totp_secret_enc, str(u.id)), dados.codigo):
-        _registra_falha(ctx.db, u)
+        registra_falha(ctx.db, u)
         return JSONResponse({"detail": "Código inválido."}, 401)
     u.falhas_login = 0
     ctx.sessao.mfa_ok = True

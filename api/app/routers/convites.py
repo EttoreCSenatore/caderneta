@@ -15,7 +15,7 @@ from app.config import get_settings
 from app.db import get_db, set_ctx
 from app.deps import Contexto, equipe, ip_de, so_admin
 from app.models import Aluno, Convite, Escola, Papel, Usuario, UsuarioPerfil, VinculoResponsavel
-from app.routers.auth import abre_sessao, estado
+from app.routers.auth import abre_sessao, bloqueado, estado, registra_falha
 from app.security import hash_senha, hash_token, novo_token, senha_fraca, verifica_senha
 
 router = APIRouter(tags=["convites"])
@@ -158,8 +158,13 @@ def aceita(
     if usuario:
         # Conta já existe (ex.: professor que também é pai): confirma com a senha atual.
         set_ctx(db, usuario_id=usuario.id)
+        # Mesmo bloqueio progressivo do login: o link do convite não pode virar atalho para adivinhar senhas.
+        if bloqueado(usuario):
+            return JSONResponse({"detail": "Muitas tentativas. Tente de novo em alguns minutos."}, 429)
         if not verifica_senha(usuario.senha_hash, dados.senha):
+            registra_falha(db, usuario)
             return JSONResponse({"detail": "Senha incorreta para a conta existente."}, 401)
+        usuario.falhas_login = 0
     else:
         if erro := senha_fraca(dados.senha):
             raise HTTPException(422, erro)

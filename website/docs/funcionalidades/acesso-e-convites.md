@@ -43,7 +43,7 @@ Professores, responsáveis e alunos podem usar 2FA, mas não são obrigados.
 | Proteção | Como funciona |
 |---|---|
 | Senhas | Argon2id; nunca guardadas em texto |
-| Tentativas erradas | Após 5 erros, bloqueio progressivo (1, 2, 4… até 60 minutos) |
+| Tentativas erradas | Após 5 erros, bloqueio progressivo (1, 2, 4… até 60 minutos), também ao aceitar convite com uma conta existente |
 | E-mail inexistente | Mesma resposta e mesmo tempo de um e-mail existente (não revela quem tem conta) |
 | Sessão | Cookie `HttpOnly`, `SameSite=Lax`, expira por inatividade (12 h) e após 30 dias |
 | CSRF | A API recusa alterações sem o cabeçalho `X-Caderneta`, que outro site não consegue enviar |
