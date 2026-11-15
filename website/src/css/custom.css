@@ -1,0 +1,45 @@
+/* Caderneta: azul de caderno com destaque amarelo-lápis. */
+
+:root {
+  --ifm-color-primary: #1d4ed8;
+  --ifm-color-primary-dark: #1a46c2;
+  --ifm-color-primary-darker: #1942b8;
+  --ifm-color-primary-darkest: #143697;
+  --ifm-color-primary-light: #2f5ee6;
+  --ifm-color-primary-lighter: #3a66e7;
+  --ifm-color-primary-lightest: #5b80eb;
+  --ifm-code-font-size: 95%;
+  --ifm-font-family-base: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+  --cd-accent: #f5b301;
+  --cd-paper: #f7f9fe;
+  --cd-card: #ffffff;
+  --cd-line: rgba(29, 78, 216, 0.08);
+}
+
+[data-theme='dark'] {
+  --ifm-color-primary: #7aa2ff;
+  --ifm-color-primary-dark: #5b8bff;
+  --ifm-color-primary-darker: #4c80ff;
+  --ifm-color-primary-darkest: #1f5fff;
+  --ifm-color-primary-light: #99b9ff;
+  --ifm-color-primary-lighter: #a8c4ff;
+  --ifm-color-primary-lightest: #d6e3ff;
+  --ifm-background-color: #0d1220;
+  --ifm-background-surface-color: #121a2c;
+  --ifm-navbar-background-color: #121a2c;
+  --ifm-footer-background-color: #0a0e19;
+  --docusaurus-highlighted-code-line-bg: rgba(122, 162, 255, 0.15);
+  --cd-paper: #0d1220;
+  --cd-card: #121a2c;
+  --cd-line: rgba(122, 162, 255, 0.07);
+}
+
+[data-theme='dark'] .button--primary {
+  color: #0a0e19;
+}
+
+.markdown img {
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 8px;
+}
