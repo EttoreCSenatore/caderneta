@@ -13,7 +13,7 @@ adicionados às páginas de funcionalidade.
 | **M0: Planejamento** | Visão, perfis, funcionalidades, arquitetura, modelo de dados, segurança, documentação | ✅ Concluído |
 | **M1: Fundação** | Monorepo, CI, login e perfis, escola/turmas/disciplinas, cadastro de alunos e responsáveis, importação CSV, convites | ✅ Concluído |
 | **M2: Notas, médias e frequência** | Avaliações, grade de lançamento, motor de médias configurável, boletim, chamada, fechamento de período | ✅ Concluído |
-| **M3: Comunicação** | Avisos gerais e de turma, mensagens individuais, "ciente", autorizações, notificações e e-mail (push pendente) | ✅ Concluído, exceto push |
+| **M3: Comunicação** | Avisos gerais e de turma, mensagens individuais, "ciente", autorizações, notificações, e-mail e push | ✅ Concluído |
 | **M4: Calendário** | Calendário escolar e de turma, feriados nacionais, dias sem aula, iCal | ✅ Concluído |
 | **M5: Provas e impressão** | Upload, aprovação, fila de impressão com cópias calculadas, trabalhos | ✅ Concluído |
 | **M6: Histórico e anotações** | Rematrícula em lote, linha do tempo, anotações versionadas, histórico escolar em PDF | ✅ Concluído |
@@ -93,15 +93,15 @@ Veja [Notas e médias](./funcionalidades/notas-e-medias.md) e [Frequência](./fu
   escolar do M6.
 :::
 
-## M3: Comunicação (concluído, exceto push)
+## M3: Comunicação (concluído)
 
 - [x] Avisos da escola e de turma, com agendamento (segmento e grupo de turmas ficam para depois)
-- [x] Mensagens individuais escola/professor ↔ família (anexos passam para o M5, com o armazenamento de arquivos)
+- [x] Mensagens individuais escola/professor ↔ família (anexos de PDF e imagem, 3 por mensagem, com antivírus e sem EXIF)
 - [x] "Ciente" e painel de leitura para quem enviou
 - [x] Lembrete aos pendentes
 - [x] Autorizações digitais (passeio, saída antecipada)
 - [x] Notificações no app e e-mail com horário silencioso, e-mail sem conteúdo e só para adultos
-- [ ] Push (PWA): decidir antes como tratar o identificador do aparelho (privacidade)
+- [x] Push (PWA) sem conteúdo, só para adultos, com retenção do aparelho (M3.5)
 - [x] Alertas de faltas (15% e 20%) e de nota nova publicada
 
 ## M8: Conformidade e segurança
@@ -131,6 +131,7 @@ junto com o texto da Lei nº 13.709/2018 e as orientações da ANPD.
 - [ ] **Dados de saúde** (sensíveis): finalidade restrita, acesso mínimo, criptografia e trilha de acesso, já implementados e a revisar
 - [ ] **RIPD** (Relatório de Impacto à Proteção de Dados), com os riscos e as medidas
 - [ ] **Direitos dos titulares** (art. 18): acesso, correção, anonimização, portabilidade, eliminação e informação sobre compartilhamento, com tela ou fluxo e prazo de resposta
+- [ ] **Sessão de desligados** (decisão do responsável): área separada para **alunos e funcionários desligados**, com contagem regressiva, **aviso antes** de apagar e opção de manter. O que fica e o que sai está em `.lgpd/gaps.md` (T23)
 - [ ] **Retenção e eliminação**: prazos por tipo de dado, respeitando a guarda obrigatória do histórico escolar; rotina de descarte
 - [ ] **Encarregado (DPO)** nomeado pela escola, com canal público de contato
 - [ ] **Operadores e suboperadores**: contratos de operação de dados com a escola e com provedores (hospedagem, e-mail, push); transferência internacional de dados, se houver, com mecanismo legal

@@ -122,7 +122,24 @@ Nas conversas é possível anexar até **3 arquivos** (PDF, JPG ou PNG, 10 MB ca
 
 ![Anexo em uma conversa](/img/screenshots/mensagem-anexo.png)
 
-Ainda falta no M3: **push (PWA)**, que depende de decisões de privacidade (o endereço de push identifica o aparelho). 
+## Push no aparelho (M3.5)
+
+Notificação no celular ou no computador, mesmo com o app fechado. Em **Notificações > Aviso no aparelho (push)** a pessoa toca em **Ativar neste aparelho**.
+
+- **Sem conteúdo:** a mensagem de push vai **vazia**, assinada com VAPID. O aparelho mostra sempre o mesmo aviso ("Você tem novidades. Toque para abrir.") e o app
+  abre em Notificações, onde o texto fica atrás do login. **Nada sobre o aluno passa pelo Google, pela Apple ou pela Mozilla**, e o servidor não guarda as chaves
+  de criptografia do aparelho (só o endereço do serviço de push).
+- **Quem recebe:** responsáveis e equipe. **Contas de alunos (menores) não recebem push**, só as notificações dentro do app, como no e-mail.
+- **Ativação:** só quando a pessoa clica (o navegador pede a permissão). A base é a execução do serviço contratado com a escola, sem fluxo de consentimento extra,
+  e a pessoa pode desativar quando quiser.
+- **Horário silencioso:** vale o mesmo do e-mail (padrão 21h às 7h). Um aparelho recebe **um push** por rodada, mesmo com várias novidades.
+  Quem já leu a notificação não é avisado.
+- **Retenção do aparelho:** a inscrição é apagada ao **desativar**, ao **sair do app** (vários usuários podem dividir o mesmo navegador), quando o serviço de push diz que o
+  aparelho **não existe mais**, após **90 dias sem uso** e quando a **conta é desativada**.
+- **Segurança:** o endereço do aparelho só é aceito se for de um serviço de push conhecido (Google, Apple, Mozilla, Microsoft), com HTTPS, o que impede o servidor de ser usado
+  para chamar endereços internos. Cada inscrição e cancelamento fica na auditoria.
+- **Ativação no servidor:** `python -m app.cli gerar-vapid` gera as chaves, que vão no ambiente (`CADERNETA_VAPID_PRIVATE_KEY` é segredo). Sem chaves, o push fica desligado.
+- **iPhone:** só funciona com o app instalado na tela inicial (iOS 16.4 ou mais novo). Para os outros casos o e-mail continua cobrindo.
 
 ## Critérios de pronto (M3)
 

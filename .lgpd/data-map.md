@@ -24,6 +24,7 @@ responsáveis (adultos), **alunos (crianças e adolescentes)**.
 | A011 | Provas, trabalhos, anexos e impressão | `arquivo` (nome, tipo, tamanho, hash; conteúdo **cifrado em disco**), `pedido_impressao`, `pedido_comentario`, `mensagem_anexo`; downloads auditados | **Sem dados de alunos** em provas por desenho; **anexos de mensagens podem conter dado de saúde** (atestados, laudos) e fotos, que perdem o EXIF | Art. 7º, V; anexos de saúde: ver A004 e a decisão jurídica sobre base legal | **Eliminação automática:** pedidos 365 dias após a aplicação; rascunhos 90 dias; anexos 365 dias; órfãos no disco após 1 hora (worker) |
 | A012 | Anotações sobre o aluno | `anotacao` e `anotacao_versao` (texto livre, tipo, autor, ano, visibilidade; **todas as versões guardadas**) | **Menor; texto livre pode revelar situação familiar, saúde ou conflito entre alunos** (principalmente as reservadas) | Art. 7º, V (acompanhamento pedagógico) e IX; se revelar dado sensível, art. 11 (**decisão jurídica**) | Removida: 30 dias e some com as versões. **Anotação mantida: sem prazo definido (ver T18)** |
 | A013 | Histórico escolar em PDF | `historico_emitido` (aluno, quem emitiu, quando, código, hash do conteúdo); o PDF não é guardado | Menor (nome, nascimento, RA, notas e frequência no PDF); **CPF, saúde e anotações ficam de fora** | Art. 7º, II (obrigação legal/regulatória escolar) e V | Registro de emissão: acompanha o histórico do aluno (prazo a definir com o jurídico). **Conferência pública** devolve só escola, data e iniciais |
+| A014 | Push no aparelho | `push_inscricao` (usuário, **endereço do serviço de push**, datas); a mensagem de push vai **vazia**, sem chaves do aparelho | Contas de aluno **excluídas**; o endereço identifica o aparelho (de adultos) | Art. 7º, V (execução do serviço contratado com a escola); ativação explícita pela pessoa (decisão do projeto: sem consentimento separado, a validar no M8) | Apaga ao desativar, ao sair do app, quando o serviço de push informa que não existe (404/410), após 90 dias sem uso e com a conta desativada |
 
 ## 2. Cookies, SDKs e telemetria
 
@@ -39,7 +40,7 @@ responsáveis (adultos), **alunos (crianças e adolescentes)**.
 |---|---|---|---|
 | Hospedagem/banco de dados | Operador | **A definir** | Sem produção ainda. Preferir região no Brasil. Se fora do país, mecanismo de transferência internacional (art. 33) |
 | Provedor de e-mail (SMTP) | Operador | **A definir** | Mailpit só em desenvolvimento |
-| Push web (**adiado**, M3) | Operador (serviços de push dos navegadores) | Variável | Avaliar antes de implementar: o endpoint de push identifica o dispositivo |
+| Push web (M3.5) | Serviços de push dos navegadores (Google, Apple, Mozilla, Microsoft) | EUA e outros | Recebem só "há novidade" e o endereço do aparelho, **nunca conteúdo**. Classificar o papel (operador ou controlador independente) e a transferência internacional no M8 |
 | Provedor de armazenamento de arquivos (M5) | Operador | A definir | Provas e anexos |
 
 ## 4. Triagem de alto risco
