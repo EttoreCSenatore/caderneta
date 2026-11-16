@@ -14,6 +14,7 @@ from app.audit import registrar
 from app.config import get_settings
 from app.db import get_db, set_ctx
 from app.deps import COOKIE, Contexto, autenticado, ip_de, precisa_2fa, sessao_parcial
+from app.limite import excedeu
 from app.models import Escola, Sessao, TokenSenha, Usuario, UsuarioPerfil
 from app.security import (
     cifra,
@@ -22,10 +23,10 @@ from app.security import (
     hash_token,
     novo_token,
     novo_totp_secret,
+    passo_totp,
     senha_fraca,
     totp_uri,
     verifica_senha,
-    verifica_totp,
 )
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -111,6 +112,8 @@ def estado(ctx_db: Session, usuario: Usuario, sessao: Sessao) -> dict:
 
 @router.post("/login")
 def login(dados: LoginIn, request: Request, response: Response, db: Session = Depends(get_db, scope="function")):
+    if excedeu(request, "login-ip", 30, 900):  # 30 tentativas por IP a cada 15 min (qualquer conta)
+        return JSONResponse({"detail": "Muitas tentativas. Tente de novo em alguns minutos."}, 429)
     set_ctx(db, login_email=dados.email)
     usuario = db.scalar(select(Usuario).where(Usuario.email == dados.email))
     if usuario:
@@ -137,9 +140,11 @@ def confirma_codigo(dados: CodigoIn, request: Request, ctx: Contexto = Depends(s
         raise HTTPException(400, "Verificação em duas etapas não está ativa.")
     if bloqueado(u):
         return JSONResponse({"detail": "Muitas tentativas. Tente de novo em alguns minutos."}, 429)
-    if not verifica_totp(decifra(u.totp_secret_enc, str(u.id)), dados.codigo):
+    passo = passo_totp(decifra(u.totp_secret_enc, str(u.id)), dados.codigo, u.totp_ultimo_passo)
+    if passo is None:
         registra_falha(ctx.db, u)
-        return JSONResponse({"detail": "Código inválido."}, 401)
+        return JSONResponse({"detail": "Código inválido ou já usado. Espere o próximo código."}, 401)
+    u.totp_ultimo_passo = passo
     u.falhas_login = 0
     ctx.sessao.mfa_ok = True
     return estado(ctx.db, u, ctx.sessao)
@@ -160,8 +165,10 @@ def ativa_2fa(dados: CodigoIn, request: Request, ctx: Contexto = Depends(sessao_
     u = ctx.usuario
     if u.totp_ativo or not u.totp_secret_enc:
         raise HTTPException(400, "Inicie a configuração primeiro.")
-    if not verifica_totp(decifra(u.totp_secret_enc, str(u.id)), dados.codigo):
+    passo = passo_totp(decifra(u.totp_secret_enc, str(u.id)), dados.codigo, u.totp_ultimo_passo)
+    if passo is None:
         return JSONResponse({"detail": "Código inválido. Confira o horário do celular."}, 400)
+    u.totp_ultimo_passo = passo
     u.totp_ativo = True
     ctx.sessao.mfa_ok = True
     registrar(ctx.db, "2fa_ativado", escola_id=None, usuario_id=u.id, ip=ip_de(request))
@@ -201,8 +208,10 @@ def logout(response: Response, ctx: Contexto = Depends(sessao_parcial)):
 
 
 @router.post("/senha/esqueci", status_code=204)
-def esqueci(dados: EsqueciIn, db: Session = Depends(get_db, scope="function")):
-    """Sempre 204: não revela se o e-mail existe."""
+def esqueci(dados: EsqueciIn, request: Request, db: Session = Depends(get_db, scope="function")):
+    """Sempre 204: não revela se o e-mail existe nem se o limite foi atingido."""
+    if excedeu(request, "esqueci-ip", 20, 3600) | excedeu(request, "esqueci-email", 3, 3600, dados.email):
+        return  # sem e-mail: evita encher a caixa de alguém e a tabela de tokens
     set_ctx(db, login_email=dados.email)
     usuario = db.scalar(select(Usuario).where(Usuario.email == dados.email, Usuario.ativo.is_(True)))
     if not usuario or not usuario.senha_hash:
@@ -220,6 +229,8 @@ def esqueci(dados: EsqueciIn, db: Session = Depends(get_db, scope="function")):
 
 @router.post("/senha/redefinir", status_code=204)
 def redefinir(dados: RedefinirIn, request: Request, db: Session = Depends(get_db, scope="function")):
+    if excedeu(request, "redefinir-ip", 30, 3600):
+        return JSONResponse({"detail": "Muitas tentativas. Tente de novo mais tarde."}, 429)
     tk = db.scalar(select(TokenSenha).where(TokenSenha.token_hash == hash_token(dados.token)))
     if not tk or tk.usado_em or tk.expira_em < datetime.now(UTC):
         raise HTTPException(400, "Link inválido ou expirado. Peça um novo.")
@@ -234,3 +245,59 @@ def redefinir(dados: RedefinirIn, request: Request, db: Session = Depends(get_db
     tk.usado_em = datetime.now(UTC)
     db.execute(delete(Sessao).where(Sessao.usuario_id == usuario.id))  # derruba sessões antigas
     registrar(db, "senha_redefinida", escola_id=None, usuario_id=usuario.id, ip=ip_de(request))
+
+
+# --- Conta: trocar senha e encerrar sessões -------------------------------------------------------------
+
+
+class AlterarSenhaIn(BaseModel):
+    senha_atual: str = Field(max_length=200)
+    senha_nova: str = Field(max_length=200)
+
+
+@router.post("/senha/alterar", status_code=204)
+def alterar_senha(dados: AlterarSenhaIn, request: Request, ctx: Contexto = Depends(autenticado)):
+    """Troca a senha de quem está logado (pede a atual) e encerra as outras sessões."""
+    u = ctx.usuario
+    if bloqueado(u):
+        return JSONResponse({"detail": "Muitas tentativas. Tente de novo em alguns minutos."}, 429)
+    if not verifica_senha(u.senha_hash, dados.senha_atual):
+        registra_falha(ctx.db, u)
+        return JSONResponse({"detail": "A senha atual está incorreta."}, 400)
+    if erro := senha_fraca(dados.senha_nova):
+        raise HTTPException(422, erro)
+    if dados.senha_nova == dados.senha_atual:
+        raise HTTPException(422, "A nova senha precisa ser diferente da atual.")
+    u.senha_hash = hash_senha(dados.senha_nova)
+    u.falhas_login = 0
+    ctx.db.execute(delete(Sessao).where(Sessao.usuario_id == u.id, Sessao.id != ctx.sessao.id))
+    registrar(ctx.db, "senha_alterada", escola_id=None, usuario_id=u.id, ip=ip_de(request))
+
+
+@router.get("/sessoes")
+def sessoes(ctx: Contexto = Depends(autenticado)):
+    """Aparelhos com sessão aberta (sem o token), para a pessoa reconhecer e encerrar."""
+    itens = ctx.db.scalars(select(Sessao).where(Sessao.usuario_id == ctx.usuario.id).order_by(Sessao.ultimo_uso.desc()))
+    return [
+        {
+            "id": s.id,
+            "atual": s.id == ctx.sessao.id,
+            "criado_em": s.criado_em,
+            "ultimo_uso": s.ultimo_uso,
+            "ip": s.ip,
+            "aparelho": s.user_agent,
+        }
+        for s in itens
+    ]
+
+
+@router.post("/sair-de-todos", status_code=204)
+def sair_de_todos(response: Response, request: Request, ctx: Contexto = Depends(sessao_parcial)):
+    """Celular perdido ou emprestado: encerra todas as sessões e cancela o push de todos os aparelhos."""
+    from app.models import PushInscricao
+
+    u = ctx.usuario
+    ctx.db.execute(delete(PushInscricao).where(PushInscricao.usuario_id == u.id))
+    ctx.db.execute(delete(Sessao).where(Sessao.usuario_id == u.id))
+    registrar(ctx.db, "sair_de_todos", escola_id=None, usuario_id=u.id, ip=ip_de(request))
+    response.delete_cookie(COOKIE, path="/api")

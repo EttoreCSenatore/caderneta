@@ -14,6 +14,7 @@ from app.audit import registrar
 from app.config import get_settings
 from app.db import get_db, set_ctx
 from app.deps import Contexto, equipe, ip_de, so_admin
+from app.limite import excedeu
 from app.models import Aluno, Convite, Escola, Papel, Usuario, UsuarioPerfil, VinculoResponsavel
 from app.routers.auth import abre_sessao, bloqueado, estado, registra_falha
 from app.security import hash_senha, hash_token, novo_token, senha_fraca, verifica_senha
@@ -133,8 +134,14 @@ def revoga(convite_id: uuid.UUID, ctx: Contexto = Depends(so_admin)):
     c.revogado = True
 
 
+def _limita_convite(request: Request) -> None:
+    if excedeu(request, "convite-ip", 60, 600):  # o token tem 256 bits, mas não custa limitar quem fica tentando
+        raise HTTPException(429, "Muitas tentativas. Tente de novo em alguns minutos.")
+
+
 @router.get("/convites/abrir/{token}")
-def ver_convite(token: str, db: Session = Depends(get_db, scope="function")):
+def ver_convite(token: str, request: Request, db: Session = Depends(get_db, scope="function")):
+    _limita_convite(request)
     c = _convite_valido(db, token)
     escola = db.get(Escola, c.escola_id)
     aluno = db.get(Aluno, c.aluno_id) if c.aluno_id else None
@@ -153,6 +160,7 @@ def ver_convite(token: str, db: Session = Depends(get_db, scope="function")):
 def aceita(
     token: str, dados: AceiteIn, request: Request, response: Response, db: Session = Depends(get_db, scope="function")
 ):
+    _limita_convite(request)
     c = _convite_valido(db, token)
     usuario = db.scalar(select(Usuario).where(Usuario.email == c.email))
     if usuario:

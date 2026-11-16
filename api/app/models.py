@@ -10,6 +10,7 @@ from datetime import UTC, date, datetime, time
 from decimal import Decimal
 
 from sqlalchemy import (
+    BigInteger,
     Boolean,
     CheckConstraint,
     Date,
@@ -102,6 +103,7 @@ class Usuario(Base):
     totp_ativo: Mapped[bool] = mapped_column(Boolean, default=False)
     falhas_login: Mapped[int] = mapped_column(Integer, default=0)
     bloqueado_ate: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    totp_ultimo_passo: Mapped[int | None] = mapped_column(BigInteger)  # impede reutilizar o mesmo código de 6 dígitos
     ativo: Mapped[bool] = mapped_column(Boolean, default=True)
     # Notificações: e-mail ligado por padrão (só com texto mínimo), horário silencioso das 21h às 7h.
     notif_email: Mapped[bool] = mapped_column(Boolean, default=True)
@@ -141,6 +143,18 @@ class Sessao(Base):
     expira_em: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     ip: Mapped[str | None] = mapped_column(String(64))
     user_agent: Mapped[str | None] = mapped_column(String(300))
+
+
+class LimiteTaxa(Base):
+    """Contador por janela fixa para limitar abuso (login, recuperação de senha, rotas públicas).
+
+    A chave guarda só um hash do IP ou do e-mail, nunca o valor. Sem escola: não há dado de escola aqui.
+    """
+
+    __tablename__ = "limite_taxa"
+    chave: Mapped[str] = mapped_column(String(100), primary_key=True)
+    janela: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+    n: Mapped[int] = mapped_column(Integer, default=0)
 
 
 class TokenSenha(Base):
