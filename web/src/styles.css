@@ -235,3 +235,7 @@ input.celula[readonly] { background: transparent; border-color: transparent; }
   .boletim-cartoes > .cartao + .cartao { margin-top: 0.75rem; }
   .boletim-tabela { display: none; }
 }
+
+/* Caixas de seleção e cartões clicáveis (listas de mensagens e notificações) */
+input[type='checkbox'] { width: auto; margin: 0; }
+button.cartao { width: 100%; font: inherit; color: inherit; display: block; }

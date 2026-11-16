@@ -8,12 +8,12 @@ de advogado(a) ou do encarregado.
 | # | Pri | Lacuna | Marco sugerido |
 |---|---|---|---|
 | T1 | P1 | **Direitos dos titulares (art. 18)**: não há exportação nem pedido de correção/eliminação de dados de um titular | M8 (DSAR) |
-| T2 | P1 | **Retenção e eliminação**: sem rotina de descarte nem política por tabela (sessões e auditoria crescem sem limite) | M8 |
+| T2 | P1 | **Retenção e eliminação**: feita só para `notificacao` (90/180 dias, M3.4). Faltam sessões, auditoria, mensagens, avisos e demais tabelas | M8 |
 | T3 | P1 | Texto livre sem proteção específica: justificativa de falta (`frequencia`) e mensagens podem conter dado de saúde. Avaliar aviso na tela, campo estruturado ou cifragem | M8 |
 | T4 | P2 | **CPF do aluno** guardado sem cifragem (`aluno.cpf`). Tornar opcional por escola e/ou cifrar | M8 |
 | T5 | P2 | IP e user agent em `sessao` e `auditoria`: definir prazo, mascarar ou truncar após o período do Marco Civil (art. 15) | M8 |
 | T6 | P2 | Contas de alunos: definir o que o aluno vê e se há mecanismo de supervisão parental (ECA Digital) | M3.4 / M8 |
-| T7 | P2 | Push e e-mail (M3): empurrar só o mínimo no corpo (sem nota, sem saúde); respeitar horário silencioso | M3 |
+| T7 | P2 | ~~E-mail de notificação mínimo, horário silencioso e e-mail só para adultos~~ **feito no M3.4**. Falta o push: o endpoint identifica o aparelho, então decidir base legal, consentimento e retenção antes | M3 |
 | T8 | P2 | Backups cifrados e teste de restauração; backup também precisa respeitar eliminação | M9 |
 | T9 | P3 | Trilha de auditoria com encadeamento de hash (hoje é só append-only por permissão) | M8 |
 | T10 | P3 | Registro de consentimento versionado (ledger), se alguma atividade usar consentimento | M8 |

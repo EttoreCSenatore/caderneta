@@ -276,6 +276,31 @@ if (roda('m3-msg')) {
   await foto(adm, 'mensagens-conversa');
 }
 
+if (roda('m3-notif')) {
+  console.log('M3 notificações');
+  const adm = await sessao('direcao');
+  await adm.goto(BASE + '/avisos');
+  await adm.click('button:has-text("+ Novo aviso")');
+  await adm.fill('.modal input >> nth=0', 'Entrega de documentos para a rematrícula');
+  await adm.fill('.modal textarea', 'Entregar na secretaria até o dia 30 os documentos atualizados do aluno.');
+  await adm.check('.modal input[type=checkbox]');
+  await adm.click('.modal button:has-text("Publicar")');
+  await adm.waitForSelector('text=Entrega de documentos para a rematrícula');
+  await adm.click('button:has-text("Lembrar pendentes") >> nth=0');
+  await adm.waitForSelector('text=Lembrete enviado');
+  await foto(adm, 'aviso-lembrete');
+
+  const fam = await sessao('familia', {mobile: true});
+  await fam.goto(BASE + '/notificacoes');
+  await fam.waitForSelector('text=Aviso aguardando seu ciente');
+  await foto(fam, 'notificacoes-celular', true);
+
+  const famPc = await sessao('familia');
+  await famPc.goto(BASE + '/notificacoes');
+  await famPc.waitForSelector('text=Preferências');
+  await foto(famPc, 'notificacoes', true);
+}
+
 await b.close();
 if (erros.length) {
   console.error('Erros no navegador:\n' + erros.join('\n'));

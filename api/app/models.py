@@ -6,7 +6,7 @@ que exigiria visibilidade pela política de leitura.
 
 import enum
 import uuid
-from datetime import UTC, date, datetime
+from datetime import UTC, date, datetime, time
 from decimal import Decimal
 
 from sqlalchemy import (
@@ -19,6 +19,7 @@ from sqlalchemy import (
     LargeBinary,
     Numeric,
     String,
+    Time,
     UniqueConstraint,
 )
 from sqlalchemy.dialects.postgresql import CITEXT, JSONB
@@ -92,6 +93,10 @@ class Usuario(Base):
     falhas_login: Mapped[int] = mapped_column(Integer, default=0)
     bloqueado_ate: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     ativo: Mapped[bool] = mapped_column(Boolean, default=True)
+    # Notificações: e-mail ligado por padrão (só com texto mínimo), horário silencioso das 21h às 7h.
+    notif_email: Mapped[bool] = mapped_column(Boolean, default=True)
+    silencio_inicio: Mapped[time] = mapped_column(Time, default=time(21, 0))
+    silencio_fim: Mapped[time] = mapped_column(Time, default=time(7, 0))
     criado_em: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=agora)
 
 
@@ -354,6 +359,7 @@ class Avaliacao(Base):
     nota_maxima: Mapped[Decimal] = mapped_column(Numeric(5, 2), default=Decimal(10))
     recuperacao: Mapped[bool] = mapped_column(Boolean, default=False)
     publicada: Mapped[bool] = mapped_column(Boolean, default=False)
+    notificada_em: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     criado_em: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=agora)
 
 
@@ -416,6 +422,8 @@ class Aviso(Base):
     exige_ciente: Mapped[bool] = mapped_column(Boolean, default=False)
     publicar_em: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=agora, index=True)
     arquivado: Mapped[bool] = mapped_column(Boolean, default=False)
+    notificado_em: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    ultimo_lembrete_em: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     criado_em: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=agora)
 
     autor: Mapped[Usuario | None] = relationship(lazy="joined")
@@ -507,3 +515,33 @@ class ConversaLeitura(Base):
     conversa_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("conversa.id", ondelete="CASCADE"), index=True)
     usuario_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("usuario.id", ondelete="CASCADE"), index=True)
     lido_ate: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=agora)
+
+
+class Notificacao(Base):
+    """Notificação no app. O e-mail correspondente leva só um aviso genérico, nunca este texto."""
+
+    __tablename__ = "notificacao"
+    id: Mapped[uuid.UUID] = _id()
+    escola_id: Mapped[uuid.UUID] = _escola()
+    usuario_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("usuario.id", ondelete="CASCADE"), index=True)
+    tipo: Mapped[str] = mapped_column(String(20))
+    titulo: Mapped[str] = mapped_column(String(200))
+    corpo: Mapped[str] = mapped_column(String(300), default="")
+    url: Mapped[str] = mapped_column(String(200), default="/notificacoes")
+    criado_em: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=agora, index=True)
+    lida_em: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    email_pendente: Mapped[bool] = mapped_column(Boolean, default=False)
+    enviar_apos: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    email_enviado_em: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class AlertaFalta(Base):
+    """Marca que o alerta de 15% ou 20% de faltas já foi disparado para a matrícula (evita repetir)."""
+
+    __tablename__ = "alerta_falta"
+    __table_args__ = (UniqueConstraint("matricula_id", "nivel"),)
+    id: Mapped[uuid.UUID] = _id()
+    escola_id: Mapped[uuid.UUID] = _escola()
+    matricula_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("matricula.id", ondelete="CASCADE"), index=True)
+    nivel: Mapped[int] = mapped_column(Integer)
+    criado_em: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=agora)

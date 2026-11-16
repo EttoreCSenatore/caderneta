@@ -1,7 +1,7 @@
 """Avisos da escola e de turma, com agendamento, "ciente" e painel de leitura."""
 
 import uuid
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
@@ -12,17 +12,13 @@ from app.audit import registrar
 from app.deps import Contexto, com_perfil
 from app.models import (
     STAFF,
-    Aluno,
     Aviso,
     AvisoLeitura,
     EscopoAviso,
-    Matricula,
     Papel,
     Turma,
-    Usuario,
-    VinculoResponsavel,
 )
-from app.routers.escola import ano_atual
+from app.notificacoes import alunos_do_publico, familia_dos_alunos, notifica_aviso, notificar
 from app.routers.turmas import turma_visivel, turmas_visiveis
 
 router = APIRouter(tags=["avisos"])
@@ -56,22 +52,8 @@ def _aviso_editavel(ctx: Contexto, aviso_id: uuid.UUID) -> Aviso:
 
 def destinatarios(ctx: Contexto, aviso: Aviso) -> dict[uuid.UUID, str]:
     """Usuários que devem ler o aviso: responsáveis com acesso (não restritos) e alunos com conta."""
-    ano = ano_atual(ctx)
-    if not ano:
-        return {}
-    alunos = select(Matricula.aluno_id).where(Matricula.ano_letivo_id == ano.id)
-    if aviso.turma_id:
-        alunos = alunos.where(Matricula.turma_id == aviso.turma_id)
-    res: dict[uuid.UUID, str] = {}
-    q1 = (
-        select(Usuario.id, Usuario.nome)
-        .join(VinculoResponsavel, VinculoResponsavel.usuario_id == Usuario.id)
-        .where(VinculoResponsavel.aluno_id.in_(alunos), VinculoResponsavel.restrito.is_(False))
-    )
-    q2 = select(Usuario.id, Usuario.nome).join(Aluno, Aluno.usuario_id == Usuario.id).where(Aluno.id.in_(alunos))
-    for uid, nome in [*ctx.db.execute(q1), *ctx.db.execute(q2)]:
-        res[uid] = nome
-    return res
+    alunos = alunos_do_publico(ctx.db, ctx.escola_id, aviso.turma_id)
+    return familia_dos_alunos(ctx.db, ctx.escola_id, alunos, incluir_alunos=True)
 
 
 def aviso_out(a: Aviso, leitura: AvisoLeitura | None = None, turma_nome: str | None = None) -> dict:
@@ -106,6 +88,8 @@ def criar(body: AvisoIn, ctx: Contexto = Depends(com_perfil)):
     )
     ctx.db.add(a)
     ctx.db.flush()
+    if a.publicar_em <= datetime.now(UTC):
+        notifica_aviso(ctx.db, a)  # agendados saem pelo worker, na hora certa
     registrar(
         ctx.db, "aviso.criar", escola_id=ctx.escola_id, usuario_id=ctx.usuario.id, entidade="aviso", entidade_id=a.id
     )
@@ -228,3 +212,38 @@ def pendentes(ctx: Contexto = Depends(com_perfil)):
         q = q.where(or_(Aviso.turma_id.is_(None), Aviso.turma_id.in_(escopo)))
     q = q.where(~Aviso.id.in_(select(AvisoLeitura.aviso_id).where(AvisoLeitura.usuario_id == ctx.usuario.id)))
     return {"nao_lidos": ctx.db.scalar(q)}
+
+
+@router.post("/avisos/{aviso_id}/lembrete")
+def lembrete(aviso_id: uuid.UUID, ctx: Contexto = Depends(com_perfil)):
+    """Lembra quem ainda não leu (ou não deu ciente). No máximo um lembrete a cada 24 horas por aviso."""
+    a = _aviso_editavel(ctx, aviso_id)
+    agora = datetime.now(UTC)
+    if a.publicar_em > agora or a.arquivado:
+        raise HTTPException(409, "Só avisos publicados e ativos podem ter lembrete.")
+    if a.ultimo_lembrete_em and agora - a.ultimo_lembrete_em < timedelta(hours=24):
+        raise HTTPException(429, "O lembrete deste aviso já foi enviado nas últimas 24 horas.")
+    dest = destinatarios(ctx, a)
+    leituras = {lt.usuario_id: lt for lt in ctx.db.scalars(select(AvisoLeitura).where(AvisoLeitura.aviso_id == a.id))}
+    faltam = [uid for uid in dest if uid not in leituras or (a.exige_ciente and not leituras[uid].ciente_em)]
+    a.ultimo_lembrete_em = agora
+    n = notificar(
+        ctx.db,
+        escola_id=ctx.escola_id,
+        usuarios=faltam,
+        tipo="lembrete",
+        titulo="Lembrete de aviso" if not a.exige_ciente else "Aviso aguardando seu ciente",
+        corpo=a.titulo,
+        url="/avisos",
+        agora=agora,
+    )
+    registrar(
+        ctx.db,
+        "aviso.lembrete",
+        escola_id=ctx.escola_id,
+        usuario_id=ctx.usuario.id,
+        entidade="aviso",
+        entidade_id=a.id,
+        detalhes={"notificados": n},
+    )
+    return {"notificados": n}

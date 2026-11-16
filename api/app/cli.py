@@ -1,6 +1,7 @@
 """Tarefas administrativas da plataforma (rodam com o papel dono do banco).
 
 python -m app.cli criar-escola "Escola Exemplo" admin@escola.com "Nome do Admin"
+python -m app.cli notificar     # worker: avisos agendados, e-mails devidos e retenção (rodar a cada minuto)
 """
 
 import argparse
@@ -24,6 +25,15 @@ def criar_escola(nome: str, email: str, nome_admin: str) -> None:
     print(f"Escola criada: {escola.id}\nConvite do administrador enviado para {email}.\nLink: {link}")
 
 
+def notificar() -> None:
+    from app.notificacoes import processar
+
+    engine = create_engine(get_settings().owner_database_url)
+    with Session(engine) as db, db.begin():
+        r = processar(db)
+    print(f"avisos liberados: {r['avisos']} · e-mails enviados: {r['emails']} · notificações apagadas: {r['apagadas']}")
+
+
 def main() -> None:
     p = argparse.ArgumentParser(prog="caderneta")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -31,9 +41,12 @@ def main() -> None:
     c.add_argument("nome")
     c.add_argument("email")
     c.add_argument("nome_admin")
+    sub.add_parser("notificar", help="worker de notificações (agendados, e-mails, retenção)")
     a = p.parse_args()
     if a.cmd == "criar-escola":
         criar_escola(a.nome, a.email, a.nome_admin)
+    elif a.cmd == "notificar":
+        notificar()
 
 
 if __name__ == "__main__":

@@ -72,6 +72,11 @@ export default function Avisos() {
     mutationFn: ({id, ciente}: {id: string; ciente: boolean}) => api(`/avisos/${id}/lido?ciente=${ciente}`, {method: 'POST'}),
     onSuccess: recarrega,
   });
+  const lembra = useMutation({
+    mutationFn: (id: string) => api<{notificados: number}>(`/avisos/${id}/lembrete`, {method: 'POST'}),
+    onSuccess: (r) => setAviso(`Lembrete enviado a ${r.notificados} pessoa(s).`),
+  });
+  const [aviso, setAviso] = useState('');
   const arquiva = useMutation({mutationFn: (id: string) => api(`/avisos/${id}/arquivar`, {method: 'POST'}), onSuccess: recarrega});
   const geral = papel === 'admin' || papel === 'coordenacao';
 
@@ -81,6 +86,8 @@ export default function Avisos() {
         <h1>Avisos</h1>
         {escreve && <button className="botao" onClick={() => setNovo(true)}>+ Novo aviso</button>}
       </div>
+      {aviso && <p className="selo verde" role="status">{aviso}</p>}
+      <Erro erro={lembra.error} />
       {lista.isLoading && <Carregando />}
       <Erro erro={lista.error} />
       {lista.data?.length === 0 && <Vazio>Nenhum aviso por enquanto.</Vazio>}
@@ -108,6 +115,7 @@ export default function Avisos() {
                 )}
                 {!escreve && a.ciente && <span className="selo verde">Ciente</span>}
                 {escreve && <button className="botao secundario pequeno" onClick={() => setPainel(a.id)}>Quem leu</button>}
+                {escreve && !agendado && <button className="botao secundario pequeno" disabled={lembra.isPending} onClick={() => lembra.mutate(a.id)}>Lembrar pendentes</button>}
                 {escreve && <button className="botao secundario pequeno" onClick={() => arquiva.mutate(a.id)}>Arquivar</button>}
               </div>
             </article>
