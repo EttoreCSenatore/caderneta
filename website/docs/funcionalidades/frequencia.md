@@ -4,24 +4,42 @@ title: Frequência
 
 # Frequência (chamada)
 
-Pela LDB, o aluno precisa de **75% de frequência** no ano para ser aprovado. Controlar isso em papel é trabalhoso;
-na Caderneta a chamada leva segundos.
+:::tip Entregue no M2
+Chamada por aula, faltas justificadas e frequência por disciplina e geral no boletim já funcionam.
+:::
+
+Pela LDB, o aluno precisa de **75% de frequência** no ano para ser aprovado (a escola pode configurar outro valor na
+regra de média). Na Caderneta a chamada leva segundos.
 
 ## Como funciona
 
-- O professor abre a aula do dia (vem da grade horária ou é criada na hora) e toca nos ausentes. Todos começam presentes.
-- Tipos: **presente**, **falta**, **falta justificada** (com atestado enviado pelo responsável ou pela escola), **atraso**.
-- Aulas duplas contam como duas.
-- Dias marcados como **sem aula** no [calendário](./calendario.md) não aceitam chamada.
+- O professor abre **Início → Chamada** e toca em **Registrar chamada**. A data já vem preenchida com hoje.
+- **Todos começam presentes.** Basta tocar em **F** (falta), **J** (falta justificada) ou **A** (atraso) para quem
+  precisa.
+- Aulas duplas contam como duas (campo **Aulas**); o conteúdo da aula é opcional.
+- Não dá para registrar chamada em data futura nem fora do ano letivo; período fechado só a direção corrige.
+- Só ausências e atrasos são gravados: marcar alguém de volta como presente apaga o registro.
 
-## Alertas
+<img src="/caderneta/img/screenshots/chamada-celular.png" alt="Chamada no celular" width="320" />
 
-- Responsável recebe notificação no dia em que o aluno falta (opcional, a escola liga ou desliga).
-- Alerta para coordenação e família quando o aluno atinge **15%** e **20%** de faltas numa disciplina ou no total.
+![Chamada no computador](/img/screenshots/chamada-registro.png)
 
-## Critérios de pronto (M2)
+A lista de aulas do período mostra quantas faltas houve em cada uma; clicar numa aula abre a chamada para corrigir.
 
-- [ ] Chamada por aula em até 3 toques para uma turma inteira presente
-- [ ] Percentual de frequência por disciplina e geral no boletim
-- [ ] Justificativa de falta com anexo
-- [ ] Alertas de limite configuráveis
+![Aulas registradas no período](/img/screenshots/chamada-lista.png)
+
+## Cálculo
+
+- Frequência da disciplina = (aulas dadas − faltas) ÷ aulas dadas.
+- **Falta justificada continua sendo falta** para a frequência: a LDB só abona casos especiais (como o regime
+  especial de estudos). Ela aparece separada no boletim para a escola acompanhar.
+- Atraso não conta como falta.
+- A frequência de cada aluno aparece no diário e no boletim; a frequência geral soma todas as disciplinas.
+
+## Critérios de pronto (M2) ✅
+
+- [x] Chamada por aula em poucos toques para uma turma inteira presente
+- [x] Percentual de frequência por disciplina e geral no boletim
+- [x] Falta justificada com motivo registrado
+- [ ] Alertas automáticos para a família e a coordenação ao atingir 15% e 20% de faltas: no M3, com as notificações
+- [ ] Dias sem aula do calendário bloqueando a chamada: no M4, com o calendário

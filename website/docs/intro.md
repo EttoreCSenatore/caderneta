@@ -18,8 +18,9 @@ diário de papel, planilhas, grupos de WhatsApp e murais:
   acompanham o aluno de um ano para o outro.
 
 :::info Status
-**M1 (fundação)** concluído: login com 2FA, convites, perfis, escola, turmas, alunos, responsáveis, ficha de saúde
-criptografada e importação por planilha. Próximo: **M2**, notas, médias e frequência. Veja o [roadmap](./roadmap.md).
+**M2 (notas, médias e frequência)** concluído: diário de notas com média automática, regra configurável, boletim
+com versão para impressão, chamada e fechamento de período. O **M1** trouxe login com 2FA, convites, turmas, alunos e
+ficha de saúde. Próximo: **M3**, comunicação. Veja o [roadmap](./roadmap.md).
 :::
 
 ![Painel da direção](/img/screenshots/admin-inicio.png)

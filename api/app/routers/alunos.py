@@ -5,7 +5,7 @@ from datetime import UTC, date, datetime
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel, EmailStr, Field
-from sqlalchemy import or_, select
+from sqlalchemy import func, or_, select
 from sqlalchemy.exc import IntegrityError
 
 from app.audit import registrar
@@ -167,13 +167,14 @@ def lista(
     if turma_id:
         query = query.where(Turma.id == turma_id)
     if q:
-        termo = f"%{q.strip()}%"
+        # Nome completo ("Lucas Moreira"), nome social ou RA; % e _ digitados não viram curinga.
+        limpo = " ".join(q.split()).replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
+        termo = f"%{limpo}%"
         query = query.where(
             or_(
-                Aluno.nome.ilike(termo),
-                Aluno.sobrenome.ilike(termo),
-                Aluno.nome_social.ilike(termo),
-                Aluno.ra.ilike(termo),
+                func.concat_ws(" ", Aluno.nome, Aluno.sobrenome).ilike(termo, escape="\\"),
+                func.concat_ws(" ", Aluno.nome_social, Aluno.sobrenome).ilike(termo, escape="\\"),
+                Aluno.ra.ilike(termo, escape="\\"),
             )
         )
     return [aluno_out(a, t) for a, t in ctx.db.execute(query).all()]

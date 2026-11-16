@@ -9,14 +9,16 @@ média é calculada automaticamente; alunos e famílias acompanham notas, faltas
 pelo celular. A escola organiza turmas, calendário, comunicação e a fila de impressão de provas, e o histórico do aluno
 passa de um ano para o outro.
 
-**Status:** M1 (fundação) concluído: login com 2FA, convites, perfis, turmas, alunos, responsáveis, ficha de saúde
-criptografada e importação por planilha. Próximo: M2, notas, médias e frequência.
+**Status:** M2 (notas, médias e frequência) concluído: diário de notas com média automática, regra configurável,
+boletim para tela e impressão, chamada e fechamento de período. Antes, o M1 trouxe login com 2FA, convites, turmas,
+alunos e ficha de saúde. Próximo: M3, comunicação.
 **[Ler a documentação](https://ettorecsenatore.github.io/caderneta/)** · [Roadmap](https://ettorecsenatore.github.io/caderneta/docs/roadmap)
 
-![Painel da direção](website/static/img/screenshots/admin-inicio.png)
+![Diário de notas](website/static/img/screenshots/diario-notas.png)
+![Boletim](website/static/img/screenshots/boletim.png)
 ![Ficha do aluno: família](website/static/img/screenshots/aluno-familia.png)
 
-<img src="website/static/img/screenshots/familia-inicio-celular.png" alt="Responsável no celular" width="240"> <img src="website/static/img/screenshots/configurar-2fa-celular.png" alt="Configuração do 2FA" width="240"> <img src="website/static/img/screenshots/aluno-inicio-celular-escuro.png" alt="Aluno no celular, tema escuro" width="240">
+<img src="website/static/img/screenshots/boletim-celular.png" alt="Boletim no celular" width="240"> <img src="website/static/img/screenshots/chamada-celular.png" alt="Chamada no celular" width="240"> <img src="website/static/img/screenshots/configurar-2fa-celular.png" alt="Configuração do 2FA" width="240"> <img src="website/static/img/screenshots/aluno-inicio-celular-escuro.png" alt="Aluno no celular, tema escuro" width="240">
 
 ## Funcionalidades planejadas
 

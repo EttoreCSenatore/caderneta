@@ -1,14 +1,15 @@
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import {useState} from 'react';
 import {Link, useParams} from 'react-router';
+import {Boletim} from '../components/Boletim';
 import {Icone} from '../components/icones';
 import {Abas, Avatar, Carregando, Erro, LinkConvite, Modal, Vazio} from '../components/ui';
 import {api} from '../lib/api';
-import {usePapel} from '../lib/auth';
+import {useMe, usePapel} from '../lib/auth';
 import {dataBR, idade, NOME_VINCULO, nomeExibicao} from '../lib/formato';
 import type {Aluno as TAluno, Saude, TurmaResumo, Vinculo} from '../lib/tipos';
 
-type Aba = 'dados' | 'familia' | 'saude' | 'historico';
+type Aba = 'boletim' | 'dados' | 'familia' | 'saude' | 'historico';
 
 const CAMPOS_SAUDE: [keyof Saude, string][] = [
   ['alergias', 'Alergias'],
@@ -232,12 +233,14 @@ function SaudeAba({aluno}: {aluno: TAluno}) {
 export default function Aluno() {
   const {id = ''} = useParams();
   const papel = usePapel();
-  const [aba, setAba] = useState<Aba>('dados');
+  const {data: me} = useMe();
+  const escola = me?.perfis.find((p) => p.id === me.perfil_ativo)?.escola;
+  const [aba, setAba] = useState<Aba>('boletim');
   const q = useQuery({queryKey: ['aluno', id], queryFn: () => api<TAluno>(`/alunos/${id}`)});
   if (q.isLoading) return <Carregando />;
   if (q.error) return <Erro erro={q.error} />;
   const a = q.data!;
-  const abas: [Aba, string][] = [['dados', 'Dados']];
+  const abas: [Aba, string][] = [['boletim', 'Boletim'], ['dados', 'Dados']];
   if (a.responsaveis) abas.push(['familia', 'Família']);
   if (papel !== 'aluno') abas.push(['saude', 'Saúde']);
   if (a.historico) abas.push(['historico', 'Histórico']);
@@ -245,7 +248,7 @@ export default function Aluno() {
   return (
     <>
       <Link to={voltar} className="pequeno">← Voltar</Link>
-      <div className="cartao linha" style={{margin: '0.5rem 0 1rem', flexWrap: 'nowrap'}}>
+      <div className="cartao linha cartao-aluno" style={{margin: '0.5rem 0 1rem', flexWrap: 'nowrap'}}>
         <Avatar nome={nomeExibicao(a)} grande />
         <div style={{flex: 1}}>
           <h1 style={{margin: 0}}>{nomeExibicao(a)}</h1>
@@ -258,6 +261,7 @@ export default function Aluno() {
         </div>
       </div>
       <Abas abas={abas} ativa={aba} mudar={setAba} />
+      {aba === 'boletim' && <Boletim aluno={a} escola={escola} />}
       {aba === 'dados' && <Dados aluno={a} />}
       {aba === 'familia' && <Familia aluno={a} />}
       {aba === 'saude' && <SaudeAba aluno={a} />}
@@ -266,7 +270,7 @@ export default function Aluno() {
           {a.historico!.map((h) => (
             <div key={h.ano_letivo_id} className="item"><strong>{h.turma}</strong><span className="suave">{h.serie}</span><span className="selo">{h.situacao}</span></div>
           ))}
-          <p className="suave pequeno">Notas, frequência e anotações de cada ano entram aqui a partir do M2.</p>
+          <p className="suave pequeno">As notas e a frequência do ano atual estão na aba Boletim. Anotações entre anos chegam no M6.</p>
         </div>
       )}
     </>

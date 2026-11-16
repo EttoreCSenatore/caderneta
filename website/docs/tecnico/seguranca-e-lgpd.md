@@ -22,6 +22,8 @@ Segurança é requisito desde o primeiro marco, não etapa final.
 - Ficha de saúde e segredo do 2FA criptografados com AES-256-GCM, usando o id do aluno/usuário como dado associado.
 - Professores veem só o alerta resumido; leituras completas da ficha de saúde são auditadas.
 - Auditoria só de inserção; service worker do PWA nunca guarda respostas da API (dados pessoais) em cache.
+- Notas e chamadas: o professor só escreve no próprio diário e com o período aberto; correções da direção exigem
+  justificativa e registram o valor antes e depois (M2).
 - Cabeçalhos `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy` e `Cache-Control: no-store` na API.
 
 Detalhes do login em [Acesso, convites e 2FA](../funcionalidades/acesso-e-convites.md).
