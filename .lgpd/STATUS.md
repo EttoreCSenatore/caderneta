@@ -21,7 +21,7 @@ Elas são citadas como a skill as descreve e **precisam ser conferidas no texto 
 | Pergunta | Resposta | Situação |
 |---|---|---|
 | Controladora / operadora | Escola = controladora; quem opera a Caderneta = operadora (contrato de operação de dados) | A formalizar (M8) |
-| Agente de pequeno porte (Res. CD/ANPD 2/2022)? | **Indefinido**: depende de quem opera a plataforma. Tratamento de dados de crianças e de saúde pode afastar a dispensa | Pergunta aberta ao responsável do projeto |
+| Agente de pequeno porte (Res. CD/ANPD 2/2022)? | **Avaliação técnica: planejar como NÃO enquadrado nas dispensas.** O porte do negócio pode até caber em ATPP (ME, EPP, startup, sem fins lucrativos), mas a dispensa não vale para quem faz **tratamento de alto risco**, e a Caderneta trata dados sensíveis (saúde) de crianças e adolescentes em escala de escola (art. 4º, segundo a skill). Consequências: encarregado formal, atendimento a titulares e comunicação de incidente em prazos padrão. Quem decide é o(a) advogado(a). Planejar para o caso mais exigente custa pouco e evita refazer | Avaliação registrada em 2026-11-16, **a validar no M8** |
 | ECA Digital (Lei 15.211/2025) se aplica? | **Tratar como aplicável.** Art. 1º cobre serviço "de acesso provável" por crianças e adolescentes, e alunos têm conta própria | A confirmar no parecer jurídico |
 | Alto risco / RIPD | Sim, preventivo: dados de saúde (sensíveis) e de crianças/adolescentes (Res. 2/2022, art. 4º, segundo a skill) | RIPD no M8 |
 
