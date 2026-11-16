@@ -79,6 +79,10 @@ class Escola(Base):
     cidade: Mapped[str | None] = mapped_column(String(120))
     uf: Mapped[str | None] = mapped_column(String(2))
     fuso: Mapped[str] = mapped_column(String(64), default="America/Sao_Paulo")
+    # Provas e impressão (M5)
+    aprovacao_impressao: Mapped[bool] = mapped_column(Boolean, default=True)
+    reserva_copias: Mapped[int] = mapped_column(Integer, default=2)
+    antecedencia_dias: Mapped[int] = mapped_column(Integer, default=2)
     criado_em: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=agora)
 
 
@@ -590,3 +594,78 @@ class CalendarioToken(Base):
     perfil_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("usuario_perfil.id", ondelete="CASCADE"), unique=True)
     token_hash: Mapped[str] = mapped_column(String(64), unique=True)
     criado_em: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=agora)
+
+
+# --- M5: provas, trabalhos e impressão ----------------------------------------------------------------------
+
+
+class TipoPedido(enum.StrEnum):
+    prova = "prova"
+    trabalho = "trabalho"
+    lista = "lista"
+
+
+class StatusPedido(enum.StrEnum):
+    rascunho = "rascunho"
+    enviada = "enviada"
+    ajustes = "ajustes"
+    aprovada = "aprovada"
+    impressa = "impressa"
+
+
+class Arquivo(Base):
+    """Metadados de um arquivo. O conteúdo fica cifrado no armazenamento (ver `arquivos.py`)."""
+
+    __tablename__ = "arquivo"
+    id: Mapped[uuid.UUID] = _id()
+    escola_id: Mapped[uuid.UUID] = _escola()
+    nome: Mapped[str] = mapped_column(String(200))
+    mime: Mapped[str] = mapped_column(String(100))
+    tamanho: Mapped[int] = mapped_column(Integer)
+    sha256: Mapped[str] = mapped_column(String(64))
+    criado_por: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("usuario.id", ondelete="SET NULL"))
+    criado_em: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=agora)
+
+
+class PedidoImpressao(Base):
+    __tablename__ = "pedido_impressao"
+    id: Mapped[uuid.UUID] = _id()
+    escola_id: Mapped[uuid.UUID] = _escola()
+    autor_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("usuario.id", ondelete="SET NULL"), index=True)
+    atribuicao_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("atribuicao.id", ondelete="CASCADE"), index=True)
+    arquivo_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("arquivo.id", ondelete="RESTRICT"))
+    arquivo_adaptado_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("arquivo.id", ondelete="SET NULL"))
+    tipo: Mapped[TipoPedido] = mapped_column(_enum(TipoPedido, "tipo_pedido"))
+    titulo: Mapped[str] = mapped_column(String(200))
+    data_aplicacao: Mapped[date] = mapped_column(Date, index=True)
+    copias: Mapped[int] = mapped_column(Integer)
+    copias_calculadas: Mapped[int] = mapped_column(Integer)
+    copias_adaptadas: Mapped[int] = mapped_column(Integer, default=0)
+    frente_verso: Mapped[bool] = mapped_column(Boolean, default=True)
+    colorido: Mapped[bool] = mapped_column(Boolean, default=False)
+    grampear: Mapped[bool] = mapped_column(Boolean, default=False)
+    observacoes: Mapped[str | None] = mapped_column(String(500))
+    status: Mapped[StatusPedido] = mapped_column(_enum(StatusPedido, "status_pedido"), default=StatusPedido.rascunho)
+    publicado: Mapped[bool] = mapped_column(Boolean, default=False)
+    criado_em: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=agora)
+    enviado_em: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    aprovado_por: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("usuario.id", ondelete="SET NULL"))
+    aprovado_em: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    impresso_por: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("usuario.id", ondelete="SET NULL"))
+    impresso_em: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+    atribuicao: Mapped[Atribuicao] = relationship(lazy="joined")
+    arquivo: Mapped[Arquivo] = relationship(lazy="joined", foreign_keys=[arquivo_id])
+    arquivo_adaptado: Mapped[Arquivo | None] = relationship(lazy="joined", foreign_keys=[arquivo_adaptado_id])
+
+
+class PedidoComentario(Base):
+    __tablename__ = "pedido_comentario"
+    id: Mapped[uuid.UUID] = _id()
+    escola_id: Mapped[uuid.UUID] = _escola()
+    pedido_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("pedido_impressao.id", ondelete="CASCADE"), index=True)
+    autor_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("usuario.id", ondelete="SET NULL"))
+    corpo: Mapped[str] = mapped_column(String(1000))
+    criado_em: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=agora)
+
+    autor: Mapped[Usuario | None] = relationship(lazy="joined")

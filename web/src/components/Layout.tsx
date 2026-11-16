@@ -18,6 +18,7 @@ const MENU: Record<Papel, Item[]> = {
     {to: '/autorizacoes', rotulo: 'Autorizações', icone: 'autorizacoes'},
     {to: '/mensagens', rotulo: 'Mensagens', icone: 'mensagens'},
     {to: '/turmas', rotulo: 'Turmas', icone: 'turmas'},
+    {to: '/provas', rotulo: 'Provas', icone: 'provas'},
     {to: '/alunos', rotulo: 'Alunos', icone: 'alunos'},
     {to: '/equipe', rotulo: 'Equipe', icone: 'equipe'},
     {to: '/importar', rotulo: 'Importar', icone: 'importar'},
@@ -31,6 +32,7 @@ const MENU: Record<Papel, Item[]> = {
     {to: '/autorizacoes', rotulo: 'Autorizações', icone: 'autorizacoes'},
     {to: '/mensagens', rotulo: 'Mensagens', icone: 'mensagens'},
     {to: '/turmas', rotulo: 'Turmas', icone: 'turmas'},
+    {to: '/provas', rotulo: 'Provas', icone: 'provas'},
     {to: '/alunos', rotulo: 'Alunos', icone: 'alunos'},
     {to: '/equipe', rotulo: 'Equipe', icone: 'equipe'},
     {to: '/escola', rotulo: 'Escola', icone: 'escola'},
@@ -43,6 +45,7 @@ const MENU: Record<Papel, Item[]> = {
     {to: '/autorizacoes', rotulo: 'Autorizações', icone: 'autorizacoes'},
     {to: '/mensagens', rotulo: 'Mensagens', icone: 'mensagens'},
     {to: '/turmas', rotulo: 'Minhas turmas', icone: 'turmas'},
+    {to: '/provas', rotulo: 'Provas', icone: 'provas'},
     {to: '/alunos', rotulo: 'Alunos', icone: 'alunos'},
   ],
   responsavel: [
@@ -52,17 +55,20 @@ const MENU: Record<Papel, Item[]> = {
     {to: '/avisos', rotulo: 'Avisos', icone: 'avisos'},
     {to: '/autorizacoes', rotulo: 'Autorizações', icone: 'autorizacoes'},
     {to: '/mensagens', rotulo: 'Mensagens', icone: 'mensagens'},
+    {to: '/provas', rotulo: 'Materiais', icone: 'provas'},
   ],
   aluno: [
     {to: '/', rotulo: 'Início', icone: 'inicio'},
     {to: '/notificacoes', rotulo: 'Notificações', icone: 'notificacoes'},
     {to: '/calendario', rotulo: 'Calendário', icone: 'calendario'},
     {to: '/avisos', rotulo: 'Avisos', icone: 'avisos'},
+    {to: '/provas', rotulo: 'Materiais', icone: 'provas'},
   ],
 };
 
 // Ordem de importância no menu do celular (cabem cinco itens)
-const PRIORIDADE = ['/', '/turmas', '/calendario', '/avisos', '/mensagens', '/autorizacoes', '/alunos', '/equipe', '/importar', '/escola'];
+const PRIORIDADE_ESCOLA = ['/', '/turmas', '/provas', '/calendario', '/avisos', '/mensagens', '/autorizacoes', '/alunos', '/equipe', '/importar', '/escola'];
+const PRIORIDADE_FAMILIA = ['/', '/calendario', '/avisos', '/autorizacoes', '/mensagens', '/provas'];
 
 function TrocaPerfil() {
   const {data: me} = useMe();
@@ -90,9 +96,10 @@ export function Layout() {
   if (!me || !papel) return null;
   const perfil = me.perfis.find((p) => p.id === me.perfil_ativo)!;
   const itens = MENU[papel];
+  const ordem = papel === 'responsavel' || papel === 'aluno' ? PRIORIDADE_FAMILIA : PRIORIDADE_ESCOLA;
   const inferior = itens
     .filter((i) => i.to !== '/notificacoes')
-    .sort((x, y) => PRIORIDADE.indexOf(x.to) - PRIORIDADE.indexOf(y.to))
+    .sort((x, y) => ordem.indexOf(x.to) - ordem.indexOf(y.to))
     .slice(0, 5);
   const pendentes = useQuery({queryKey: ['avisos-pendentes'], queryFn: () => api<{nao_lidos: number}>('/avisos-pendentes'), refetchInterval: 60000});
   const naoLidos = pendentes.data?.nao_lidos ?? 0;

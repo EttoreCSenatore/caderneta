@@ -4,6 +4,7 @@ Assim o Row-Level Security é exercitado de verdade, não simulado.
 """
 
 import os
+import tempfile
 import uuid
 from dataclasses import dataclass, field
 from datetime import date
@@ -15,6 +16,7 @@ os.environ.setdefault(
     "CADERNETA_OWNER_DATABASE_URL", "postgresql+psycopg://caderneta_owner:dev-owner@127.0.0.1:5433/caderneta_test"
 )
 os.environ["CADERNETA_MAIL_BACKEND"] = "memory"
+os.environ["CADERNETA_STORAGE_DIR"] = tempfile.mkdtemp(prefix="caderneta-test-storage-")
 os.environ["CADERNETA_ENV"] = "test"
 
 import pyotp  # noqa: E402

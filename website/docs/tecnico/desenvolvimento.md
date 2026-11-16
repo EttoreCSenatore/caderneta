@@ -83,3 +83,9 @@ Cria a escola e envia o convite do primeiro administrador.
 
 Gerar uma chave: `python -c "import base64,os;print(base64.urlsafe_b64encode(os.urandom(32)).decode())"`.
 Guarde-a fora do banco e do repositório: sem ela, as fichas de saúde não podem ser lidas.
+
+## Armazenamento de arquivos
+
+Provas e trabalhos ficam cifrados em `CADERNETA_STORAGE_DIR` (padrão `./storage`, já no `.gitignore`). Em produção o caminho
+precisa ser absoluto, fora do código, com permissão só do usuário da API e **dentro do backup**. Veja a
+[ADR 0004](../decisoes/armazenamento-de-arquivos.md). Ajuste o limite com `CADERNETA_MAX_ARQUIVO_BYTES`.

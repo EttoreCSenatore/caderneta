@@ -15,7 +15,7 @@ adicionados às páginas de funcionalidade.
 | **M2: Notas, médias e frequência** | Avaliações, grade de lançamento, motor de médias configurável, boletim, chamada, fechamento de período | ✅ Concluído |
 | **M3: Comunicação** | Avisos gerais e de turma, mensagens individuais, "ciente", autorizações, notificações e e-mail (push pendente) | ✅ Concluído, exceto push |
 | **M4: Calendário** | Calendário escolar e de turma, feriados nacionais, dias sem aula, iCal | ✅ Concluído |
-| **M5: Provas e impressão** | Upload, aprovação, fila de impressão com cópias calculadas, trabalhos | Planejado |
+| **M5: Provas e impressão** | Upload, aprovação, fila de impressão com cópias calculadas, trabalhos | ✅ Concluído |
 | **M6: Histórico e anotações** | Rematrícula em lote, linha do tempo, anotações versionadas, histórico escolar em PDF | Planejado |
 | **M7: App de celular** | PWA refinada, offline para notas e chamada, Capacitor nas lojas | Planejado |
 | **M8: Conformidade e segurança** | Revisão geral de segurança, licenças e adequação à LGPD e à legislação aplicável, com validação jurídica | Planejado |
@@ -181,6 +181,17 @@ Veja [Calendário](./funcionalidades/calendario.md).
 - [x] Avaliações com data aparecem no calendário da turma
 - [x] Visões lista, mês e semana
 - [x] Assinatura iCal por link secreto, revogável
+
+## M5: Provas e impressão (concluído)
+
+Veja [Provas e impressão](./funcionalidades/provas-e-impressao.md) e a [ADR 0004](./decisoes/armazenamento-de-arquivos.md).
+
+- [x] Upload validado pelo conteúdo, cifrado em repouso
+- [x] Fluxo com aprovação opcional, ajustes e comentários; antecedência mínima configurável
+- [x] Fila de impressão com cópias calculadas (alunos ativos + reserva) e versão adaptada
+- [x] Sigilo até a publicação; prova só publicada a partir da aplicação; trabalhos no calendário
+- [x] Download por link assinado de 5 minutos, auditado
+- [ ] Conversão DOCX para PDF, antivírus, anexos nas mensagens e prazo de eliminação (pendentes)
 
 ## Depois do piloto (ideias)
 

@@ -14,3 +14,6 @@ __pycache__/
 .ruff_cache/
 dist/
 dev-dist/
+
+# Arquivos de provas (cifrados) do ambiente de desenvolvimento
+api/storage/

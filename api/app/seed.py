@@ -10,11 +10,11 @@ senha `caderneta-demo` para todas; a equipe usa 2FA com o segredo DEMO_TOTP abai
 import random
 import sys
 import uuid
-from datetime import date, timedelta
+from datetime import UTC, date, datetime, timedelta
 from decimal import Decimal
 
 import pyotp
-from sqlalchemy import create_engine, delete, select
+from sqlalchemy import create_engine, delete, func, select
 from sqlalchemy.orm import Session
 
 from app.calendario import feriados_sugeridos
@@ -34,10 +34,14 @@ from app.models import (
     Matricula,
     Nota,
     Papel,
+    PedidoComentario,
+    PedidoImpressao,
     Periodo,
     StatusNota,
+    StatusPedido,
     StatusPresenca,
     TipoEvento,
+    TipoPedido,
     TipoPeriodo,
     Turma,
     Usuario,
@@ -275,6 +279,7 @@ def seed() -> None:
         db.flush()
         avs, aulas = _seed_m2(db, e, ano, rnd)
         _seed_m4(db, e, turmas)
+        _seed_m5(db, e)
         print(f"Escola de demonstração criada com {n} alunos, {len(turmas)} turmas, {avs} avaliações e {aulas} aulas.")
 
 
@@ -314,6 +319,84 @@ def _seed_m4(db: Session, e: Escola, turmas: list[Turma]) -> None:
     ev(TipoEvento.prazo, "Entrega do trabalho de História", 6, turma=turmas[0])
     ev(TipoEvento.evento, "Passeio ao Museu da Língua Portuguesa", 11, turma=turmas[0])
     ev(TipoEvento.prazo, "Entrega do projeto de Ciências", 8, turma=turmas[1])
+
+
+def _pdf_demo(titulo: str) -> bytes:
+    """PDF mínimo e válido, só para a demonstração."""
+    texto = titulo.replace("(", "").replace(")", "")
+    conteudo = f"BT /F1 18 Tf 72 720 Td ({texto}) Tj ET".encode()
+    objs = [
+        b"<< /Type /Catalog /Pages 2 0 R >>",
+        b"<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
+        b"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Contents 4 0 R "
+        b"/Resources << /Font << /F1 5 0 R >> >> >>",
+        b"<< /Length %d >>\nstream\n" % len(conteudo) + conteudo + b"\nendstream",
+        b"<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>",
+    ]
+    out, offs = b"%PDF-1.4\n", []
+    for i, o in enumerate(objs, 1):
+        offs.append(len(out))
+        out += b"%d 0 obj\n" % i + o + b"\nendobj\n"
+    xref = len(out)
+    out += b"xref\n0 %d\n0000000000 65535 f \n" % (len(objs) + 1)
+    out += b"".join(b"%010d 00000 n \n" % o for o in offs)
+    return out + b"trailer\n<< /Size %d /Root 1 0 R >>\nstartxref\n%d\n%%%%EOF\n" % (len(objs) + 1, xref)
+
+
+def _seed_m5(db: Session, e: Escola) -> None:
+    """Pedidos de impressão em vários estados, incluindo um trabalho publicado para a turma da família demo."""
+    from app.arquivos import grava
+
+    hoje = date.today()
+    turma_lucas = db.scalar(
+        select(Matricula.turma_id)
+        .join(Aluno, Aluno.id == Matricula.aluno_id)
+        .where(Aluno.nome == "Lucas", Aluno.escola_id == e.id)
+    )
+    atribs = {
+        (a.turma_id, a.disciplina.nome): a for a in db.scalars(select(Atribuicao).where(Atribuicao.escola_id == e.id))
+    }
+    turmas = list(db.scalars(select(Turma).where(Turma.escola_id == e.id).order_by(Turma.nome)))
+
+    def pedido(turma_id, disc, tipo, titulo, dias, status, publicado=False, copias=None):
+        a = atribs[(turma_id, disc)]
+        arq = grava(db, escola_id=e.id, usuario_id=a.professor_id, nome=f"{titulo}.pdf", dados=_pdf_demo(titulo))
+        alunos = db.scalar(select(func.count()).select_from(Matricula).where(Matricula.turma_id == turma_id)) or 0
+        p = PedidoImpressao(
+            escola_id=e.id,
+            autor_id=a.professor_id,
+            atribuicao_id=a.id,
+            arquivo_id=arq.id,
+            tipo=tipo,
+            titulo=titulo,
+            data_aplicacao=hoje + timedelta(days=dias),
+            copias=copias or alunos + 2,
+            copias_calculadas=alunos + 2,
+            status=status,
+            publicado=publicado,
+            enviado_em=None if status == StatusPedido.rascunho else datetime.now(UTC),
+        )
+        db.add(p)
+        db.flush()
+        return p
+
+    pedido(turmas[0].id, "Matemática", TipoPedido.prova, "Prova de Frações", 5, StatusPedido.enviada)
+    pedido(turmas[1].id, "Ciências", TipoPedido.prova, "Prova do Sistema Solar", 9, StatusPedido.aprovada, copias=26)
+    pedido(turmas[2].id, "Português", TipoPedido.prova, "Prova de Interpretação de Texto", 6, StatusPedido.aprovada)
+    pedido(
+        turma_lucas, "História", TipoPedido.trabalho, "Trabalho sobre o Brasil Colônia", 12, StatusPedido.aprovada, True
+    )
+    pedido(turmas[0].id, "Matemática", TipoPedido.lista, "Lista de exercícios de Equações", 3, StatusPedido.rascunho)
+    pedido(turmas[3].id, "Ciências", TipoPedido.prova, "Prova de Ecossistemas", 1, StatusPedido.impressa)
+    ajustes = pedido(turmas[4].id, "Português", TipoPedido.prova, "Prova de Gramática", 8, StatusPedido.ajustes)
+    db.add(
+        PedidoComentario(
+            escola_id=e.id,
+            pedido_id=ajustes.id,
+            autor_id=None,
+            corpo="A questão 4 está sem alternativa correta. Pode revisar?",
+        )
+    )
 
 
 def _seed_m2(db: Session, e: Escola, ano: AnoLetivo, rnd: random.Random) -> tuple[int, int]:
