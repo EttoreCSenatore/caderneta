@@ -18,7 +18,8 @@ responsáveis (adultos), **alunos (crianças e adolescentes)**.
 | A005 | Notas, médias e frequência | `avaliacao`, `nota`, `aula`, `frequencia` (**justificativa de falta em texto livre**) | Menor; texto livre pode revelar saúde | Art. 7º, II e V | Parte do histórico escolar |
 | A006 | Comunicação com famílias | `aviso` e `aviso_leitura` (quem leu e deu ciente), `conversa`/`mensagem`/`conversa_leitura` (**texto livre**), `autorizacao`/`autorizacao_resposta` (quem respondeu, observação) | Menor; texto livre pode conter dados sensíveis | Art. 7º, V; autorização de passeio é manifestação do responsável | Aviso: ano letivo; mensagens: a definir; autorização: ano letivo |
 | A007 | Auditoria e segurança | `auditoria` (ação, entidade, **IP**, detalhes), append-only | Possível | Art. 7º, IX e art. 46 (segurança); art. 37 (registro) | Mínimo 6 meses (Marco Civil); definir prazo |
-| A008 | Envio de e-mail transacional | Endereço, nome, link de convite/redefinição, via SMTP configurável | Menor (conta de aluno) | Art. 7º, V | Sem armazenamento próprio além do envio |
+| A008 | Envio de e-mail transacional e de notificação | Endereço, nome, link de convite/redefinição, via SMTP configurável; e-mail de notificação **sem conteúdo**, agrupado por pessoa | Menor (conta de aluno) | Art. 7º, V | Sem armazenamento próprio além do envio |
+| A009 | Notificações e alertas | `notificacao` (título e texto curto, que pode citar o aluno; flag de e-mail), `alerta_falta`, preferências em `usuario` (e-mail ligado/desligado, horário silencioso) | Menor (aluno citado no texto; contas de aluno só recebem no app) | Art. 7º, V | **Lidas: 90 dias; qualquer: 180 dias** (worker `app.cli notificar`) |
 
 ## 2. Cookies, SDKs e telemetria
 
@@ -34,7 +35,7 @@ responsáveis (adultos), **alunos (crianças e adolescentes)**.
 |---|---|---|---|
 | Hospedagem/banco de dados | Operador | **A definir** | Sem produção ainda. Preferir região no Brasil. Se fora do país, mecanismo de transferência internacional (art. 33) |
 | Provedor de e-mail (SMTP) | Operador | **A definir** | Mailpit só em desenvolvimento |
-| Push web (M3, previsto) | Operador (serviços de push dos navegadores) | Variável | Avaliar antes de implementar: o endpoint de push identifica o dispositivo |
+| Push web (**adiado**, M3) | Operador (serviços de push dos navegadores) | Variável | Avaliar antes de implementar: o endpoint de push identifica o dispositivo |
 | Provedor de armazenamento de arquivos (M5) | Operador | A definir | Provas e anexos |
 
 ## 4. Triagem de alto risco

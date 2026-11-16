@@ -19,6 +19,7 @@ from app.models import (
     Turma,
     VinculoResponsavel,
 )
+from app.notificacoes import familia_dos_alunos, notificar
 from app.routers.avisos import LEITORES, _pode_escrever
 from app.routers.escola import ano_atual
 from app.routers.turmas import turmas_visiveis
@@ -92,6 +93,17 @@ def criar(body: AutorizacaoIn, ctx: Contexto = Depends(com_perfil)):
     )
     ctx.db.add(a)
     ctx.db.flush()
+    familia = familia_dos_alunos(ctx.db, ctx.escola_id, [x.id for x in _alunos_alvo(ctx, a)])
+    notificar(
+        ctx.db,
+        escola_id=ctx.escola_id,
+        usuarios=familia,
+        tipo="autorizacao",
+        titulo="Nova autorização para responder",
+        corpo=a.titulo,
+        url="/autorizacoes",
+        excluir=ctx.usuario.id,
+    )
     registrar(
         ctx.db,
         "autorizacao.criar",

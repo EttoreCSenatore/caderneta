@@ -12,6 +12,7 @@ type Item = {to: string; rotulo: string; icone: keyof typeof Icone};
 const MENU: Record<Papel, Item[]> = {
   admin: [
     {to: '/', rotulo: 'Início', icone: 'inicio'},
+    {to: '/notificacoes', rotulo: 'Notificações', icone: 'notificacoes'},
     {to: '/avisos', rotulo: 'Avisos', icone: 'avisos'},
     {to: '/autorizacoes', rotulo: 'Autorizações', icone: 'autorizacoes'},
     {to: '/mensagens', rotulo: 'Mensagens', icone: 'mensagens'},
@@ -23,6 +24,7 @@ const MENU: Record<Papel, Item[]> = {
   ],
   coordenacao: [
     {to: '/', rotulo: 'Início', icone: 'inicio'},
+    {to: '/notificacoes', rotulo: 'Notificações', icone: 'notificacoes'},
     {to: '/avisos', rotulo: 'Avisos', icone: 'avisos'},
     {to: '/autorizacoes', rotulo: 'Autorizações', icone: 'autorizacoes'},
     {to: '/mensagens', rotulo: 'Mensagens', icone: 'mensagens'},
@@ -33,6 +35,7 @@ const MENU: Record<Papel, Item[]> = {
   ],
   professor: [
     {to: '/', rotulo: 'Início', icone: 'inicio'},
+    {to: '/notificacoes', rotulo: 'Notificações', icone: 'notificacoes'},
     {to: '/avisos', rotulo: 'Avisos', icone: 'avisos'},
     {to: '/autorizacoes', rotulo: 'Autorizações', icone: 'autorizacoes'},
     {to: '/mensagens', rotulo: 'Mensagens', icone: 'mensagens'},
@@ -41,12 +44,14 @@ const MENU: Record<Papel, Item[]> = {
   ],
   responsavel: [
     {to: '/', rotulo: 'Início', icone: 'inicio'},
+    {to: '/notificacoes', rotulo: 'Notificações', icone: 'notificacoes'},
     {to: '/avisos', rotulo: 'Avisos', icone: 'avisos'},
     {to: '/autorizacoes', rotulo: 'Autorizações', icone: 'autorizacoes'},
     {to: '/mensagens', rotulo: 'Mensagens', icone: 'mensagens'},
   ],
   aluno: [
     {to: '/', rotulo: 'Início', icone: 'inicio'},
+    {to: '/notificacoes', rotulo: 'Notificações', icone: 'notificacoes'},
     {to: '/avisos', rotulo: 'Avisos', icone: 'avisos'},
   ],
 };
@@ -81,6 +86,8 @@ export function Layout() {
   const naoLidos = pendentes.data?.nao_lidos ?? 0;
   const msgs = useQuery({queryKey: ['mensagens-pendentes'], queryFn: () => api<{nao_lidas: number}>('/mensagens-pendentes'), refetchInterval: 30000});
   const naoLidas = msgs.data?.nao_lidas ?? 0;
+  const notifs = useQuery({queryKey: ['notificacoes-contagem'], queryFn: () => api<{nao_lidas: number}>('/notificacoes/contagem'), refetchInterval: 30000});
+  const novas = notifs.data?.nao_lidas ?? 0;
   return (
     <div className="app">
       <aside className="lateral">
@@ -91,6 +98,7 @@ export function Layout() {
           {itens.map((i) => (
             <NavLink key={i.to} to={i.to} end={i.to === '/'}>
               {Icone[i.icone]} {i.rotulo}
+              {i.to === '/notificacoes' && novas > 0 && <span className="selo vermelho" aria-label={`${novas} notificações novas`}>{novas}</span>}
               {i.to === '/mensagens' && naoLidas > 0 && <span className="selo vermelho" aria-label={`${naoLidas} conversas novas`}>{naoLidas}</span>}
               {i.to === '/avisos' && naoLidos > 0 && <span className="selo vermelho" aria-label={`${naoLidos} não lidos`}>{naoLidos}</span>}
             </NavLink>
@@ -116,6 +124,10 @@ export function Layout() {
           <div className="marca" style={{padding: 0}}>
             <img src="/icon.svg" alt="" /> Caderneta
           </div>
+          <NavLink to="/notificacoes" className="botao secundario pequeno" aria-label="Notificações" style={{marginLeft: 'auto', marginRight: '0.5rem', position: 'relative'}}>
+            {Icone.notificacoes}
+            {novas > 0 && <span className="selo vermelho" style={{position: 'absolute', top: '-0.5rem', right: '-0.5rem'}}>{novas}</span>}
+          </NavLink>
           <button className="botao secundario pequeno" onClick={() => sair.mutate()} aria-label="Sair">
             {Icone.sair}
           </button>
@@ -128,7 +140,7 @@ export function Layout() {
         </main>
         {itens.length > 1 && (
           <nav className="inferior" aria-label="Menu">
-            {itens.slice(0, 5).map((i) => (
+            {itens.filter((i) => i.to !== '/notificacoes').slice(0, 5).map((i) => (
               <NavLink key={i.to} to={i.to} end={i.to === '/'}>
                 {Icone[i.icone]}
                 {i.rotulo.replace('Minhas turmas', 'Turmas')}

@@ -1,13 +1,14 @@
 """Diário de classe: avaliações, lançamento de notas e chamada."""
 
 import uuid
-from datetime import date
+from datetime import UTC, date, datetime
 from decimal import Decimal
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel, Field, model_validator
 from sqlalchemy import func, select
 
+from app.alertas import notifica_nota_publicada, verifica_faltas
 from app.audit import registrar
 from app.deps import Contexto, equipe_ou_professor, ip_de
 from app.medias import frequencia_pct
@@ -331,7 +332,12 @@ def publica(avaliacao_id: uuid.UUID, dados: PublicarIn, ctx: Contexto = Depends(
         raise HTTPException(403, "Sem permissão para esta ação.")
     if periodo.fechado and ctx.papel.value != "admin":
         raise HTTPException(409, f"O {periodo.nome} está fechado. Peça à direção para corrigir.")
+    era_publicada = av.publicada
     av.publicada = dados.publicada
+    if dados.publicada and not era_publicada and not av.notificada_em:
+        av.notificada_em = datetime.now(UTC)
+        ctx.db.flush()
+        notifica_nota_publicada(ctx.db, ctx.escola_id, av, a.disciplina.nome)
     return avaliacao_out(av)
 
 
@@ -412,6 +418,8 @@ def registra_aula(
     ctx.db.add(aula)
     ctx.db.flush()
     _grava_chamada(ctx, aula, turma, dados.registros)
+    ctx.db.flush()
+    verifica_faltas(ctx.db, ctx.escola_id, [r.matricula_id for r in dados.registros])
     if correcao:
         registrar(
             ctx.db,
@@ -437,6 +445,8 @@ def edita_aula(aula_id: uuid.UUID, dados: AulaIn, request: Request, ctx: Context
     correcao |= pode_escrever(ctx, a, _periodo_da_data(ctx, turma, dados.data), dados.justificativa)
     aula.data, aula.quantidade, aula.conteudo = dados.data, dados.quantidade, dados.conteudo
     _grava_chamada(ctx, aula, turma, dados.registros)
+    ctx.db.flush()
+    verifica_faltas(ctx.db, ctx.escola_id, [r.matricula_id for r in dados.registros])
     if correcao:
         registrar(
             ctx.db,

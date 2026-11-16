@@ -98,10 +98,11 @@ Veja [Notas e médias](./funcionalidades/notas-e-medias.md) e [Frequência](./fu
 - [x] Avisos da escola e de turma, com agendamento (segmento e grupo de turmas ficam para depois)
 - [x] Mensagens individuais escola/professor ↔ família (anexos passam para o M5, com o armazenamento de arquivos)
 - [x] "Ciente" e painel de leitura para quem enviou
-- [ ] Lembrete aos pendentes
+- [x] Lembrete aos pendentes
 - [x] Autorizações digitais (passeio, saída antecipada)
-- [ ] Notificações no app, push (PWA) e e-mail, com horário silencioso
-- [ ] Alertas de faltas (15% e 20%) e de nota nova publicada
+- [x] Notificações no app e e-mail com horário silencioso, e-mail sem conteúdo e só para adultos
+- [ ] Push (PWA): decidir antes como tratar o identificador do aparelho (privacidade)
+- [x] Alertas de faltas (15% e 20%) e de nota nova publicada
 
 ## M8: Conformidade e segurança
 

@@ -15,6 +15,7 @@ from sqlalchemy.dialects.postgresql import insert
 from app.audit import registrar
 from app.deps import Contexto, aluno_visivel, com_perfil, ids_alunos_visiveis
 from app.models import STAFF, Aluno, Atribuicao, Conversa, ConversaLeitura, Matricula, Mensagem, Papel
+from app.notificacoes import familia_dos_alunos, notificar
 from app.routers.escola import ano_atual
 
 router = APIRouter(tags=["mensagens"])
@@ -80,6 +81,22 @@ def _adiciona(ctx: Contexto, c: Conversa, corpo: str) -> Mensagem:
     ctx.db.add(m)
     c.ultima_em, c.ultima_autor_id, c.ultima_previa = agora, ctx.usuario.id, m.corpo[:140]
     _marca_lida(ctx, c, agora)
+    # avisa o outro lado: a família quando escreve a escola, o profissional quando escreve a família
+    if ctx.papel == Papel.responsavel:
+        destino = {c.escola_usuario_id}
+    else:
+        destino = set(familia_dos_alunos(ctx.db, ctx.escola_id, [c.aluno_id]))
+    notificar(
+        ctx.db,
+        escola_id=ctx.escola_id,
+        usuarios=destino,
+        tipo="mensagem",
+        titulo="Nova mensagem",
+        corpo=f"De {ctx.usuario.nome}",
+        url="/mensagens",
+        excluir=ctx.usuario.id,
+        agora=agora,
+    )
     return m
 
 

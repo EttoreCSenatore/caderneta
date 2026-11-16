@@ -62,6 +62,9 @@ senha de demonstração estão documentadas no topo de `api/app/seed.py`. A dire
 
 ```bash
 .venv/bin/python -m app.cli criar-escola "Nome da Escola" direcao@escola.com.br "Nome da Diretora"
+
+# worker de notificações (avisos agendados, e-mails, retenção); em produção, rode a cada minuto
+.venv/bin/python -m app.cli notificar
 ```
 
 Cria a escola e envia o convite do primeiro administrador.

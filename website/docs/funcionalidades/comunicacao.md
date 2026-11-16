@@ -23,7 +23,7 @@ Substitui bilhetes na agenda e grupos de WhatsApp por canais com destinatário c
   (transparência e proteção para ambos os lados).
 - Anexos: PDF e imagens até 10 MB, verificados antes de liberar o download.
 - Agendamento de envio (ex.: publicar segunda às 7h).
-- **Horário silencioso**: notificações push fora do horário definido pela escola esperam até a manhã seguinte.
+- **Horário silencioso**: e-mails fora do horário definido por cada pessoa esperam até o fim do silêncio (padrão 21h às 7h).
 
 ## Notificações
 
@@ -80,7 +80,38 @@ Tela **Mensagens** para equipe, professores e responsáveis. Cada conversa é so
 
 ![Lista de conversas no celular](/img/screenshots/mensagens-lista-celular.png)
 
-Ainda falta no M3: lembrete aos pendentes, push/e-mail com horário silencioso e alertas. Anexos dependem do armazenamento de arquivos (M5).
+## O que já funciona (M3.4: notificações e alertas)
+
+Tela **Notificações** (menu e sino no topo do celular, com contador de novas).
+
+- **No app:** avisos, autorizações, mensagens, nota publicada, alerta de faltas e lembretes geram uma notificação para quem deve vê-la.
+  Quem envia não é notificado do que enviou.
+- **E-mail mínimo:** o e-mail **nunca leva o conteúdo**: só diz "você tem N novidades" e leva ao app. Sai **um por pessoa**, juntando tudo
+  o que acumulou. Contas de **alunos (menores) não recebem e-mail**, só notificação dentro do app (privacidade por padrão, ECA Digital art. 7º).
+- **Horário silencioso:** padrão das 21h às 7h no fuso da escola; cada pessoa ajusta em **Preferências** e pode desligar o e-mail.
+- **Aviso agendado:** a notificação sai na hora marcada, pelo worker.
+- **Lembrar pendentes:** no aviso, "Lembrar pendentes" notifica só quem ainda não leu (ou não deu ciente, se o aviso pede). No máximo
+  **um lembrete a cada 24 horas** por aviso, auditado.
+- **Nota nova:** ao publicar uma avaliação, a família e o aluno com nota lançada são avisados **uma única vez**, sem o valor da nota no texto.
+- **Alertas de faltas:** ao registrar a chamada, quando o aluno chega a **15%** e depois a **20%** de faltas no ano (todas as disciplinas,
+  contando faltas justificadas, como no boletim), a família e a coordenação são avisadas. Cada nível dispara uma só vez por matrícula.
+- **Retenção:** notificações lidas são apagadas após **90 dias** e qualquer notificação após **180**.
+
+### Worker
+
+O e-mail, os avisos agendados e a retenção rodam por um comando, pensado para o cron a cada minuto:
+
+```bash
+.venv/bin/python -m app.cli notificar
+```
+
+![Aviso com lembrete aos pendentes](/img/screenshots/aviso-lembrete.png)
+
+![Notificações e preferências](/img/screenshots/notificacoes.png)
+
+![Notificações no celular](/img/screenshots/notificacoes-celular.png)
+
+Ainda falta no M3: **push (PWA)**, que depende de decisões de privacidade (o endereço de push identifica o aparelho). Anexos dependem do armazenamento de arquivos (M5).
 
 ## Critérios de pronto (M3)
 
@@ -88,4 +119,4 @@ Ainda falta no M3: lembrete aos pendentes, push/e-mail com horário silencioso e
 - [x] Mensagens individuais em conversa (M3.3); anexos ficam para o M5, junto com o armazenamento de arquivos
 - [x] Confirmação "ciente" e painel de leitura para o remetente (M3.1)
 - [x] Autorizações digitais com resposta registrada (M3.2)
-- [ ] Notificações push e e-mail com horário silencioso
+- [x] Notificações no app e e-mail com horário silencioso (M3.4); push fica para depois
