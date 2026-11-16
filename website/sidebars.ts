@@ -25,6 +25,7 @@ const sidebars: SidebarsConfig = {
         'funcionalidades/provas-e-impressao',
         'funcionalidades/historico-e-anotacoes',
         'funcionalidades/desligados',
+        'funcionalidades/offline',
       ],
     },
     {

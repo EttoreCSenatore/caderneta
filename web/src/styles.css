@@ -197,6 +197,7 @@ th .selo { text-transform: none; letter-spacing: 0; margin-top: 4px; }
 input.celula { width: 64px; margin: 0 auto; text-align: center; min-height: 36px; padding: 0.3rem; font-variant-numeric: tabular-nums; }
 input.celula.salvando { border-color: var(--amarelo); }
 input.celula.salvo { border-color: var(--verde); background: var(--verde-claro); }
+input.celula.fila { border-color: var(--amarelo); background: var(--laranja-claro); }
 input.celula.erro { border-color: var(--vermelho); background: var(--vermelho-claro); }
 input.celula[readonly] { background: transparent; border-color: transparent; }
 .nota-baixa { color: var(--vermelho); }

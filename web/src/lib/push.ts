@@ -13,8 +13,9 @@ function chave(base64: string): Uint8Array<ArrayBuffer> {
 /** Este aparelho já está inscrito? (o navegador guarda a inscrição; o servidor só o endereço) */
 export async function inscricaoAtual(): Promise<PushSubscription | null> {
   if (!pushSuportado()) return null;
-  const reg = await navigator.serviceWorker.ready;
-  return reg.pushManager.getSubscription();
+  // getRegistration (e não .ready): sem service worker registrado, .ready nunca resolve e travaria o logout
+  const reg = await navigator.serviceWorker.getRegistration();
+  return reg ? reg.pushManager.getSubscription() : null;
 }
 
 /** Pede permissão (só quando a pessoa clica) e registra este aparelho. */

@@ -1,8 +1,10 @@
 import {NavLink, Outlet} from 'react-router';
-import {useQuery} from '@tanstack/react-query';
+import {useQuery, useQueryClient} from '@tanstack/react-query';
+import {useEffect} from 'react';
 import {api} from '../lib/api';
 import {useMe, usePapel, useSair, useTrocaPerfil} from '../lib/auth';
 import {NOME_PAPEL} from '../lib/formato';
+import {descartar, enviarFila, iniciarOffline, limparOffline, useOffline} from '../lib/offlineApp';
 import type {Papel} from '../lib/tipos';
 import {Icone} from './icones';
 import {Avatar} from './ui';
@@ -93,10 +95,66 @@ function TrocaPerfil() {
   );
 }
 
+function FaixaOffline() {
+  const o = useOffline();
+  const qc = useQueryClient();
+  if (!o.ativo) return null;
+  const pendentes = o.fila.filter((f) => !f.erro);
+  const problemas = o.fila.filter((f) => f.erro);
+  const vencendo = o.diasRestantes !== null && o.diasRestantes <= 2 && o.fila.length > 0;
+  if (o.online && !o.fila.length) return null;
+  return (
+    <div className="pilha" style={{marginBottom: '1rem'}} role="status">
+      {!o.online && (
+        <div className="aviso atencao">
+          Sem conexão. Você pode continuar lançando notas e chamada nas turmas que já abriu: ficam guardadas no aparelho, cifradas, e são enviadas quando a internet voltar.
+        </div>
+      )}
+      {pendentes.length > 0 && (
+        <div className="aviso atencao">
+          <div style={{flex: 1}}>{pendentes.length} alteração(ões) aguardando envio.</div>
+          {o.online && (
+            <button className="botao pequeno" disabled={o.enviando} onClick={() => void enviarFila(qc)}>
+              {o.enviando ? 'Enviando…' : 'Enviar agora'}
+            </button>
+          )}
+        </div>
+      )}
+      {vencendo && (
+        <div className="aviso erro">
+          Conecte-se à internet: em {o.diasRestantes} dia(s) os dados deste aparelho serão apagados, inclusive o que ainda não foi enviado.
+        </div>
+      )}
+      {problemas.map((f) => (
+        <div key={f.id} className="aviso erro">
+          <div style={{flex: 1}}>
+            <strong>{f.rotulo}</strong> não foi aceito: {f.erro}
+          </div>
+          <button className="botao secundario pequeno" onClick={() => void descartar(f.id)}>Descartar</button>
+        </div>
+      ))}
+      <div>
+        <button
+          className="botao secundario pequeno"
+          onClick={() => {
+            if (!o.fila.length || confirm('Há alterações ainda não enviadas. Apagar mesmo assim os dados offline deste aparelho?')) void limparOffline();
+          }}>
+          Apagar dados offline deste aparelho
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export function Layout() {
   const {data: me} = useMe();
   const papel = usePapel();
   const sair = useSair();
+  const qc = useQueryClient();
+  const usuarioId = me?.usuario.id;
+  useEffect(() => {
+    if (usuarioId && papel) void iniciarOffline(usuarioId, papel === 'professor', qc);
+  }, [usuarioId, papel, qc]);
   if (!me || !papel) return null;
   const perfil = me.perfis.find((p) => p.id === me.perfil_ativo)!;
   const itens = MENU[papel];
@@ -159,6 +217,7 @@ export function Layout() {
           <div className="so-movel" style={{marginBottom: '0.75rem'}}>
             <TrocaPerfil />
           </div>
+          <FaixaOffline />
           <Outlet />
         </main>
         {itens.length > 1 && (

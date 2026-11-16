@@ -10,9 +10,12 @@ import './styles.css';
 const qc = new QueryClient({
   defaultOptions: {
     queries: {
-      retry: (n, e) => !(e instanceof ApiError && e.status >= 400 && e.status < 500) && n < 2,
+      // 'always': sem internet a consulta roda mesmo assim e cai no que está guardado no aparelho (modo offline)
+      networkMode: 'always',
+      retry: (n, e) => !(e instanceof ApiError && e.status < 500) && n < 2,
       refetchOnWindowFocus: false,
     },
+    mutations: {networkMode: 'always'},
   },
 });
 
