@@ -730,3 +730,18 @@ class AnotacaoVersao(Base):
     criado_em: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=agora)
 
     editor: Mapped[Usuario | None] = relationship(lazy="joined")
+
+
+class HistoricoEmitido(Base):
+    """Registro de cada histórico escolar emitido (quem, quando) e o código impresso no PDF para conferência."""
+
+    __tablename__ = "historico_emitido"
+    id: Mapped[uuid.UUID] = _id()
+    escola_id: Mapped[uuid.UUID] = _escola()
+    aluno_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("aluno.id", ondelete="CASCADE"), index=True)
+    emitido_por: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("usuario.id", ondelete="SET NULL"))
+    emitido_em: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=agora)
+    codigo: Mapped[str] = mapped_column(String(16), unique=True)
+    resumo_sha256: Mapped[str] = mapped_column(String(64))
+
+    emissor: Mapped[Usuario | None] = relationship(lazy="joined")

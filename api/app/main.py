@@ -17,6 +17,7 @@ from app.routers import (
     downloads,
     escola,
     historico,
+    historico_escolar,
     importacao,
     impressao,
     mensagens,
@@ -68,6 +69,7 @@ def create_app() -> FastAPI:
         downloads,
         historico,
         anotacoes,
+        historico_escolar,
     ):
         app.include_router(r.router, prefix="/api")
     return app

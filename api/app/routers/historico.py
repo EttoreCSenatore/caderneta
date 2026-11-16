@@ -283,15 +283,8 @@ def rematricular(body: RematriculaIn, ctx: Contexto = Depends(equipe)):
 # --- Linha do tempo -------------------------------------------------------------------------------------------
 
 
-@router.get("/alunos/{aluno_id}/linha-do-tempo")
-def linha_do_tempo(aluno_id: uuid.UUID, ctx: Contexto = Depends(com_perfil)):
-    """Um item por ano: turma, resultado e, para quem pode ver notas, médias finais e frequência de cada disciplina.
-
-    Professores veem só turma e resultado (as notas de outros professores não são deles). Família e aluno veem
-    apenas o que foi publicado, como no boletim.
-    """
-    aluno = aluno_visivel(ctx, aluno_id)
-    detalhado = ctx.papel != Papel.professor
+def anos_do_aluno(ctx: Contexto, aluno: Aluno, detalhado: bool = True) -> list[dict]:
+    """Um item por ano letivo em que o aluno esteve matriculado (turma, resultado e, se pedido, médias e frequência)."""
     anos = []
     rows = ctx.db.execute(
         select(Matricula, AnoLetivo)
@@ -321,6 +314,19 @@ def linha_do_tempo(aluno_id: uuid.UUID, ctx: Contexto = Depends(com_perfil)):
                 for d in b.get("disciplinas", [])
             ]
         anos.append(item)
+    return anos
+
+
+@router.get("/alunos/{aluno_id}/linha-do-tempo")
+def linha_do_tempo(aluno_id: uuid.UUID, ctx: Contexto = Depends(com_perfil)):
+    """Um item por ano: turma, resultado e, para quem pode ver notas, médias finais e frequência de cada disciplina.
+
+    Professores veem só turma e resultado (as notas de outros professores não são deles). Família e aluno veem
+    apenas o que foi publicado, como no boletim.
+    """
+    aluno = aluno_visivel(ctx, aluno_id)
+    detalhado = ctx.papel != Papel.professor
+    anos = anos_do_aluno(ctx, aluno, detalhado)
     return {
         "aluno": {"id": aluno.id, "nome": f"{aluno.nome} {aluno.sobrenome}", "situacao": aluno.situacao},
         "anos": anos,

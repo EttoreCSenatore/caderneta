@@ -16,7 +16,7 @@ adicionados às páginas de funcionalidade.
 | **M3: Comunicação** | Avisos gerais e de turma, mensagens individuais, "ciente", autorizações, notificações e e-mail (push pendente) | ✅ Concluído, exceto push |
 | **M4: Calendário** | Calendário escolar e de turma, feriados nacionais, dias sem aula, iCal | ✅ Concluído |
 | **M5: Provas e impressão** | Upload, aprovação, fila de impressão com cópias calculadas, trabalhos | ✅ Concluído |
-| **M6: Histórico e anotações** | Rematrícula em lote, linha do tempo, anotações versionadas, histórico escolar em PDF | 🔄 Em andamento (M6.1 e M6.2 feitos) |
+| **M6: Histórico e anotações** | Rematrícula em lote, linha do tempo, anotações versionadas, histórico escolar em PDF | ✅ Concluído |
 | **M7: App de celular** | PWA refinada, offline para notas e chamada, Capacitor nas lojas | Planejado |
 | **M8: Conformidade e segurança** | Revisão geral de segurança, licenças e adequação à LGPD e à legislação aplicável, com validação jurídica | Planejado |
 | **M9: Piloto** | Deploy de produção, backups, piloto com uma escola (só começa com o M8 aprovado) | Planejado |
@@ -193,14 +193,14 @@ Veja [Provas e impressão](./funcionalidades/provas-e-impressao.md) e a [ADR 000
 - [x] Download por link assinado de 5 minutos, auditado
 - [x] Antivírus (ClamAV, falha fechada), conversão de DOCX para PDF, anexos nas mensagens sem EXIF e retenção dos arquivos
 
-## M6: Histórico e anotações (em andamento)
+## M6: Histórico e anotações (concluído)
 
 Veja [Histórico e anotações](./funcionalidades/historico-e-anotacoes.md).
 
 - [x] M6.1: turmas do novo ano, rematrícula em lote com sugestão do boletim, encerramento do ano, linha do tempo
 - [x] Acesso a alunos e turmas só pelo ano letivo aberto (privacidade na virada)
 - [x] M6.2: anotações versionadas (pedagógica, ocorrência, elogio, reservada) com visibilidade por tipo, auditoria da reservada e eliminação 30 dias após remover
-- [ ] M6.3: histórico escolar em PDF
+- [x] M6.3: histórico escolar em PDF (gerador próprio, [ADR 0005](./decisoes/pdf-proprio.md)), emissão registrada e conferência pública do código
 
 ## Depois do piloto (ideias)
 

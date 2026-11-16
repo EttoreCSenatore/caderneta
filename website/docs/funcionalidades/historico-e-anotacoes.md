@@ -75,11 +75,31 @@ Aba **Anotações** na ficha do aluno (equipe e professores; a conta do aluno n�
 
 ![Anotações no celular, vistas pela família](/img/screenshots/anotacoes-familia-celular.png)
 
-Ainda falta no M6: o histórico escolar em PDF.
+## O que já funciona (M6.3: histórico escolar em PDF)
+
+Na aba **Histórico** da ficha do aluno, a direção e a coordenação têm o botão **Emitir PDF**, para transferência de escola.
+
+- **Conteúdo:** dados da escola, nome do aluno (e nome social), data de nascimento e RA, e **um bloco por ano letivo** com turma, resultado, média final,
+  frequência e resultado de cada disciplina, mais a frequência geral. Traz linhas para **local e data** e **assinatura e carimbo da secretaria**.
+- **O que não entra:** anotações, ocorrências, dados de saúde e CPF. Só o necessário para a transferência.
+- **Quem emite:** só a equipe. Famílias pedem à escola. Assim o documento sai completo, e não só com as notas já publicadas.
+- **Registro e código de conferência:** cada emissão grava quem emitiu e quando (`historico.emitir` na auditoria) e imprime no rodapé um **código** do tipo
+  `06D5-D2C8-50F3`. A ficha lista os históricos já emitidos.
+- **Conferência pública:** em `/verificar/CÓDIGO` qualquer pessoa confirma que o código existe. A resposta mostra **só a escola, a data e as iniciais
+  do aluno**, e nada de notas ou data de nascimento. O código não tem login, mas tem 48 bits aleatórios (não dá para adivinhar).
+- **Validade:** o PDF é **informativo** e diz isso. Vale como histórico oficial depois de **conferido, assinado e carimbado pela secretaria**,
+  como o modelo exigido pela rede de ensino da escola.
+- **Sem biblioteca de PDF:** veja a [ADR 0005](../decisoes/pdf-proprio.md).
+
+![Emissão na ficha do aluno](/img/screenshots/historico-emitir.png)
+
+![Primeira página do PDF](/img/screenshots/historico-escolar-pdf.png)
+
+![Conferência pública do código](/img/screenshots/historico-verificar.png)
 
 ## Critérios de pronto (M6)
 
 - [x] Matrículas por ano letivo e rematrícula em lote
-- [x] Linha do tempo (o histórico escolar em PDF vem no M6.3)
+- [x] Linha do tempo
 - [x] Anotações com tipos, visibilidade e versionamento
 - [x] Anotações pedagógicas visíveis aos novos professores no ano seguinte
