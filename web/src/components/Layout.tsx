@@ -13,6 +13,7 @@ const MENU: Record<Papel, Item[]> = {
   admin: [
     {to: '/', rotulo: 'Início', icone: 'inicio'},
     {to: '/notificacoes', rotulo: 'Notificações', icone: 'notificacoes'},
+    {to: '/calendario', rotulo: 'Calendário', icone: 'calendario'},
     {to: '/avisos', rotulo: 'Avisos', icone: 'avisos'},
     {to: '/autorizacoes', rotulo: 'Autorizações', icone: 'autorizacoes'},
     {to: '/mensagens', rotulo: 'Mensagens', icone: 'mensagens'},
@@ -25,6 +26,7 @@ const MENU: Record<Papel, Item[]> = {
   coordenacao: [
     {to: '/', rotulo: 'Início', icone: 'inicio'},
     {to: '/notificacoes', rotulo: 'Notificações', icone: 'notificacoes'},
+    {to: '/calendario', rotulo: 'Calendário', icone: 'calendario'},
     {to: '/avisos', rotulo: 'Avisos', icone: 'avisos'},
     {to: '/autorizacoes', rotulo: 'Autorizações', icone: 'autorizacoes'},
     {to: '/mensagens', rotulo: 'Mensagens', icone: 'mensagens'},
@@ -36,6 +38,7 @@ const MENU: Record<Papel, Item[]> = {
   professor: [
     {to: '/', rotulo: 'Início', icone: 'inicio'},
     {to: '/notificacoes', rotulo: 'Notificações', icone: 'notificacoes'},
+    {to: '/calendario', rotulo: 'Calendário', icone: 'calendario'},
     {to: '/avisos', rotulo: 'Avisos', icone: 'avisos'},
     {to: '/autorizacoes', rotulo: 'Autorizações', icone: 'autorizacoes'},
     {to: '/mensagens', rotulo: 'Mensagens', icone: 'mensagens'},
@@ -45,6 +48,7 @@ const MENU: Record<Papel, Item[]> = {
   responsavel: [
     {to: '/', rotulo: 'Início', icone: 'inicio'},
     {to: '/notificacoes', rotulo: 'Notificações', icone: 'notificacoes'},
+    {to: '/calendario', rotulo: 'Calendário', icone: 'calendario'},
     {to: '/avisos', rotulo: 'Avisos', icone: 'avisos'},
     {to: '/autorizacoes', rotulo: 'Autorizações', icone: 'autorizacoes'},
     {to: '/mensagens', rotulo: 'Mensagens', icone: 'mensagens'},
@@ -52,9 +56,13 @@ const MENU: Record<Papel, Item[]> = {
   aluno: [
     {to: '/', rotulo: 'Início', icone: 'inicio'},
     {to: '/notificacoes', rotulo: 'Notificações', icone: 'notificacoes'},
+    {to: '/calendario', rotulo: 'Calendário', icone: 'calendario'},
     {to: '/avisos', rotulo: 'Avisos', icone: 'avisos'},
   ],
 };
+
+// Ordem de importância no menu do celular (cabem cinco itens)
+const PRIORIDADE = ['/', '/turmas', '/calendario', '/avisos', '/mensagens', '/autorizacoes', '/alunos', '/equipe', '/importar', '/escola'];
 
 function TrocaPerfil() {
   const {data: me} = useMe();
@@ -82,6 +90,10 @@ export function Layout() {
   if (!me || !papel) return null;
   const perfil = me.perfis.find((p) => p.id === me.perfil_ativo)!;
   const itens = MENU[papel];
+  const inferior = itens
+    .filter((i) => i.to !== '/notificacoes')
+    .sort((x, y) => PRIORIDADE.indexOf(x.to) - PRIORIDADE.indexOf(y.to))
+    .slice(0, 5);
   const pendentes = useQuery({queryKey: ['avisos-pendentes'], queryFn: () => api<{nao_lidos: number}>('/avisos-pendentes'), refetchInterval: 60000});
   const naoLidos = pendentes.data?.nao_lidos ?? 0;
   const msgs = useQuery({queryKey: ['mensagens-pendentes'], queryFn: () => api<{nao_lidas: number}>('/mensagens-pendentes'), refetchInterval: 30000});
@@ -140,7 +152,7 @@ export function Layout() {
         </main>
         {itens.length > 1 && (
           <nav className="inferior" aria-label="Menu">
-            {itens.filter((i) => i.to !== '/notificacoes').slice(0, 5).map((i) => (
+            {inferior.map((i) => (
               <NavLink key={i.to} to={i.to} end={i.to === '/'}>
                 {Icone[i.icone]}
                 {i.rotulo.replace('Minhas turmas', 'Turmas')}

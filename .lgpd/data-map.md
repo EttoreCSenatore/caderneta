@@ -20,6 +20,7 @@ responsáveis (adultos), **alunos (crianças e adolescentes)**.
 | A007 | Auditoria e segurança | `auditoria` (ação, entidade, **IP**, detalhes), append-only | Possível | Art. 7º, IX e art. 46 (segurança); art. 37 (registro) | Mínimo 6 meses (Marco Civil); definir prazo |
 | A008 | Envio de e-mail transacional e de notificação | Endereço, nome, link de convite/redefinição, via SMTP configurável; e-mail de notificação **sem conteúdo**, agrupado por pessoa | Menor (conta de aluno) | Art. 7º, V | Sem armazenamento próprio além do envio |
 | A009 | Notificações e alertas | `notificacao` (título e texto curto, que pode citar o aluno; flag de e-mail), `alerta_falta`, preferências em `usuario` (e-mail ligado/desligado, horário silencioso) | Menor (aluno citado no texto; contas de aluno só recebem no app) | Art. 7º, V | **Lidas: 90 dias; qualquer: 180 dias** (worker `app.cli notificar`) |
+| A010 | Calendário e assinatura iCal | `evento` (título, descrição, datas, turma, autor), `calendario_token` (hash do link secreto por perfil) | Menor indiretamente (turma do aluno); **sem nomes de alunos** nos eventos e no iCal | Art. 7º, V | Eventos: ano letivo e histórico escolar (a definir); link iCal: até ser revogado (definir validade máxima) |
 
 ## 2. Cookies, SDKs e telemetria
 

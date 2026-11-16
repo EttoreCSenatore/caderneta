@@ -10,6 +10,7 @@ from sqlalchemy import func, select
 
 from app.alertas import notifica_nota_publicada, verifica_faltas
 from app.audit import registrar
+from app.calendario import dia_sem_aula
 from app.deps import Contexto, equipe_ou_professor, ip_de
 from app.medias import frequencia_pct
 from app.models import (
@@ -353,6 +354,12 @@ def _periodo_da_data(ctx: Contexto, turma, data: date) -> Periodo:
     return p
 
 
+def _sem_aula(ctx: Contexto, turma, data: date) -> None:
+    ev = dia_sem_aula(ctx.db, ctx.escola_id, turma.id, data)
+    if ev:
+        raise HTTPException(409, f"Dia sem aula: {ev.titulo}. A chamada não pode ser registrada nesta data.")
+
+
 def _grava_chamada(ctx: Contexto, aula: Aula, turma, registros: list[RegistroIn]) -> None:
     validas = {m.id for m, _ in matriculas_da_turma(ctx, turma)}
     atuais = {f.matricula_id: f for f in ctx.db.scalars(select(Frequencia).where(Frequencia.aula_id == aula.id))}
@@ -407,6 +414,7 @@ def registra_aula(
 ):
     a, turma = atribuicao_do_diario(ctx, atribuicao_id)
     periodo = _periodo_da_data(ctx, turma, dados.data)
+    _sem_aula(ctx, turma, dados.data)
     correcao = pode_escrever(ctx, a, periodo, dados.justificativa)
     aula = Aula(
         escola_id=ctx.escola_id,
@@ -443,6 +451,8 @@ def edita_aula(aula_id: uuid.UUID, dados: AulaIn, request: Request, ctx: Context
     a, turma = atribuicao_do_diario(ctx, aula.atribuicao_id)
     correcao = pode_escrever(ctx, a, _periodo_da_data(ctx, turma, aula.data), dados.justificativa)
     correcao |= pode_escrever(ctx, a, _periodo_da_data(ctx, turma, dados.data), dados.justificativa)
+    if dados.data != aula.data:
+        _sem_aula(ctx, turma, dados.data)
     aula.data, aula.quantidade, aula.conteudo = dados.data, dados.quantidade, dados.conteudo
     _grava_chamada(ctx, aula, turma, dados.registros)
     ctx.db.flush()

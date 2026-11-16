@@ -19,6 +19,7 @@ const Avisos = lazy(() => import('./pages/Avisos'));
 const Autorizacoes = lazy(() => import('./pages/Autorizacoes'));
 const Mensagens = lazy(() => import('./pages/Mensagens'));
 const Notificacoes = lazy(() => import('./pages/Notificacoes'));
+const Calendario = lazy(() => import('./pages/Calendario'));
 const Diario = lazy(() => import('./pages/Diario'));
 
 /** Guarda: leva o usuário à etapa pendente (entrar, código, 2FA, perfil) antes do app. */
@@ -56,6 +57,7 @@ export function App() {
           <Route path="autorizacoes" element={<Autorizacoes />} />
           <Route path="mensagens" element={<Mensagens />} />
           <Route path="notificacoes" element={<Notificacoes />} />
+          <Route path="calendario" element={<Calendario />} />
           <Route path="diario/:id" element={<Diario />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>

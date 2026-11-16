@@ -16,6 +16,7 @@ de advogado(a) ou do encarregado.
 | T7 | P2 | ~~E-mail de notificação mínimo, horário silencioso e e-mail só para adultos~~ **feito no M3.4**. Falta o push: o endpoint identifica o aparelho, então decidir base legal, consentimento e retenção antes | M3 |
 | T8 | P2 | Backups cifrados e teste de restauração; backup também precisa respeitar eliminação | M9 |
 | T9 | P3 | Trilha de auditoria com encadeamento de hash (hoje é só append-only por permissão) | M8 |
+| T11 | P2 | Link iCal é credencial sem validade: definir expiração (ex.: 1 ano) e aviso para renovar; revisar cabeçalho `Referrer` e log de acesso ao feed | M8 |
 | T10 | P3 | Registro de consentimento versionado (ledger), se alguma atividade usar consentimento | M8 |
 
 ## Organizacionais e jurídicas
