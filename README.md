@@ -67,6 +67,7 @@ A Caderneta é software livre sob a **[GNU Affero General Public License v3.0 ou
 - Se você **modificar** a Caderneta e oferecê-la como serviço pela internet, precisa disponibilizar o código-fonte da sua versão
   modificada a quem usa o serviço (seção 13 da licença). Isso mantém o software aberto para as escolas que dependem dele.
 - Os componentes de terceiros e suas licenças estão em [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+- A documentação e os screenshots (dados fictícios) estão sob [CC BY-SA 4.0](LICENSE-DOCS.md).
 - Mais detalhes, em português, na [página de licença](https://ettorecsenatore.github.io/caderneta/docs/licenca).
 
 Copyright (C) 2026 @EttoreCSenatore e colaboradores da Caderneta.

@@ -155,10 +155,10 @@ junto com o texto da Lei nº 13.709/2018 e as orientações da ANPD.
 ### Licenças
 
 - [x] **Licença do código: AGPL-3.0-or-later** (decisão do responsável), com `LICENSE`, metadados nos manifestos e a [página de licença](./licenca.md)
-- [ ] Licença da documentação e dos screenshots (ex.: CC BY 4.0) e uso de dados fictícios nas demonstrações
+- [x] **Licença da documentação e dos screenshots: CC BY-SA 4.0**, com dados fictícios nas demonstrações ([`LICENSE-DOCS.md`](https://github.com/EttoreCSenatore/caderneta/blob/main/LICENSE-DOCS.md))
 - [x] **Auditoria de licenças de dependências** (npm e Python): `scripts/auditar-licencas.py` no CI e `THIRD_PARTY_NOTICES.md` gerado
 - [ ] Licenças de fontes, ícones, imagens e logotipo
-- [ ] Marca "Caderneta": checar disponibilidade e registro (INPI)
+- [ ] Marca "Caderneta": registro no INPI é opcional (não será feito agora); só uma consulta rápida e gratuita à base do INPI antes do piloto, trocando o nome se houver conflito
 
 ### Critério de aprovação
 
