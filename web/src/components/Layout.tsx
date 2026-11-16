@@ -1,4 +1,6 @@
 import {NavLink, Outlet} from 'react-router';
+import {useQuery} from '@tanstack/react-query';
+import {api} from '../lib/api';
 import {useMe, usePapel, useSair, useTrocaPerfil} from '../lib/auth';
 import {NOME_PAPEL} from '../lib/formato';
 import type {Papel} from '../lib/tipos';
@@ -10,6 +12,7 @@ type Item = {to: string; rotulo: string; icone: keyof typeof Icone};
 const MENU: Record<Papel, Item[]> = {
   admin: [
     {to: '/', rotulo: 'Início', icone: 'inicio'},
+    {to: '/avisos', rotulo: 'Avisos', icone: 'avisos'},
     {to: '/turmas', rotulo: 'Turmas', icone: 'turmas'},
     {to: '/alunos', rotulo: 'Alunos', icone: 'alunos'},
     {to: '/equipe', rotulo: 'Equipe', icone: 'equipe'},
@@ -18,6 +21,7 @@ const MENU: Record<Papel, Item[]> = {
   ],
   coordenacao: [
     {to: '/', rotulo: 'Início', icone: 'inicio'},
+    {to: '/avisos', rotulo: 'Avisos', icone: 'avisos'},
     {to: '/turmas', rotulo: 'Turmas', icone: 'turmas'},
     {to: '/alunos', rotulo: 'Alunos', icone: 'alunos'},
     {to: '/equipe', rotulo: 'Equipe', icone: 'equipe'},
@@ -25,11 +29,18 @@ const MENU: Record<Papel, Item[]> = {
   ],
   professor: [
     {to: '/', rotulo: 'Início', icone: 'inicio'},
+    {to: '/avisos', rotulo: 'Avisos', icone: 'avisos'},
     {to: '/turmas', rotulo: 'Minhas turmas', icone: 'turmas'},
     {to: '/alunos', rotulo: 'Alunos', icone: 'alunos'},
   ],
-  responsavel: [{to: '/', rotulo: 'Início', icone: 'inicio'}],
-  aluno: [{to: '/', rotulo: 'Início', icone: 'inicio'}],
+  responsavel: [
+    {to: '/', rotulo: 'Início', icone: 'inicio'},
+    {to: '/avisos', rotulo: 'Avisos', icone: 'avisos'},
+  ],
+  aluno: [
+    {to: '/', rotulo: 'Início', icone: 'inicio'},
+    {to: '/avisos', rotulo: 'Avisos', icone: 'avisos'},
+  ],
 };
 
 function TrocaPerfil() {
@@ -58,6 +69,8 @@ export function Layout() {
   if (!me || !papel) return null;
   const perfil = me.perfis.find((p) => p.id === me.perfil_ativo)!;
   const itens = MENU[papel];
+  const pendentes = useQuery({queryKey: ['avisos-pendentes'], queryFn: () => api<{nao_lidos: number}>('/avisos-pendentes'), refetchInterval: 60000});
+  const naoLidos = pendentes.data?.nao_lidos ?? 0;
   return (
     <div className="app">
       <aside className="lateral">
@@ -68,6 +81,7 @@ export function Layout() {
           {itens.map((i) => (
             <NavLink key={i.to} to={i.to} end={i.to === '/'}>
               {Icone[i.icone]} {i.rotulo}
+              {i.to === '/avisos' && naoLidos > 0 && <span className="selo vermelho" aria-label={`${naoLidos} não lidos`}>{naoLidos}</span>}
             </NavLink>
           ))}
         </nav>

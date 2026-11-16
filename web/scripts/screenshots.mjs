@@ -195,6 +195,31 @@ if (roda('m2')) {
   await foto(adm, 'regra-media', true);
 }
 
+if (roda('m3')) {
+  console.log('M3');
+  const adm = await sessao('direcao');
+  await adm.goto(BASE + '/avisos');
+  await adm.click('button:has-text("+ Novo aviso")');
+  await adm.fill('.modal input >> nth=0', 'Reunião de pais do 3º bimestre');
+  await adm.fill('.modal textarea', 'A reunião será na sexta-feira, às 19h, no pátio coberto. Contamos com a presença de todos.');
+  await adm.check('.modal input[type=checkbox]');
+  await foto(adm, 'aviso-novo');
+  await adm.click('.modal button:has-text("Publicar")');
+  await adm.waitForSelector('text=Reunião de pais do 3º bimestre');
+  await foto(adm, 'avisos-equipe');
+
+  const fam = await sessao('familia', {mobile: true});
+  await fam.goto(BASE + '/avisos');
+  await fam.waitForSelector('text=Reunião de pais do 3º bimestre');
+  await foto(fam, 'avisos-familia-celular', true);
+  await fam.click('button:has-text("Estou ciente")');
+  await fam.waitForSelector('text=Ciente');
+
+  await adm.click('button:has-text("Quem leu") >> nth=0');
+  await adm.waitForSelector('text=leram');
+  await foto(adm, 'aviso-painel');
+}
+
 await b.close();
 if (erros.length) {
   console.error('Erros no navegador:\n' + erros.join('\n'));

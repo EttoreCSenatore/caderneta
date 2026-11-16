@@ -392,3 +392,43 @@ class Frequencia(Base):
     matricula_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("matricula.id", ondelete="CASCADE"), index=True)
     status: Mapped[StatusPresenca] = mapped_column(_enum(StatusPresenca, "status_presenca"))
     justificativa: Mapped[str | None] = mapped_column(String(300))
+
+
+# --- M3: comunicação ---------------------------------------------------------------------------------------
+
+
+class EscopoAviso(enum.StrEnum):
+    escola = "escola"
+    turma = "turma"
+
+
+class Aviso(Base):
+    """Comunicado da escola (toda a escola) ou de uma turma. Só aparece a partir de `publicar_em`."""
+
+    __tablename__ = "aviso"
+    id: Mapped[uuid.UUID] = _id()
+    escola_id: Mapped[uuid.UUID] = _escola()
+    autor_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("usuario.id", ondelete="SET NULL"))
+    escopo: Mapped[EscopoAviso] = mapped_column(_enum(EscopoAviso, "escopo_aviso"))
+    turma_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("turma.id", ondelete="CASCADE"), index=True)
+    titulo: Mapped[str] = mapped_column(String(200))
+    corpo: Mapped[str] = mapped_column(String(10000))
+    exige_ciente: Mapped[bool] = mapped_column(Boolean, default=False)
+    publicar_em: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=agora, index=True)
+    arquivado: Mapped[bool] = mapped_column(Boolean, default=False)
+    criado_em: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=agora)
+
+    autor: Mapped[Usuario | None] = relationship(lazy="joined")
+
+
+class AvisoLeitura(Base):
+    """Leitura e "ciente" de um aviso por um usuário (responsável ou aluno)."""
+
+    __tablename__ = "aviso_leitura"
+    __table_args__ = (UniqueConstraint("aviso_id", "usuario_id"),)
+    id: Mapped[uuid.UUID] = _id()
+    escola_id: Mapped[uuid.UUID] = _escola()
+    aviso_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("aviso.id", ondelete="CASCADE"), index=True)
+    usuario_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("usuario.id", ondelete="CASCADE"), index=True)
+    lido_em: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=agora)
+    ciente_em: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
