@@ -118,7 +118,7 @@ junto com o texto da Lei nº 13.709/2018 e as orientações da ANPD.
 O M8 é grande, então corre em etapas, cada uma com seu PR:
 
 1. **M8.1 Segurança do código:** auditoria de dependências (`pip-audit`, `npm audit`, SBOM), revisão de autenticação, autorização e RLS, limites de taxa (T21), cabeçalhos, checklist OWASP Top 10/ASVS e corrigir o que aparecer
-2. **M8.2 Direitos dos titulares (art. 18):** fluxo de pedido de acesso, correção, eliminação e portabilidade, com prazo e registro (T1, T19, T20, T25)
+2. **M8.2 Direitos dos titulares (art. 18) ✅:** fluxo de pedido de acesso, correção, eliminação e portabilidade, com prazo e registro (T1, T19, T20, T25)
 3. **M8.3 Transparência:** política de privacidade e termos em linguagem simples, aceite registrado e versionado, canal do encarregado
 4. **M8.4 Documentos de conformidade:** ROPA e RIPD (rascunhos com a skill `lgpd-audit`, **revisão humana e jurídica obrigatória**), plano de resposta a incidentes
 5. **M8.5 Operação segura:** backups cifrados e teste de restauração, gestão de chaves, logs sem dado pessoal (T14, T24; parte já prevista para o M9)
@@ -141,7 +141,7 @@ O M8 é grande, então corre em etapas, cada uma com seu PR:
 - [ ] **Dados de crianças e adolescentes** (art. 14): melhor interesse, consentimento específico de um responsável quando for a base, aviso em linguagem clara; revisar também o ECA Digital (Lei nº 15.211/2025)
 - [ ] **Dados de saúde** (sensíveis): finalidade restrita, acesso mínimo, criptografia e trilha de acesso, já implementados e a revisar
 - [ ] **RIPD** (Relatório de Impacto à Proteção de Dados), com os riscos e as medidas
-- [ ] **Direitos dos titulares** (art. 18): acesso, correção, anonimização, portabilidade, eliminação e informação sobre compartilhamento, com tela ou fluxo e prazo de resposta
+- [x] **Direitos dos titulares** (art. 18): baixar os próprios dados na hora, pedidos de correção, eliminação, portabilidade e informação com protocolo e prazo de 15 dias, fila para a direção, registro de pedidos recebidos fora do app. Veja [Direitos do titular](./funcionalidades/direitos-do-titular.md). Falta o parecer sobre anotações internas (T19)
 - [x] **Sessão de desligados** (decisão do responsável): área separada para alunos e usuários desligados, com contagem regressiva, **aviso antes** de apagar e opção de adiar. Veja [Desligados](./funcionalidades/desligados.md). Falta confirmar com o jurídico o prazo mínimo de guarda do histórico escolar
 - [ ] **Retenção e eliminação**: prazos por tipo de dado, respeitando a guarda obrigatória do histórico escolar; rotina de descarte
 - [ ] **Encarregado (DPO)** nomeado pela escola, com canal público de contato

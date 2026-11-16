@@ -776,6 +776,37 @@ class HistoricoEmitido(Base):
     emissor: Mapped[Usuario | None] = relationship(lazy="joined")
 
 
+class PedidoTitular(Base):
+    """Pedido de titular de dados (LGPD art. 18). Fica guardado como prova de atendimento (prestação de contas).
+
+    `solicitante_id` é a conta que pediu pelo app; pedidos recebidos por outro canal (balcão, e-mail, telefone)
+    são registrados pela direção com `titular_nome` e `titular_contato`, e a data de recebimento original.
+    """
+
+    __tablename__ = "pedido_titular"
+    id: Mapped[uuid.UUID] = _id()
+    escola_id: Mapped[uuid.UUID] = _escola()
+    solicitante_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("usuario.id", ondelete="SET NULL"), index=True)
+    aluno_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("aluno.id", ondelete="SET NULL"))
+    titular_nome: Mapped[str | None] = mapped_column(String(200))
+    titular_contato: Mapped[str | None] = mapped_column(String(200))
+    tipo: Mapped[str] = mapped_column(
+        String(20)
+    )  # acesso, correcao, eliminacao, portabilidade, informacao, revogacao, outro
+    canal: Mapped[str] = mapped_column(String(20), default="app")  # app, presencial, email, telefone, outro
+    descricao: Mapped[str] = mapped_column(String(2000))
+    status: Mapped[str] = mapped_column(String(20), default="aberto")  # aberto, em_analise, atendido, em_parte, negado
+    recebido_em: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=agora)
+    prazo_em: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    resposta: Mapped[str | None] = mapped_column(String(4000))
+    respondido_por: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("usuario.id", ondelete="SET NULL"))
+    respondido_em: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    criado_em: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=agora)
+
+    solicitante: Mapped[Usuario | None] = relationship(lazy="joined", foreign_keys=[solicitante_id])
+    aluno: Mapped[Aluno | None] = relationship(lazy="joined", foreign_keys=[aluno_id])
+
+
 class PushInscricao(Base):
     """Aparelho que aceitou receber push. Só o endereço do serviço de push é guardado (a mensagem não leva conteúdo)."""
 

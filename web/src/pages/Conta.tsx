@@ -1,4 +1,5 @@
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
+import {Link} from 'react-router';
 import {type FormEvent, useState} from 'react';
 import {Carregando, Erro} from '../components/ui';
 import {api} from '../lib/api';
@@ -97,6 +98,11 @@ export default function Conta() {
         <div className="cartao">
           <h2 style={{marginTop: 0}}>Verificação em duas etapas</h2>
           <p className="suave" style={{margin: 0}}>{me.usuario.totp_ativo ? 'Ativada neste usuário.' : 'Não está ativada. Ela é obrigatória para a equipe da escola.'}</p>
+        </div>
+        <div className="cartao">
+          <h2 style={{marginTop: 0}}>Meus dados e direitos (LGPD)</h2>
+          <p className="suave" style={{margin: '0 0 0.75rem'}}>Baixe uma cópia dos seus dados e faça pedidos à escola: correção, eliminação, portabilidade.</p>
+          <Link className="botao secundario" to="/meus-dados">Abrir Meus dados</Link>
         </div>
         <TrocarSenha />
         <Sessoes />

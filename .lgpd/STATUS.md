@@ -35,7 +35,7 @@ Elas são citadas como a skill as descreve e **precisam ser conferidas no texto 
 - [ ] L6 Retenção, eliminação e anonimização
 - [ ] L7 ECA Digital (aferição de idade, supervisão parental) e consentimento
 - [ ] L8 Criptografia e chaves, trilha de auditoria (parte já implementada)
-- [ ] L9 Direitos dos titulares (DSAR)
+- [x] L9 Direitos dos titulares (DSAR): M8.2, regime padrão (acesso imediato, resposta completa em 15 dias). Falta validar os textos no parecer
 - [ ] L10 Resposta a incidentes
 - [ ] L11 ROPA ⏸ · L12 RIPD ⏸ · L13 Política de privacidade ⏸ (checkpoints com revisão humana e jurídica)
 
