@@ -204,3 +204,10 @@ export type PreviaRematricula = {
   turmas_destino: {id: string; nome: string; serie: string}[];
   alunos: {aluno_id: string; nome: string; situacao_aluno: string; matricula_situacao: string; sugestao: 'aprovado' | 'retido' | 'pendente'; motivo: string | null; turma_destino_sugerida: string | null; ja_rematriculado: boolean}[];
 };
+
+export type TipoAnotacao = 'pedagogica' | 'ocorrencia' | 'elogio' | 'reservada';
+export type Anotacao = {
+  id: string; tipo: TipoAnotacao; corpo: string; autor: string | null; ano: number; criado_em: string; atualizado_em: string;
+  visivel_responsaveis: boolean; editavel: boolean; versao?: number; removida?: boolean;
+};
+export type VersaoAnotacao = {versao: number; tipo: TipoAnotacao; corpo: string; visivel_responsaveis: boolean; editado_por: string | null; criado_em: string};

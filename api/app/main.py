@@ -6,6 +6,7 @@ from fastapi.responses import JSONResponse
 from app.config import get_settings
 from app.routers import (
     alunos,
+    anotacoes,
     auth,
     autorizacoes,
     avisos,
@@ -56,7 +57,18 @@ def create_app() -> FastAPI:
         return {"ok": True}
 
     routers = (auth, convites, escola, turmas, alunos, importacao, diario, boletim)
-    for r in (*routers, avisos, autorizacoes, mensagens, notificacoes, calendario, impressao, downloads, historico):
+    for r in (
+        *routers,
+        avisos,
+        autorizacoes,
+        mensagens,
+        notificacoes,
+        calendario,
+        impressao,
+        downloads,
+        historico,
+        anotacoes,
+    ):
         app.include_router(r.router, prefix="/api")
     return app
 

@@ -682,3 +682,51 @@ class PedidoComentario(Base):
     criado_em: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=agora)
 
     autor: Mapped[Usuario | None] = relationship(lazy="joined")
+
+
+# --- M6.2: anotações sobre o aluno --------------------------------------------------------------------------
+
+
+class TipoAnotacao(enum.StrEnum):
+    pedagogica = "pedagogica"
+    ocorrencia = "ocorrencia"
+    elogio = "elogio"
+    reservada = "reservada"
+
+
+class Anotacao(Base):
+    """Registro sobre o aluno. Cada edição gera uma versão nova; a versão atual fica nesta linha."""
+
+    __tablename__ = "anotacao"
+    id: Mapped[uuid.UUID] = _id()
+    escola_id: Mapped[uuid.UUID] = _escola()
+    aluno_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("aluno.id", ondelete="CASCADE"), index=True)
+    ano_letivo_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("ano_letivo.id", ondelete="RESTRICT"))
+    autor_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("usuario.id", ondelete="SET NULL"), index=True)
+    tipo: Mapped[TipoAnotacao] = mapped_column(_enum(TipoAnotacao, "tipo_anotacao"))
+    visivel_responsaveis: Mapped[bool] = mapped_column(Boolean, default=False)
+    corpo: Mapped[str] = mapped_column(String(5000))
+    versao: Mapped[int] = mapped_column(Integer, default=1)
+    criado_em: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=agora)
+    atualizado_em: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=agora)
+    removida_em: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), index=True)
+    removida_por: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("usuario.id", ondelete="SET NULL"))
+
+    autor: Mapped[Usuario | None] = relationship(lazy="joined", foreign_keys=[autor_id])
+    ano_letivo: Mapped[AnoLetivo] = relationship(lazy="joined")
+
+
+class AnotacaoVersao(Base):
+    __tablename__ = "anotacao_versao"
+    __table_args__ = (UniqueConstraint("anotacao_id", "versao"),)
+    id: Mapped[uuid.UUID] = _id()
+    escola_id: Mapped[uuid.UUID] = _escola()
+    anotacao_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("anotacao.id", ondelete="CASCADE"), index=True)
+    versao: Mapped[int] = mapped_column(Integer)
+    tipo: Mapped[TipoAnotacao] = mapped_column(_enum(TipoAnotacao, "tipo_anotacao"))
+    visivel_responsaveis: Mapped[bool] = mapped_column(Boolean, default=False)
+    corpo: Mapped[str] = mapped_column(String(5000))
+    editado_por: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("usuario.id", ondelete="SET NULL"))
+    criado_em: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=agora)
+
+    editor: Mapped[Usuario | None] = relationship(lazy="joined")

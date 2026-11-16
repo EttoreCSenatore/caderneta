@@ -18,7 +18,9 @@ from sqlalchemy.orm import Session
 from app import arquivos
 from app.audit import registrar
 from app.config import get_settings
-from app.models import Arquivo, MensagemAnexo, PedidoImpressao, StatusPedido
+from app.models import Anotacao, Arquivo, MensagemAnexo, PedidoImpressao, StatusPedido
+
+DIAS_ANOTACAO_REMOVIDA = 30
 
 
 def _apaga_arquivos(db: Session, ids: set[uuid.UUID]) -> None:
@@ -67,6 +69,19 @@ def elimina_vencidos(db: Session, agora: datetime | None = None) -> dict[str, in
         db.delete(x)
     db.flush()
 
+    # anotações removidas: eliminadas de vez (com as versões) depois do prazo de carência
+    for an in list(
+        db.scalars(
+            select(Anotacao).where(
+                Anotacao.removida_em.is_not(None),
+                Anotacao.removida_em < agora - timedelta(days=DIAS_ANOTACAO_REMOVIDA),
+            )
+        ).unique()
+    ):
+        por_escola[(an.escola_id, "anotacoes")] += 1
+        db.delete(an)
+    db.flush()
+
     _apaga_arquivos(db, candidatos)
     for (escola_id, tipo), n in por_escola.items():
         registrar(db, "retencao.eliminar", escola_id=escola_id, usuario_id=None, detalhes={"tipo": tipo, "itens": n})
@@ -74,6 +89,7 @@ def elimina_vencidos(db: Session, agora: datetime | None = None) -> dict[str, in
     return {
         "pedidos": sum(n for (_, t), n in por_escola.items() if t == "pedidos"),
         "anexos": sum(n for (_, t), n in por_escola.items() if t == "anexos"),
+        "anotacoes": sum(n for (_, t), n in por_escola.items() if t == "anotacoes"),
         "orfaos": orfaos,
     }
 

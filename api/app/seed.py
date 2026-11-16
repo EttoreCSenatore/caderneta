@@ -22,6 +22,8 @@ from app.config import get_settings
 from app.models import (
     Aluno,
     AnoLetivo,
+    Anotacao,
+    AnotacaoVersao,
     Atribuicao,
     Aula,
     Avaliacao,
@@ -40,6 +42,7 @@ from app.models import (
     StatusNota,
     StatusPedido,
     StatusPresenca,
+    TipoAnotacao,
     TipoEvento,
     TipoPedido,
     TipoPeriodo,
@@ -281,6 +284,7 @@ def seed() -> None:
         _seed_m4(db, e, turmas)
         _seed_m5(db, e)
         _seed_m6(db, e, ano)
+        _seed_anotacoes(db, e, ano)
         print(f"Escola de demonstração criada com {n} alunos, {len(turmas)} turmas, {avs} avaliações e {aulas} aulas.")
 
 
@@ -338,6 +342,66 @@ def _seed_m6(db: Session, e: Escola, ano: AnoLetivo) -> None:
         db.add(Periodo(escola_id=e.id, ano_letivo_id=novo.id, numero=i, nome=f"{i}º bimestre", inicio=a, fim=b))
 
 
+def _seed_anotacoes(db: Session, e: Escola, ano: AnoLetivo) -> None:
+    """Anotações do aluno demo (Lucas), uma de cada tipo, uma delas com duas versões."""
+    lucas = db.scalar(
+        select(Aluno).where(Aluno.escola_id == e.id, Aluno.nome == "Lucas", Aluno.sobrenome == "Moreira Lima")
+    )
+    dom = "demo.caderneta.dev"
+    por_email = {u.email: u for u in db.scalars(select(Usuario).where(Usuario.email.like(f"%@{dom}")))}
+    assert lucas is not None
+
+    def nota(email, tipo, corpo, visivel=False, versoes=()):
+        a = Anotacao(
+            escola_id=e.id,
+            aluno_id=lucas.id,
+            ano_letivo_id=ano.id,
+            autor_id=por_email[f"{email}@{dom}"].id,
+            tipo=tipo,
+            corpo=corpo,
+            visivel_responsaveis=visivel,
+        )
+        db.add(a)
+        db.flush()
+        antigos = [*versoes, corpo]
+        for i, c in enumerate(antigos, 1):
+            db.add(
+                AnotacaoVersao(
+                    escola_id=e.id,
+                    anotacao_id=a.id,
+                    versao=i,
+                    tipo=tipo,
+                    corpo=c,
+                    visivel_responsaveis=visivel,
+                    editado_por=a.autor_id,
+                )
+            )
+        a.versao = len(antigos)
+
+    nota(
+        "ana.matematica",
+        TipoAnotacao.pedagogica,
+        "Rende muito mais em atividades em dupla. Precisa de apoio com frações.",
+        versoes=("Rende mais em atividades em dupla.",),
+    )
+    nota(
+        "carlos.portugues",
+        TipoAnotacao.elogio,
+        "Ajudou os colegas na leitura em voz alta e organizou o sarau da turma.",
+    )
+    nota(
+        "ana.matematica",
+        TipoAnotacao.ocorrencia,
+        "Chegou atrasado três vezes na última semana. Conversei com ele.",
+        visivel=True,
+    )
+    nota(
+        "coordenacao",
+        TipoAnotacao.reservada,
+        "Família em reorganização; evitar tratar do assunto em sala. Acompanhar com a orientação.",
+    )
+
+
 def _pdf_demo(titulo: str) -> bytes:
     """PDF mínimo e válido, só para a demonstração."""
     texto = titulo.replace("(", "").replace(")", "")
@@ -368,7 +432,7 @@ def _seed_m5(db: Session, e: Escola) -> None:
     turma_lucas = db.scalar(
         select(Matricula.turma_id)
         .join(Aluno, Aluno.id == Matricula.aluno_id)
-        .where(Aluno.nome == "Lucas", Aluno.escola_id == e.id)
+        .where(Aluno.nome == "Lucas", Aluno.sobrenome == "Moreira Lima", Aluno.escola_id == e.id)
     )
     atribs = {
         (a.turma_id, a.disciplina.nome): a for a in db.scalars(select(Atribuicao).where(Atribuicao.escola_id == e.id))

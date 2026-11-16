@@ -50,11 +50,36 @@ Tela **Virada de ano** (direção e coordenação) e aba **Histórico** na ficha
 
 ![Linha do tempo do aluno](/img/screenshots/linha-do-tempo.png)
 
-Ainda faltam no M6: anotações versionadas com visibilidade por tipo e o histórico escolar em PDF.
+## O que já funciona (M6.2: anotações)
+
+Aba **Anotações** na ficha do aluno (equipe e professores; a conta do aluno não vê anotações).
+
+| Tipo | Quem cria | Quem vê |
+|---|---|---|
+| **Pedagógica** | professor do aluno, coordenação, direção | professores do aluno e coordenação; **segue o aluno entre anos** |
+| **Ocorrência** | professor do aluno, coordenação, direção | coordenação, direção e quem registrou; **responsáveis só se marcado** (e são avisados) |
+| **Elogio** | professor do aluno, coordenação, direção | professores, coordenação e responsáveis (avisados) |
+| **Reservada** | só coordenação e direção | só coordenação e direção |
+
+- **Versionamento:** editar cria uma **versão nova** e mantém as anteriores. O autor e a equipe abrem o **histórico de edições**; a família vê só a versão atual.
+- **Passar o bastão:** quem passa a ser professor do aluno no ano seguinte (ano aberto) recebe as **anotações pedagógicas e os elogios de todos os anos**.
+  Ocorrências de outros professores e reservadas continuam fora do alcance dele. Quem deixa de ser professor do aluno não vê mais nada.
+- **Auditoria:** criar, editar e remover ficam registrados, e **cada leitura de anotação reservada pela equipe** gera `anotacao.reservada_lida`.
+- **Remover** esconde a anotação de todos, menos da equipe (que a vê esmaecida), e o worker a **elimina de vez, com as versões, após 30 dias**.
+- **Avisos:** a família é avisada de elogio e de ocorrência visível, sem o texto na notificação; a coordenação é avisada das ocorrências
+  registradas por professores.
+
+![Anotações vistas pela coordenação](/img/screenshots/anotacoes-coordenacao.png)
+
+![Histórico de edições](/img/screenshots/anotacao-historico.png)
+
+![Anotações no celular, vistas pela família](/img/screenshots/anotacoes-familia-celular.png)
+
+Ainda falta no M6: o histórico escolar em PDF.
 
 ## Critérios de pronto (M6)
 
 - [x] Matrículas por ano letivo e rematrícula em lote
 - [x] Linha do tempo (o histórico escolar em PDF vem no M6.3)
-- [ ] Anotações com tipos, visibilidade e versionamento
-- [ ] Anotações e histórico visíveis aos novos professores no ano seguinte
+- [x] Anotações com tipos, visibilidade e versionamento
+- [x] Anotações pedagógicas visíveis aos novos professores no ano seguinte
