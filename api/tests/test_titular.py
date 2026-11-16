@@ -239,7 +239,7 @@ def test_retencao_apaga_pedido_respondido_antigo_e_nunca_o_aberto(mundo, entrar,
         )
     with owner_engine.begin() as db:
         db.execute(
-            text("UPDATE pedido_titular SET respondido_em = now() - interval '400 days' WHERE id = :i"), {"i": ids[0]}
+            text("UPDATE pedido_titular SET respondido_em = now() - interval '1900 days' WHERE id = :i"), {"i": ids[0]}
         )
         db.execute(
             text("UPDATE pedido_titular SET recebido_em = now() - interval '900 days' WHERE id = :i"), {"i": ids[2]}
