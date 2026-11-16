@@ -17,7 +17,7 @@ adicionados às páginas de funcionalidade.
 | **M4: Calendário** | Calendário escolar e de turma, feriados nacionais, dias sem aula, iCal | ✅ Concluído |
 | **M5: Provas e impressão** | Upload, aprovação, fila de impressão com cópias calculadas, trabalhos | ✅ Concluído |
 | **M6: Histórico e anotações** | Rematrícula em lote, linha do tempo, anotações versionadas, histórico escolar em PDF | ✅ Concluído |
-| **M7: App de celular** | PWA refinada, offline para notas e chamada, Capacitor nas lojas | Planejado |
+| **M7: App de celular** | PWA refinada, offline para notas e chamada, Capacitor nas lojas | Em andamento |
 | **M8: Conformidade e segurança** | Revisão geral de segurança, licenças e adequação à LGPD e à legislação aplicável, com validação jurídica | Planejado |
 | **M9: Piloto** | Deploy de produção, backups, piloto com uma escola (só começa com o M8 aprovado) | Planejado |
 
@@ -202,6 +202,16 @@ Veja [Histórico e anotações](./funcionalidades/historico-e-anotacoes.md).
 - [x] Acesso a alunos e turmas só pelo ano letivo aberto (privacidade na virada)
 - [x] M6.2: anotações versionadas (pedagógica, ocorrência, elogio, reservada) com visibilidade por tipo, auditoria da reservada e eliminação 30 dias após remover
 - [x] M6.3: histórico escolar em PDF (gerador próprio, [ADR 0005](./decisoes/pdf-proprio.md)), emissão registrada e conferência pública do código
+
+## M7: App de celular (em andamento)
+
+Veja [Modo offline](./funcionalidades/offline.md).
+
+- [x] M7.1: notas e chamada offline para professores, com cofre cifrado no aparelho, fila de envio, apagamento ao sair e após 7 dias sem conexão
+- [x] Correção: sair da conta travava quando o navegador não tinha service worker
+- [ ] Testar o modo offline com a PWA instalada em aparelhos reais (abrir o app sem internet)
+- [ ] Polimento da PWA no celular (instalação, ícones, telas pequenas)
+- [ ] Capacitor: empacotar para as lojas (decidir se vale a pena antes do piloto)
 
 ## Retenção de desligados (feito antes do M8)
 

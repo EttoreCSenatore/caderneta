@@ -3,12 +3,13 @@ import {type KeyboardEvent, useEffect, useRef, useState} from 'react';
 import {Link, useParams, useSearchParams} from 'react-router';
 import {Abas, Carregando, Erro, Modal, Vazio} from '../components/ui';
 import {api} from '../lib/api';
+import {enfileira, guardaAulas, guardaDiario, lerAulas, lerDiario, offlineAtivo, semConexao, useOffline} from '../lib/offlineApp';
 import {usePapel} from '../lib/auth';
 import {dataBR, leNota, numBR} from '../lib/formato';
 import type {Aula, Avaliacao, Diario as TDiario, MediaAluno, StatusNota, StatusPresenca} from '../lib/tipos';
 
 type Aba = 'notas' | 'chamada';
-type EstadoCelula = 'salvando' | 'salvo' | 'erro' | undefined;
+type EstadoCelula = 'salvando' | 'salvo' | 'erro' | 'fila' | undefined;
 
 function textoNota(n?: {valor: number | null; status: StatusNota}): string {
   if (!n) return '';
@@ -118,7 +119,23 @@ function GradeNotas({d, editavel, justificativa}: {d: TDiario; editavel: boolean
       d.notas[av.id] = {...d.notas[av.id], [mid]: lido};
       setMedias((m) => ({...m, ...r.medias}));
       setEstado((s) => ({...s, [k]: 'salvo'}));
-    } catch {
+    } catch (e) {
+      if (!justificativa && semConexao(e) && offlineAtivo()) {
+        // sem internet: guarda cifrado no aparelho e envia quando voltar
+        await enfileira({
+          tipo: 'nota',
+          metodo: 'PUT',
+          caminho: `/avaliacoes/${av.id}/notas`,
+          corpo: {notas: [{matricula_id: mid, ...lido}], justificativa: null},
+          rotulo: `Nota em ${av.nome}`,
+          atribuicaoId: d.atribuicao.id,
+          periodoId: d.periodo_id,
+          celula: k,
+        });
+        d.notas[av.id] = {...d.notas[av.id], [mid]: lido};
+        setEstado((s) => ({...s, [k]: 'fila'}));
+        return;
+      }
       setEstado((s) => ({...s, [k]: 'erro'}));
     }
   }
@@ -236,7 +253,18 @@ function hojeISO() {
 function Chamada({d, editavel, justificativa}: {d: TDiario; editavel: boolean; justificativa: string | null}) {
   const qc = useQueryClient();
   const periodo = d.periodos.find((p) => p.id === d.periodo_id)!;
-  const aulas = useQuery({queryKey: ['aulas', d.atribuicao.id, d.periodo_id], queryFn: () => api<Aula[]>(`/atribuicoes/${d.atribuicao.id}/aulas?periodo_id=${d.periodo_id}`)});
+  const aulas = useQuery({queryKey: ['aulas', d.atribuicao.id, d.periodo_id], queryFn: async () => {
+    try {
+      const l = await api<Aula[]>(`/atribuicoes/${d.atribuicao.id}/aulas?periodo_id=${d.periodo_id}`);
+      void guardaAulas(d.atribuicao.id, d.periodo_id, l);
+      return l;
+    } catch (e) {
+      const guardadas = semConexao(e) ? await lerAulas(d.atribuicao.id, d.periodo_id) : null;
+      if (guardadas) return guardadas;
+      throw e;
+    }
+  }});
+  const pendentes = useOffline().fila.filter((f) => f.tipo === 'aula' && f.atribuicaoId === d.atribuicao.id && f.periodoId === d.periodo_id);
   const [edit, setEdit] = useState<null | {id?: string; data: string; quantidade: number; conteudo: string; status: Record<string, StatusPresenca>}>(null);
   const hoje = hojeISO();
   const maxData = periodo.fim < hoje ? periodo.fim : hoje;
@@ -252,7 +280,13 @@ function Chamada({d, editavel, justificativa}: {d: TDiario; editavel: boolean; j
         registros: Object.entries(edit!.status).filter(([, s]) => s !== 'presente').map(([matricula_id, status]) => ({matricula_id, status})),
         justificativa,
       };
-      return edit!.id ? api(`/aulas/${edit!.id}`, {method: 'PUT', body}) : api(`/atribuicoes/${d.atribuicao.id}/aulas`, {body});
+      const metodo = edit!.id ? 'PUT' : 'POST';
+      const caminho = edit!.id ? `/aulas/${edit!.id}` : `/atribuicoes/${d.atribuicao.id}/aulas`;
+      return api(caminho, {method: metodo, body}).catch(async (e) => {
+        if (justificativa || !semConexao(e) || !offlineAtivo()) throw e;
+        // sem internet: guarda cifrado no aparelho e envia quando voltar
+        await enfileira({tipo: 'aula', metodo, caminho, corpo: body, rotulo: `Chamada de ${dataBR(body.data)}`, atribuicaoId: d.atribuicao.id, periodoId: d.periodo_id});
+      });
     },
     onSuccess: () => {
       setEdit(null);
@@ -314,6 +348,12 @@ function Chamada({d, editavel, justificativa}: {d: TDiario; editavel: boolean; j
         <p className="suave" style={{margin: 0}}>{d.aulas_dadas} aula(s) dadas no {periodo.nome.toLowerCase()}.</p>
         {pode && <button className="botao" onClick={abrirNova}>+ Registrar chamada</button>}
       </div>
+      {pendentes.map((f) => (
+        <div key={f.id} className="item cartao">
+          <strong>{f.rotulo}</strong>
+          <span className="selo">{f.erro ? 'com problema' : 'aguardando envio'}</span>
+        </div>
+      ))}
       {aulas.isLoading && <Carregando />}
       {aulas.data?.length === 0 && <Vazio>Nenhuma aula registrada neste período.</Vazio>}
       {!!aulas.data?.length && (
@@ -346,7 +386,17 @@ export default function Diario() {
   const [textoJust, setTextoJust] = useState('');
   const q = useQuery({
     queryKey: ['diario', id, periodoId],
-    queryFn: () => api<TDiario>(`/atribuicoes/${id}/diario${periodoId ? `?periodo_id=${periodoId}` : ''}`),
+    queryFn: async () => {
+      try {
+        const d = await api<TDiario>(`/atribuicoes/${id}/diario${periodoId ? `?periodo_id=${periodoId}` : ''}`);
+        void guardaDiario(d, periodoId);
+        return d;
+      } catch (e) {
+        const guardado = semConexao(e) ? await lerDiario(id, periodoId) : null;
+        if (guardado) return guardado;
+        throw e;
+      }
+    },
   });
   if (q.isLoading) return <Carregando />;
   if (q.error) return <Erro erro={q.error} />;

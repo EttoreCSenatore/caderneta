@@ -1,4 +1,5 @@
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
+import {limparOffline} from './offlineApp';
 import {desativarPush} from './push';
 import {api, ApiError} from './api';
 import type {Me, Papel} from './tipos';
@@ -28,7 +29,10 @@ export function useTrocaPerfil() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (perfil_id: string) => api('/auth/perfil', {body: {perfil_id}}),
-    onSuccess: () => qc.resetQueries(),
+    onSuccess: async () => {
+      await limparOffline(); // outro perfil, outros dados: começa do zero
+      await qc.resetQueries();
+    },
   });
 }
 
@@ -37,7 +41,8 @@ export function useSair() {
   return useMutation({
     // ao sair, este aparelho deixa de receber push (podem ser vários usuários no mesmo navegador)
     mutationFn: async () => {
-      await desativarPush().catch(() => undefined);
+      await limparOffline(); // nada de dados da escola fica no aparelho depois de sair
+      await Promise.race([desativarPush().catch(() => undefined), new Promise((ok) => setTimeout(ok, 3000))]);
       return api('/auth/logout', {method: 'POST'});
     },
     onSettled: () => {

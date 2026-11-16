@@ -1,9 +1,10 @@
 import {useQueryClient} from '@tanstack/react-query';
-import {type FormEvent, type ReactNode, useState} from 'react';
+import {type FormEvent, type ReactNode, useEffect, useState} from 'react';
 import {Link, Navigate, useLocation, useNavigate, useSearchParams} from 'react-router';
 import {Erro} from '../components/ui';
 import {api} from '../lib/api';
 import {useMe} from '../lib/auth';
+import {limparSeSemPendencias} from '../lib/offlineApp';
 
 export function TelaEntrada({titulo, children}: {titulo?: string; children: ReactNode}) {
   return (
@@ -21,6 +22,7 @@ export function TelaEntrada({titulo, children}: {titulo?: string; children: Reac
 
 export function Entrar() {
   const {data: me} = useMe();
+  useEffect(() => void limparSeSemPendencias(), []);
   const qc = useQueryClient();
   const nav = useNavigate();
   const de = (useLocation().state as {de?: string} | null)?.de ?? '/';
