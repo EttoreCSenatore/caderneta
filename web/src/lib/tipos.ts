@@ -142,3 +142,12 @@ export type Boletim = {
     situacao: 'cursando' | 'abaixo_da_media' | 'aprovado' | 'reprovado' | 'reprovado_por_falta';
   }[];
 };
+
+export type Aviso = {
+  id: string; titulo: string; corpo: string; escopo: 'escola' | 'turma'; turma_id: string | null; turma: string | null;
+  autor: string | null; exige_ciente: boolean; publicar_em: string; arquivado: boolean; lido: boolean; ciente: boolean;
+};
+export type PainelAviso = {
+  aviso: Aviso; total: number; lidos: number; cientes: number;
+  destinatarios: {usuario_id: string; nome: string; lido_em: string | null; ciente_em: string | null}[];
+};
