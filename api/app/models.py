@@ -22,6 +22,7 @@ from sqlalchemy import (
     String,
     Time,
     UniqueConstraint,
+    event,
 )
 from sqlalchemy.dialects.postgresql import CITEXT, JSONB
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
@@ -83,6 +84,10 @@ class Escola(Base):
     aprovacao_impressao: Mapped[bool] = mapped_column(Boolean, default=True)
     reserva_copias: Mapped[int] = mapped_column(Integer, default=2)
     antecedencia_dias: Mapped[int] = mapped_column(Integer, default=2)
+    # Desligados: dias até apagar dados complementares (alunos) ou anonimizar (usuários), e dias de aviso antes
+    retencao_aluno_desligado_dias: Mapped[int] = mapped_column(Integer, default=365)
+    retencao_usuario_desligado_dias: Mapped[int] = mapped_column(Integer, default=180)
+    aviso_desligados_dias: Mapped[int] = mapped_column(Integer, default=30)
     criado_em: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=agora)
 
 
@@ -102,6 +107,7 @@ class Usuario(Base):
     notif_email: Mapped[bool] = mapped_column(Boolean, default=True)
     silencio_inicio: Mapped[time] = mapped_column(Time, default=time(21, 0))
     silencio_fim: Mapped[time] = mapped_column(Time, default=time(7, 0))
+    anonimizado_em: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     criado_em: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=agora)
 
 
@@ -113,6 +119,9 @@ class UsuarioPerfil(Base):
     escola_id: Mapped[uuid.UUID] = _escola()
     papel: Mapped[Papel] = mapped_column(_enum(Papel, "papel"))
     ativo: Mapped[bool] = mapped_column(Boolean, default=True)
+    desligado_em: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    anonimizacao_adiada_ate: Mapped[date | None] = mapped_column(Date)
+    anonimizacao_avisada_em: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     criado_em: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=agora)
 
     usuario: Mapped[Usuario] = relationship(lazy="joined")
@@ -218,6 +227,10 @@ class Aluno(Base):
     cpf: Mapped[str | None] = mapped_column(String(14))
     situacao: Mapped[SituacaoAluno] = mapped_column(_enum(SituacaoAluno, "situacao_aluno"), default="ativo")
     usuario_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("usuario.id", ondelete="SET NULL"))
+    desligado_em: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    purga_adiada_ate: Mapped[date | None] = mapped_column(Date)
+    purga_avisada_em: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    purgado_em: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     criado_em: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=agora)
 
 
@@ -758,3 +771,25 @@ class PushInscricao(Base):
     endpoint: Mapped[str] = mapped_column(String(1000), unique=True)
     criado_em: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=agora)
     ultimo_uso_em: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=agora)
+
+
+# --- Desligamento: a data que dispara a contagem de retenção é mantida por eventos do ORM ---------------------------
+
+
+@event.listens_for(Aluno.situacao, "set")
+def _aluno_situacao(aluno: "Aluno", valor, antigo, _iniciador) -> None:
+    """Sair de 'ativo' inicia a contagem; voltar a 'ativo' cancela a contagem e qualquer adiamento ou aviso."""
+    if str(getattr(valor, "value", valor)) == "ativo":
+        aluno.desligado_em = aluno.purga_adiada_ate = aluno.purga_avisada_em = None
+    elif aluno.desligado_em is None:  # passar de transferido para arquivado não reinicia a contagem
+        aluno.desligado_em = agora()
+        aluno.purga_avisada_em = None
+
+
+@event.listens_for(UsuarioPerfil.ativo, "set")
+def _perfil_ativo(perfil: "UsuarioPerfil", valor, antigo, _iniciador) -> None:
+    if valor:
+        perfil.desligado_em = perfil.anonimizacao_adiada_ate = perfil.anonimizacao_avisada_em = None
+    elif perfil.desligado_em is None:
+        perfil.desligado_em = agora()
+        perfil.anonimizacao_avisada_em = None

@@ -23,6 +23,7 @@ const Calendario = lazy(() => import('./pages/Calendario'));
 const Provas = lazy(() => import('./pages/Provas'));
 const Virada = lazy(() => import('./pages/Virada'));
 const Verificar = lazy(() => import('./pages/Verificar'));
+const Desligados = lazy(() => import('./pages/Desligados'));
 const Diario = lazy(() => import('./pages/Diario'));
 
 /** Guarda: leva o usuário à etapa pendente (entrar, código, 2FA, perfil) antes do app. */
@@ -65,6 +66,7 @@ export function App() {
           <Route path="calendario" element={<Calendario />} />
           <Route path="provas" element={<Provas />} />
           <Route path="virada" element={<Virada />} />
+          <Route path="desligados" element={<Desligados />} />
           <Route path="diario/:id" element={<Diario />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>

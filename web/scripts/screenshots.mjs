@@ -471,6 +471,20 @@ if (roda('m6-pdf')) {
   await foto(pp, 'historico-verificar');
 }
 
+if (roda('desligados')) {
+  console.log('Desligados');
+  const adm = await sessao('direcao');
+  await adm.goto(BASE + '/desligados');
+  await adm.waitForSelector('text=Avisado');
+  await foto(adm, 'desligados-alunos', true);
+  await adm.click('role=tab[name^="Usuários"]');
+  await adm.waitForSelector('text=Ex-usuário');
+  await foto(adm, 'desligados-usuarios', true);
+  await adm.click('button:has-text("Prazos")');
+  await adm.waitForSelector('text=Avisar a direção');
+  await foto(adm, 'desligados-prazos');
+}
+
 await b.close();
 if (erros.length) {
   console.error('Erros no navegador:\n' + erros.join('\n'));

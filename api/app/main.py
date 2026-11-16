@@ -13,6 +13,7 @@ from app.routers import (
     boletim,
     calendario,
     convites,
+    desligados,
     diario,
     downloads,
     escola,
@@ -72,6 +73,7 @@ def create_app() -> FastAPI:
         anotacoes,
         historico_escolar,
         push,
+        desligados,
     ):
         app.include_router(r.router, prefix="/api")
     return app

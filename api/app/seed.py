@@ -39,6 +39,7 @@ from app.models import (
     PedidoComentario,
     PedidoImpressao,
     Periodo,
+    SituacaoAluno,
     StatusNota,
     StatusPedido,
     StatusPresenca,
@@ -285,6 +286,7 @@ def seed() -> None:
         _seed_m5(db, e)
         _seed_m6(db, e, ano)
         _seed_anotacoes(db, e, ano)
+        _seed_desligados(db, e)
         print(f"Escola de demonstração criada com {n} alunos, {len(turmas)} turmas, {avs} avaliações e {aulas} aulas.")
 
 
@@ -400,6 +402,47 @@ def _seed_anotacoes(db: Session, e: Escola, ano: AnoLetivo) -> None:
         TipoAnotacao.reservada,
         "Família em reorganização; evitar tratar do assunto em sala. Acompanhar com a orientação.",
     )
+
+
+def _seed_desligados(db: Session, e: Escola) -> None:
+    """Alunos e usuários desligados em vários pontos da contagem, para demonstrar a sessão Desligados."""
+    agora = datetime.now(UTC)
+    ultima = db.scalars(select(Turma).where(Turma.escola_id == e.id).order_by(Turma.nome.desc())).first()
+    alunos = list(
+        db.scalars(
+            select(Aluno)
+            .join(Matricula, Matricula.aluno_id == Aluno.id)
+            .where(Matricula.turma_id == ultima.id)
+            .limit(4)
+        )
+    )
+    situacoes = [SituacaoAluno.transferido, SituacaoAluno.concluiu, SituacaoAluno.arquivado, SituacaoAluno.transferido]
+    dias = [120, 345, 400, 200]
+    for a, sit, d in zip(alunos, situacoes, dias, strict=False):
+        a.situacao = sit
+        a.desligado_em = agora - timedelta(days=d)
+    if len(alunos) == 4:
+        alunos[1].purga_avisada_em = agora - timedelta(days=5)
+        alunos[2].purga_avisada_em, alunos[2].purgado_em = agora - timedelta(days=65), agora - timedelta(days=35)
+        alunos[3].purga_adiada_ate = agora.date() + timedelta(days=250)
+    dom = "demo.caderneta.dev"
+    for email, nome, dias_fora, avisada in (
+        (f"roberto.artes@{dom}", "Roberto Alves", 100, None),
+        (f"marina.geografia@{dom}", "Marina Souza", 175, 3),
+    ):
+        u = _usuario(db, e, email, nome, Papel.professor)
+        db.flush()
+        p = db.scalar(select(UsuarioPerfil).where(UsuarioPerfil.usuario_id == u.id, UsuarioPerfil.escola_id == e.id))
+        p.ativo = False
+        p.desligado_em = agora - timedelta(days=dias_fora)
+        if avisada:
+            p.anonimizacao_avisada_em = agora - timedelta(days=avisada)
+    antigo = _usuario(db, e, f"removido-demo@{dom}", "Ex-usuário", Papel.professor)
+    db.flush()
+    p = db.scalar(select(UsuarioPerfil).where(UsuarioPerfil.usuario_id == antigo.id, UsuarioPerfil.escola_id == e.id))
+    p.ativo = False
+    p.desligado_em = agora - timedelta(days=260)
+    antigo.ativo, antigo.anonimizado_em = False, agora - timedelta(days=80)
 
 
 def _pdf_demo(titulo: str) -> bytes:

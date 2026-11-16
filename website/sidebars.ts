@@ -24,6 +24,7 @@ const sidebars: SidebarsConfig = {
         'funcionalidades/calendario',
         'funcionalidades/provas-e-impressao',
         'funcionalidades/historico-e-anotacoes',
+        'funcionalidades/desligados',
       ],
     },
     {

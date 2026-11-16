@@ -65,5 +65,6 @@ export const NOME_SITUACAO: Record<string, string> = {
   retido: 'Retido',
   transferido: 'Transferido',
   concluido: 'Concluiu',
+  arquivado: 'Arquivado',
   concluiu: 'Concluiu',
 };
