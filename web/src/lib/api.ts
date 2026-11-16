@@ -41,10 +41,15 @@ export async function api<T = unknown>(path: string, opts: Opts = {}): Promise<T
 }
 
 /** Baixa um arquivo gerado pela API (POST) e entrega ao navegador como download. */
-export async function baixarArquivo(path: string, nomePadrao: string): Promise<void> {
+export async function baixarArquivo(path: string, nomePadrao: string, corpo?: unknown): Promise<void> {
   let res: Response;
   try {
-    res = await fetch(`/api${path}`, {method: 'POST', headers: {'X-Caderneta': '1'}, credentials: 'same-origin'});
+    res = await fetch(`/api${path}`, {
+      method: 'POST',
+      headers: corpo === undefined ? {'X-Caderneta': '1'} : {'X-Caderneta': '1', 'Content-Type': 'application/json'},
+      body: corpo === undefined ? undefined : JSON.stringify(corpo),
+      credentials: 'same-origin',
+    });
   } catch {
     throw new ApiError(0, 'Sem conexão. Verifique a internet.');
   }

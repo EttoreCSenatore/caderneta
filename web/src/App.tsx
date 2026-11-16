@@ -24,6 +24,8 @@ const Provas = lazy(() => import('./pages/Provas'));
 const Virada = lazy(() => import('./pages/Virada'));
 const Verificar = lazy(() => import('./pages/Verificar'));
 const Desligados = lazy(() => import('./pages/Desligados'));
+const MeusDados = lazy(() => import('./pages/MeusDados'));
+const PedidosTitulares = lazy(() => import('./pages/PedidosTitulares'));
 const Conta = lazy(() => import('./pages/Conta'));
 const Diario = lazy(() => import('./pages/Diario'));
 
@@ -70,6 +72,8 @@ export function App() {
           <Route path="desligados" element={<Desligados />} />
           <Route path="diario/:id" element={<Diario />} />
           <Route path="conta" element={<Conta />} />
+          <Route path="meus-dados" element={<MeusDados />} />
+          <Route path="pedidos-titulares" element={<PedidosTitulares />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>

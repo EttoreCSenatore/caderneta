@@ -216,3 +216,21 @@ export type ItemDesligado = {status: 'aguardando' | 'avisado' | 'concluido'; pre
 export type AlunoDesligado = ItemDesligado & {id: string; nome: string; situacao: string};
 export type UsuarioDesligado = ItemDesligado & {perfil_id: string; nome: string; papel: Papel};
 export type Desligados = {config: {retencao_aluno_dias: number; retencao_usuario_dias: number; aviso_dias: number}; alunos: AlunoDesligado[]; usuarios: UsuarioDesligado[]};
+
+// --- M8.2: direitos do titular ---
+export type PedidoTitular = {
+  id: string;
+  tipo: string;
+  canal: string;
+  descricao: string;
+  status: 'aberto' | 'em_analise' | 'atendido' | 'em_parte' | 'negado';
+  recebido_em: string;
+  prazo_em: string;
+  vencido: boolean;
+  dias_restantes: number | null;
+  resposta: string | null;
+  respondido_em: string | null;
+  aluno: string | null;
+  aluno_id: string | null;
+  solicitante?: {nome: string | null; email: string | null} | null;
+};
