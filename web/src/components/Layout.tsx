@@ -1,6 +1,6 @@
 import {NavLink, Outlet} from 'react-router';
 import {useQuery, useQueryClient} from '@tanstack/react-query';
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import {api} from '../lib/api';
 import {useMe, usePapel, useSair, useTrocaPerfil} from '../lib/auth';
 import {NOME_PAPEL} from '../lib/formato';
@@ -95,6 +95,59 @@ function TrocaPerfil() {
   );
 }
 
+type EventoInstalar = Event & {prompt: () => Promise<void>; userChoice: Promise<{outcome: string}>};
+const lerDispensa = () => {
+  try {
+    return localStorage.getItem('caderneta-instalar') === 'nao';
+  } catch {
+    return false;
+  }
+};
+
+/** Convite para instalar o app (Chrome/Edge/Android) ou instrução de "Adicionar à tela inicial" (iPhone). */
+function InstalarApp() {
+  const [evento, setEvento] = useState<EventoInstalar | null>(null);
+  const [dispensado, setDispensado] = useState(lerDispensa);
+  useEffect(() => {
+    const pega = (e: Event) => {
+      e.preventDefault();
+      setEvento(e as EventoInstalar);
+    };
+    window.addEventListener('beforeinstallprompt', pega);
+    return () => window.removeEventListener('beforeinstallprompt', pega);
+  }, []);
+  const instalado = window.matchMedia('(display-mode: standalone)').matches || (navigator as Navigator & {standalone?: boolean}).standalone === true;
+  const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  if (instalado || dispensado || (!evento && !ios)) return null;
+  const dispensa = () => {
+    setDispensado(true);
+    try {
+      localStorage.setItem('caderneta-instalar', 'nao');
+    } catch {
+      /* sem armazenamento: o convite volta na próxima visita */
+    }
+  };
+  return (
+    <div className="aviso" role="region" aria-label="Instalar o app" style={{marginBottom: '1rem', background: 'var(--azul-claro)', border: '1px solid var(--borda)'}}>
+      <div style={{flex: 1}}>
+        <strong>Instale a Caderneta no celular.</strong>{' '}
+        {evento ? 'Abre como um app, direto da tela inicial.' : 'No Safari, toque em Compartilhar e depois em “Adicionar à Tela de Início”.'}
+      </div>
+      {evento && (
+        <button
+          className="botao pequeno"
+          onClick={() => {
+            void evento.prompt();
+            setEvento(null);
+          }}>
+          Instalar
+        </button>
+      )}
+      <button className="botao secundario pequeno" onClick={dispensa}>Agora não</button>
+    </div>
+  );
+}
+
 function FaixaOffline() {
   const o = useOffline();
   const qc = useQueryClient();
@@ -107,7 +160,7 @@ function FaixaOffline() {
     <div className="pilha" style={{marginBottom: '1rem'}} role="status">
       {!o.online && (
         <div className="aviso atencao">
-          Sem conexão. Você pode continuar lançando notas e chamada nas turmas que já abriu: ficam guardadas no aparelho, cifradas, e são enviadas quando a internet voltar.
+          Sem conexão. O que você lançar fica guardado no aparelho (cifrado) e é enviado quando a internet voltar.
         </div>
       )}
       {pendentes.length > 0 && (
@@ -153,7 +206,7 @@ export function Layout() {
   const qc = useQueryClient();
   const usuarioId = me?.usuario.id;
   useEffect(() => {
-    if (usuarioId && papel) void iniciarOffline(usuarioId, papel === 'professor', qc);
+    if (me && papel) void iniciarOffline(me, papel === 'professor', qc);
   }, [usuarioId, papel, qc]);
   if (!me || !papel) return null;
   const perfil = me.perfis.find((p) => p.id === me.perfil_ativo)!;
@@ -217,6 +270,7 @@ export function Layout() {
           <div className="so-movel" style={{marginBottom: '0.75rem'}}>
             <TrocaPerfil />
           </div>
+          <InstalarApp />
           <FaixaOffline />
           <Outlet />
         </main>

@@ -14,13 +14,14 @@ e é enviado sozinho quando a internet volta.
 - Uma faixa avisa **"Sem conexão"** e quantas alterações aguardam envio. Quando a internet volta, o envio é automático (também há o botão **Enviar agora**).
 - Se o servidor recusar algo (por exemplo, o período foi fechado enquanto você estava offline), a alteração **não é perdida em silêncio**: fica na faixa com o motivo, e você decide descartar.
 - A média aparece atualizada só depois do envio, porque o cálculo é feito no servidor.
+- **Abrir o app sem internet:** com o app instalado, ele abre mesmo sem conexão e mostra o início, as turmas e os diários que estavam guardados (a identidade e a lista de turmas também ficam no cofre cifrado). Telas que dependem do servidor, como avisos e mensagens, mostram "Sem conexão".
 - Não duplica: se a resposta do servidor se perder depois de gravar uma chamada, o app confere antes de reenviar.
 
 ## O que fica no aparelho (privacidade)
 
 | Fica | **Não** fica |
 |---|---|
-| Nomes dos alunos das suas turmas, notas, médias, faltas e chamadas | Ficha de saúde, anotações, mensagens, anexos, CPF, contatos, autorizações |
+| Nomes dos alunos das suas turmas, notas, médias, faltas e chamadas; seu nome e e-mail, os perfis, as turmas e o nome da escola | Ficha de saúde, anotações, mensagens, anexos, CPF, contatos, autorizações |
 | O que você lançou e ainda não foi enviado | Dados de turmas que não são suas |
 
 - **Cifrado:** tudo é cifrado (AES-GCM) no navegador, com uma chave que o próprio navegador guarda sem permitir exportá-la.
@@ -33,7 +34,19 @@ e é enviado sozinho quando a internet volta.
 A cifra protege contra quem copia os arquivos do navegador, não contra quem usa o app com o celular desbloqueado. Use bloqueio de tela, e **saia da conta em aparelhos compartilhados**.
 :::
 
+## Instalar o app
+
+- **Android e computador (Chrome, Edge):** aparece um convite **Instalar** no topo do app. Depois de instalado, abre como app, com atalhos para Avisos, Calendário e Notificações.
+- **iPhone (Safari):** toque em Compartilhar e depois em **Adicionar à Tela de Início**. O app mostra essa dica.
+- Atualizações são aplicadas sozinhas; o que está na fila de envio não se perde.
+- O convite pode ser dispensado com **Agora não**.
+
+## Teste automático
+
+`npm run e2e:offline` (em `web/`) abre um Chromium de verdade, entra como a professora da demonstração, **corta a internet** e confere que o app abre e mostra o diário guardado.
+Precisa da API com o seed e do build servido (`npx vite preview`).
+
 ## O que ainda falta no M7
 
-- Instalação como app nas lojas (Capacitor) e polimento da experiência no celular.
-- Testar em aparelhos reais com a PWA instalada (abrir o app já sem internet).
+- Testar em aparelhos reais (Android e iPhone) com a PWA instalada, incluindo o push.
+- Capacitor: empacotar para as lojas, se valer a pena antes do piloto.
