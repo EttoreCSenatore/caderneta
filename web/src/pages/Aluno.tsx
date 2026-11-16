@@ -3,6 +3,7 @@ import {useState} from 'react';
 import {Link, useParams} from 'react-router';
 import {Boletim} from '../components/Boletim';
 import {Icone} from '../components/icones';
+import {Anotacoes} from '../components/Anotacoes';
 import {LinhaDoTempo} from '../components/LinhaDoTempo';
 import {Abas, Avatar, Carregando, Erro, LinkConvite, Modal, Vazio} from '../components/ui';
 import {api} from '../lib/api';
@@ -10,7 +11,7 @@ import {useMe, usePapel} from '../lib/auth';
 import {dataBR, idade, NOME_VINCULO, nomeExibicao} from '../lib/formato';
 import type {Aluno as TAluno, Saude, TurmaResumo, Vinculo} from '../lib/tipos';
 
-type Aba = 'boletim' | 'dados' | 'familia' | 'saude' | 'historico';
+type Aba = 'boletim' | 'dados' | 'familia' | 'saude' | 'historico' | 'anotacoes';
 
 const CAMPOS_SAUDE: [keyof Saude, string][] = [
   ['alergias', 'Alergias'],
@@ -245,6 +246,7 @@ export default function Aluno() {
   if (a.responsaveis) abas.push(['familia', 'Família']);
   if (papel !== 'aluno') abas.push(['saude', 'Saúde']);
   abas.push(['historico', 'Histórico']);
+  if (papel !== 'aluno') abas.push(['anotacoes', 'Anotações']);
   const voltar = papel === 'admin' || papel === 'coordenacao' || papel === 'professor' ? '/alunos' : '/';
   return (
     <>
@@ -267,6 +269,7 @@ export default function Aluno() {
       {aba === 'familia' && <Familia aluno={a} />}
       {aba === 'saude' && <SaudeAba aluno={a} />}
       {aba === 'historico' && <LinhaDoTempo alunoId={a.id} />}
+      {aba === 'anotacoes' && <Anotacoes alunoId={a.id} />}
     </>
   );
 }

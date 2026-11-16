@@ -23,6 +23,9 @@ de advogado(a) ou do encarregado.
 | T16 | P1 | **Anexos de mensagens podem trazer dado de saúde** (atestado, laudo). Definir a base legal (consentimento do responsável, art. 11, I) e avisar na tela; considerar prazo menor para esses anexos | M8 |
 | T17 | P2 | Conversor LibreOffice: rodar em contêiner sem rede e sem privilégios no servidor de produção | M8 |
 | T15 | P3 | Orientar professores a **não escrever nomes de alunos** em provas adaptadas e no campo de observações | M8 |
+| T18 | P1 | **Retenção das anotações mantidas**: hoje só a removida some (30 dias). Definir prazo (ex.: enquanto matriculado + N anos) e aplicar às versões antigas | M8 |
+| T19 | P1 | [jurídico] **Direito de acesso (art. 18, II)**: o responsável tem direito aos dados do filho, o que inclui anotações pedagógicas e reservadas, hoje invisíveis a ele. Definir o procedimento (pedido ao encarregado) e eventuais limites legítimos | M8 |
+| T20 | P2 | **Correção e eliminação x versões**: pedido de correção/eliminação precisa apagar também as versões antigas (hoje só a remoção pela autora/equipe). Incluir no DSAR (T1) | M8 |
 | T10 | P3 | Registro de consentimento versionado (ledger), se alguma atividade usar consentimento | M8 |
 
 ## Organizacionais e jurídicas

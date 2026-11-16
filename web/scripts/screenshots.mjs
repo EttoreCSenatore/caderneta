@@ -414,6 +414,33 @@ if (roda('m6')) {
   }
 }
 
+if (roda('m6-anotacoes')) {
+  console.log('M6 anotações');
+  const adm = await sessao('coordenacao');
+  await adm.goto(BASE + '/alunos');
+  await adm.fill('input[type=search]', 'Lucas Moreira');
+  await adm.waitForTimeout(600);
+  await adm.click('text=Lucas Moreira Lima');
+  await adm.waitForURL(/\/alunos\//);
+  await adm.click('role=tab[name="Anotações"]');
+  await adm.waitForSelector('text=Rende muito mais');
+  await foto(adm, 'anotacoes-coordenacao', true);
+  await adm.click('article button:has-text("Histórico") >> nth=0');
+  await adm.waitForSelector('text=Versão 1');
+  await foto(adm, 'anotacao-historico');
+  await adm.keyboard.press('Escape');
+  await adm.click('button:has-text("+ Nova anotação")');
+  await adm.selectOption('.modal select >> nth=0', 'ocorrencia');
+  await foto(adm, 'anotacao-nova');
+
+  const fam = await sessao('familia', {mobile: true});
+  await fam.click('text=Lucas Moreira Lima');
+  await fam.waitForURL(/\/alunos\//);
+  await fam.click('role=tab[name="Anotações"]');
+  await fam.waitForSelector('text=Ajudou os colegas');
+  await foto(fam, 'anotacoes-familia-celular', true);
+}
+
 await b.close();
 if (erros.length) {
   console.error('Erros no navegador:\n' + erros.join('\n'));
