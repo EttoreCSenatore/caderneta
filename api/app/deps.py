@@ -17,6 +17,7 @@ from app.db import get_db, set_ctx
 from app.models import (
     STAFF,
     Aluno,
+    AnoLetivo,
     Atribuicao,
     Matricula,
     Papel,
@@ -132,11 +133,13 @@ def ids_alunos_visiveis(ctx: Contexto):
     if papel in STAFF:
         return None
     if papel == Papel.professor:
+        # só os alunos das turmas do ano letivo aberto: quem lecionou em anos anteriores deixa de ver o aluno
         return (
             select(Matricula.aluno_id)
             .join(Turma, Turma.id == Matricula.turma_id)
+            .join(AnoLetivo, AnoLetivo.id == Turma.ano_letivo_id)
             .join(Atribuicao, Atribuicao.turma_id == Turma.id)
-            .where(Atribuicao.professor_id == ctx.usuario.id)
+            .where(Atribuicao.professor_id == ctx.usuario.id, AnoLetivo.aberto.is_(True))
         )
     if papel == Papel.responsavel:
         return select(VinculoResponsavel.aluno_id).where(

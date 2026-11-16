@@ -16,7 +16,7 @@ adicionados às páginas de funcionalidade.
 | **M3: Comunicação** | Avisos gerais e de turma, mensagens individuais, "ciente", autorizações, notificações e e-mail (push pendente) | ✅ Concluído, exceto push |
 | **M4: Calendário** | Calendário escolar e de turma, feriados nacionais, dias sem aula, iCal | ✅ Concluído |
 | **M5: Provas e impressão** | Upload, aprovação, fila de impressão com cópias calculadas, trabalhos | ✅ Concluído |
-| **M6: Histórico e anotações** | Rematrícula em lote, linha do tempo, anotações versionadas, histórico escolar em PDF | Planejado |
+| **M6: Histórico e anotações** | Rematrícula em lote, linha do tempo, anotações versionadas, histórico escolar em PDF | 🔄 Em andamento (M6.1 feito) |
 | **M7: App de celular** | PWA refinada, offline para notas e chamada, Capacitor nas lojas | Planejado |
 | **M8: Conformidade e segurança** | Revisão geral de segurança, licenças e adequação à LGPD e à legislação aplicável, com validação jurídica | Planejado |
 | **M9: Piloto** | Deploy de produção, backups, piloto com uma escola (só começa com o M8 aprovado) | Planejado |
@@ -192,6 +192,15 @@ Veja [Provas e impressão](./funcionalidades/provas-e-impressao.md) e a [ADR 000
 - [x] Sigilo até a publicação; prova só publicada a partir da aplicação; trabalhos no calendário
 - [x] Download por link assinado de 5 minutos, auditado
 - [x] Antivírus (ClamAV, falha fechada), conversão de DOCX para PDF, anexos nas mensagens sem EXIF e retenção dos arquivos
+
+## M6: Histórico e anotações (em andamento)
+
+Veja [Histórico e anotações](./funcionalidades/historico-e-anotacoes.md).
+
+- [x] M6.1: turmas do novo ano, rematrícula em lote com sugestão do boletim, encerramento do ano, linha do tempo
+- [x] Acesso a alunos e turmas só pelo ano letivo aberto (privacidade na virada)
+- [ ] M6.2: anotações versionadas (pedagógica, ocorrência, elogio, reservada) com visibilidade por tipo
+- [ ] M6.3: histórico escolar em PDF
 
 ## Depois do piloto (ideias)
 

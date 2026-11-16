@@ -280,6 +280,7 @@ def seed() -> None:
         avs, aulas = _seed_m2(db, e, ano, rnd)
         _seed_m4(db, e, turmas)
         _seed_m5(db, e)
+        _seed_m6(db, e, ano)
         print(f"Escola de demonstração criada com {n} alunos, {len(turmas)} turmas, {avs} avaliações e {aulas} aulas.")
 
 
@@ -319,6 +320,22 @@ def _seed_m4(db: Session, e: Escola, turmas: list[Turma]) -> None:
     ev(TipoEvento.prazo, "Entrega do trabalho de História", 6, turma=turmas[0])
     ev(TipoEvento.evento, "Passeio ao Museu da Língua Portuguesa", 11, turma=turmas[0])
     ev(TipoEvento.prazo, "Entrega do projeto de Ciências", 8, turma=turmas[1])
+
+
+def _seed_m6(db: Session, e: Escola, ano: AnoLetivo) -> None:
+    """Ano seguinte já criado (planejado), para demonstrar a virada de ano."""
+    novo = AnoLetivo(
+        escola_id=e.id,
+        ano=ano.ano + 1,
+        tipo_periodo=TipoPeriodo.bimestre,
+        inicio=date(ano.ano + 1, 2, 1),
+        fim=date(ano.ano + 1, 12, 10),
+        aberto=False,
+    )
+    db.add(novo)
+    db.flush()
+    for i, (a, b) in enumerate(divide_periodos(novo.inicio, novo.fim, 4), 1):
+        db.add(Periodo(escola_id=e.id, ano_letivo_id=novo.id, numero=i, nome=f"{i}º bimestre", inicio=a, fim=b))
 
 
 def _pdf_demo(titulo: str) -> bytes:

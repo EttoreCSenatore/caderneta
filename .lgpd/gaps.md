@@ -42,6 +42,8 @@ de advogado(a) ou do encarregado.
 
 ## Já atendido
 
+- Minimização na virada de ano: professores de anos encerrados deixam de ver os alunos (M6.1)
+
 - Isolamento por escola com RLS e testes de isolamento
 - Ficha de saúde cifrada (AES-GCM) com leitura auditada
 - Senhas com hash, 2FA obrigatório para a equipe, tokens guardados só como hash

@@ -385,6 +385,35 @@ if (roda('m5-anexos')) {
   await foto(fam, 'mensagem-anexo');
 }
 
+if (roda('m6')) {
+  console.log('M6');
+  const adm = await sessao('direcao');
+  const H = {'X-Caderneta': '1'};
+  const anos = await (await adm.request.get(BASE + '/api/anos-letivos')).json();
+  const atual = anos.find((a) => a.aberto);
+  for (const p of atual.periodos.filter((x) => !x.fechado)) await adm.request.post(BASE + `/api/periodos/${p.id}/fechamento`, {headers: H, data: {fechado: true}});
+  await adm.goto(BASE + '/virada');
+  await adm.click('button:has-text("Criar turmas a partir de")');
+  await adm.waitForSelector('text=Turmas criadas');
+  const turmas = await (await adm.request.get(BASE + '/api/turmas')).json();
+  const t7 = turmas.find((t) => t.nome === '7º A');
+  await adm.selectOption('label:has-text("Turma de") select', t7.id);
+  await adm.waitForSelector('text=Sugestão do boletim');
+  await foto(adm, 'virada-rematricula', true);
+
+  // rematricula o Lucas para mostrar a linha do tempo com dois anos
+  const previa = await (await adm.request.get(BASE + `/api/rematricula/previa?turma_id=${t7.id}&ano_destino_id=${anos.find((a) => !a.aberto).id}`)).json();
+  const lucas = previa.alunos.find((a) => a.nome.startsWith('Lucas'));
+  const l8 = previa.turmas_destino.find((t) => t.nome === '8º A');
+  if (lucas && l8) {
+    await adm.request.post(BASE + '/api/rematricula', {headers: H, data: {turma_origem_id: t7.id, ano_destino_id: previa.ano_destino.id, itens: [{aluno_id: lucas.aluno_id, resultado: 'aprovado', turma_destino_id: l8.id}]}});
+    await adm.goto(BASE + `/alunos/${lucas.aluno_id}`);
+    await adm.click('role=tab[name="Histórico"]');
+    await adm.waitForSelector('text=Média final');
+    await foto(adm, 'linha-do-tempo', true);
+  }
+}
+
 await b.close();
 if (erros.length) {
   console.error('Erros no navegador:\n' + erros.join('\n'));
