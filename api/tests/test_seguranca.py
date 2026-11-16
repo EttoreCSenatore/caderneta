@@ -17,6 +17,7 @@ PUBLICAS = {
     ("POST", "/convites/abrir/{token}"),
     ("GET", "/calendario/ical/{token}.ics"),  # link secreto
     ("GET", "/historico/verificar/{codigo}"),  # conferência pública do histórico
+    ("GET", "/legal/{doc}"),  # política de privacidade e termos: texto público
 }
 
 

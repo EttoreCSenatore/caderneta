@@ -4,7 +4,7 @@ import uuid
 from datetime import date, timedelta
 
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, EmailStr, Field, model_validator
 from sqlalchemy import func, select
 from sqlalchemy.exc import IntegrityError
 
@@ -33,6 +33,8 @@ class EscolaIn(BaseModel):
     nome: str | None = Field(default=None, min_length=2, max_length=200)
     cidade: str | None = Field(default=None, max_length=120)
     uf: str | None = Field(default=None, min_length=2, max_length=2)
+    encarregado_nome: str | None = Field(default=None, max_length=200)
+    encarregado_email: EmailStr | None = None
 
 
 class AnoIn(BaseModel):
@@ -96,7 +98,14 @@ def ver_escola(ctx: Contexto = Depends(com_perfil)):
     e = ctx.db.get(Escola, ctx.escola_id)
     assert e is not None
     ano = ano_atual(ctx)
-    out = {"id": e.id, "nome": e.nome, "cidade": e.cidade, "uf": e.uf, "ano_atual": ano_out(ano) if ano else None}
+    out = {
+        "id": e.id,
+        "nome": e.nome,
+        "cidade": e.cidade,
+        "uf": e.uf,
+        "ano_atual": ano_out(ano) if ano else None,
+        "encarregado": {"nome": e.encarregado_nome, "email": e.encarregado_email},
+    }
     if ctx.papel in STAFF:
         out["resumo"] = {
             "alunos": ctx.db.scalar(select(func.count()).select_from(Aluno).where(Aluno.situacao == "ativo")),

@@ -15,6 +15,10 @@ export function TelaEntrada({titulo, children}: {titulo?: string; children: Reac
         </div>
         {titulo && <h1 style={{textAlign: 'center', fontSize: '1.2rem'}}>{titulo}</h1>}
         {children}
+        <div className="rodape-legal suave">
+          <Link to="/privacidade">Política de privacidade</Link>
+          <Link to="/termos">Termos de uso</Link>
+        </div>
       </div>
     </div>
   );

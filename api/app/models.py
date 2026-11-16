@@ -81,6 +81,9 @@ class Escola(Base):
     cidade: Mapped[str | None] = mapped_column(String(120))
     uf: Mapped[str | None] = mapped_column(String(2))
     fuso: Mapped[str] = mapped_column(String(64), default="America/Sao_Paulo")
+    # Encarregado de proteção de dados (DPO): canal público para dúvidas e pedidos (LGPD art. 41)
+    encarregado_nome: Mapped[str | None] = mapped_column(String(200))
+    encarregado_email: Mapped[str | None] = mapped_column(String(200))
     # Provas e impressão (M5)
     aprovacao_impressao: Mapped[bool] = mapped_column(Boolean, default=True)
     reserva_copias: Mapped[int] = mapped_column(Integer, default=2)
@@ -774,6 +777,18 @@ class HistoricoEmitido(Base):
     resumo_sha256: Mapped[str] = mapped_column(String(64))
 
     emissor: Mapped[Usuario | None] = relationship(lazy="joined")
+
+
+class AceiteLegal(Base):
+    """Ciência registrada da política de privacidade ou dos termos, por versão do texto (prova de que a pessoa leu)."""
+
+    __tablename__ = "aceite_legal"
+    __table_args__ = (UniqueConstraint("usuario_id", "doc", "versao"),)
+    id: Mapped[uuid.UUID] = _id()
+    usuario_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("usuario.id", ondelete="CASCADE"), index=True)
+    doc: Mapped[str] = mapped_column(String(20))  # privacidade | termos
+    versao: Mapped[str] = mapped_column(String(40))
+    aceito_em: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=agora)
 
 
 class PedidoTitular(Base):
