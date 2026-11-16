@@ -37,6 +37,20 @@ class Settings(BaseSettings):
     storage_dir: str = "./storage"
     max_arquivo_bytes: int = 15_000_000
     link_validade_s: int = 300
+    max_anexo_bytes: int = 10_000_000  # anexos de mensagens (PDF e imagens)
+    # Antivírus (ClamAV via clamd). Falha fechada: se ligado e fora do ar, o upload é recusado. Obrigatório em produção.
+    antivirus: str = "off"  # off | clamav
+    clamav_host: str = "127.0.0.1"
+    clamav_port: int = 3310
+    clamav_timeout_s: int = 20
+    # Conversão de DOCX para PDF (LibreOffice sem interface, isolado por upload).
+    conversor: str = "off"  # off | libreoffice
+    soffice_path: str = "soffice"
+    conversor_timeout_s: int = 60
+    # Retenção (dias). Aplicada pelo worker `app.cli notificar`.
+    retencao_pedidos_dias: int = 365  # depois da data de aplicação
+    retencao_rascunho_dias: int = 90  # rascunho parado
+    retencao_anexos_dias: int = 365  # anexos de mensagens
 
 
 @lru_cache
@@ -45,6 +59,8 @@ def get_settings() -> Settings:
     if s.env == "prod":
         if not s.data_key:
             raise RuntimeError("CADERNETA_DATA_KEY é obrigatória em produção")
+        if s.antivirus != "clamav":
+            raise RuntimeError("CADERNETA_ANTIVIRUS=clamav é obrigatório em produção")
         if not s.storage_dir.startswith("/"):
             raise RuntimeError("CADERNETA_STORAGE_DIR deve ser um caminho absoluto em produção")
         if not s.cookie_secure:

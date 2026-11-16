@@ -510,6 +510,19 @@ class Mensagem(Base):
     autor: Mapped[Usuario | None] = relationship(lazy="joined")
 
 
+class MensagemAnexo(Base):
+    """Anexo de uma mensagem (PDF ou imagem sem metadados). Some junto com o arquivo na retenção."""
+
+    __tablename__ = "mensagem_anexo"
+    id: Mapped[uuid.UUID] = _id()
+    escola_id: Mapped[uuid.UUID] = _escola()
+    mensagem_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("mensagem.id", ondelete="CASCADE"), index=True)
+    arquivo_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("arquivo.id", ondelete="CASCADE"), index=True)
+    criado_em: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=agora, index=True)
+
+    arquivo: Mapped["Arquivo"] = relationship(lazy="joined")
+
+
 class ConversaLeitura(Base):
     """Até quando cada usuário leu a conversa (base do contador de não lidas)."""
 

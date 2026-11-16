@@ -13,6 +13,7 @@ from app.routers import (
     calendario,
     convites,
     diario,
+    downloads,
     escola,
     importacao,
     impressao,
@@ -54,7 +55,7 @@ def create_app() -> FastAPI:
         return {"ok": True}
 
     routers = (auth, convites, escola, turmas, alunos, importacao, diario, boletim)
-    for r in (*routers, avisos, autorizacoes, mensagens, notificacoes, calendario, impressao):
+    for r in (*routers, avisos, autorizacoes, mensagens, notificacoes, calendario, impressao, downloads):
         app.include_router(r.router, prefix="/api")
     return app
 

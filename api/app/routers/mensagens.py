@@ -7,16 +7,29 @@ auditado) e os responsáveis do aluno sem vínculo restrito. A conta do aluno n�
 import uuid
 from datetime import UTC, datetime
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
 from pydantic import BaseModel, Field
 from sqlalchemy import func, select
 from sqlalchemy.dialects.postgresql import insert
 
+from app import arquivos
 from app.audit import registrar
+from app.config import get_settings
 from app.deps import Contexto, aluno_visivel, com_perfil, ids_alunos_visiveis
-from app.models import STAFF, Aluno, Atribuicao, Conversa, ConversaLeitura, Matricula, Mensagem, Papel
+from app.models import (
+    STAFF,
+    Aluno,
+    Atribuicao,
+    Conversa,
+    ConversaLeitura,
+    Matricula,
+    Mensagem,
+    MensagemAnexo,
+    Papel,
+)
 from app.notificacoes import familia_dos_alunos, notificar
 from app.routers.escola import ano_atual
+from app.security import assina_link
 
 router = APIRouter(tags=["mensagens"])
 
@@ -73,13 +86,14 @@ def _resumo(c: Conversa, nao_lida: bool) -> dict:
     }
 
 
-def _adiciona(ctx: Contexto, c: Conversa, corpo: str) -> Mensagem:
+def _adiciona(ctx: Contexto, c: Conversa, corpo: str, anexos: int = 0) -> Mensagem:
     agora = datetime.now(UTC)
     m = Mensagem(
         escola_id=ctx.escola_id, conversa_id=c.id, autor_id=ctx.usuario.id, corpo=corpo.strip(), criado_em=agora
     )
     ctx.db.add(m)
-    c.ultima_em, c.ultima_autor_id, c.ultima_previa = agora, ctx.usuario.id, m.corpo[:140]
+    c.ultima_em, c.ultima_autor_id = agora, ctx.usuario.id
+    c.ultima_previa = m.corpo[:140] or f"({anexos} anexo{'s' if anexos > 1 else ''})"
     _marca_lida(ctx, c, agora)
     # avisa o outro lado: a família quando escreve a escola, o profissional quando escreve a família
     if ctx.papel == Papel.responsavel:
@@ -173,6 +187,9 @@ def abrir(conversa_id: uuid.UUID, ctx: Contexto = Depends(com_perfil)):
             entidade_id=c.id,
         )
     ms = list(ctx.db.scalars(select(Mensagem).where(Mensagem.conversa_id == c.id).order_by(Mensagem.criado_em)))
+    anexos: dict[uuid.UUID, list[MensagemAnexo]] = {}
+    for x in ctx.db.scalars(select(MensagemAnexo).where(MensagemAnexo.mensagem_id.in_([m.id for m in ms]))):
+        anexos.setdefault(x.mensagem_id, []).append(x)
     _marca_lida(ctx, c, c.ultima_em)
     return {
         **_resumo(c, False),
@@ -183,6 +200,10 @@ def abrir(conversa_id: uuid.UUID, ctx: Contexto = Depends(com_perfil)):
                 "minha": m.autor_id == ctx.usuario.id,
                 "corpo": m.corpo,
                 "criado_em": m.criado_em,
+                "anexos": [
+                    {"id": x.id, "nome": x.arquivo.nome, "tamanho": x.arquivo.tamanho, "mime": x.arquivo.mime}
+                    for x in anexos.get(m.id, [])
+                ],
             }
             for m in ms
         ],
@@ -195,6 +216,71 @@ def responder(conversa_id: uuid.UUID, body: MensagemIn, ctx: Contexto = Depends(
     m = _adiciona(ctx, c, body.corpo)
     ctx.db.flush()
     return {"id": m.id, "autor": ctx.usuario.nome, "minha": True, "corpo": m.corpo, "criado_em": m.criado_em}
+
+
+MAX_ANEXOS = 3
+
+
+@router.post("/conversas/{conversa_id}/mensagens-anexos", status_code=201)
+def responder_com_anexos(
+    conversa_id: uuid.UUID,
+    corpo: str = Form(default="", max_length=5000),
+    arquivos_enviados: list[UploadFile] = File(alias="arquivos", min_length=1, max_length=MAX_ANEXOS),
+    ctx: Contexto = Depends(com_perfil),
+):
+    """Mensagem com até 3 anexos (PDF, JPG ou PNG, 10 MB cada). Imagens perdem o EXIF; todos passam pelo antivírus."""
+    c = _conversa(ctx, conversa_id)
+    limite = get_settings().max_anexo_bytes
+    salvos = [
+        arquivos.grava(
+            ctx.db,
+            escola_id=ctx.escola_id,
+            usuario_id=ctx.usuario.id,
+            nome=f.filename,
+            dados=f.file.read(limite + 1),
+            permitidos=arquivos.TIPOS_ANEXO,
+            limite=limite,
+        )
+        for f in arquivos_enviados
+    ]
+    m = _adiciona(ctx, c, corpo, anexos=len(salvos))
+    ctx.db.flush()
+    for a in salvos:
+        ctx.db.add(MensagemAnexo(escola_id=ctx.escola_id, mensagem_id=m.id, arquivo_id=a.id))
+    registrar(
+        ctx.db,
+        "mensagem.anexar",
+        escola_id=ctx.escola_id,
+        usuario_id=ctx.usuario.id,
+        entidade="conversa",
+        entidade_id=c.id,
+        detalhes={"anexos": len(salvos)},
+    )
+    ctx.db.flush()
+    return {
+        "id": m.id,
+        "autor": ctx.usuario.nome,
+        "minha": True,
+        "corpo": m.corpo,
+        "criado_em": m.criado_em,
+        "anexos": [{"nome": a.nome, "tamanho": a.tamanho, "mime": a.mime} for a in salvos],
+    }
+
+
+@router.post("/conversas/{conversa_id}/anexos/{anexo_id}/link")
+def link_anexo(conversa_id: uuid.UUID, anexo_id: uuid.UUID, ctx: Contexto = Depends(com_perfil)):
+    """Link assinado de curta duração (preso ao usuário) para baixar um anexo. O download é auditado."""
+    c = _conversa(ctx, conversa_id)
+    x = ctx.db.scalar(
+        select(MensagemAnexo)
+        .join(Mensagem, Mensagem.id == MensagemAnexo.mensagem_id)
+        .where(MensagemAnexo.id == anexo_id, Mensagem.conversa_id == c.id)
+    )
+    if not x:
+        raise HTTPException(404, "Anexo não encontrado.")
+    ttl = get_settings().link_validade_s
+    token = assina_link({"k": "m", "a": str(x.id), "u": str(ctx.usuario.id), "s": str(ctx.escola_id)}, ttl)
+    return {"url": f"/api/arquivos/{token}", "expira_em_s": ttl}
 
 
 @router.get("/mensagens-pendentes")

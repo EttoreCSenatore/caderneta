@@ -73,8 +73,14 @@ Tela **Provas** (professores, coordenação e direção/secretaria) e **Materiai
 
 ![Materiais no celular](/img/screenshots/materiais-celular.png)
 
-Ficam para depois: **conversão de DOCX para PDF**, **antivírus** nos uploads, anexos nas mensagens (a base de arquivos já existe),
-prazo de eliminação dos arquivos e armazenamento S3 compatível (M9).
+### Segurança dos arquivos
+
+- **Antivírus** (ClamAV) em todo envio, com falha fechada, obrigatório em produção.
+- **DOCX é convertido para PDF** no servidor (LibreOffice isolado), então a impressão sai fiel e só o PDF é guardado.
+- **Retenção:** pedidos são eliminados 365 dias após a aplicação e rascunhos parados após 90 dias.
+- Detalhes na [ADR 0004](../decisoes/armazenamento-de-arquivos.md).
+
+Fica para depois: armazenamento S3 compatível (M9).
 
 ## Critérios de pronto (M5)
 

@@ -238,8 +238,11 @@ def notifica_aviso(db: Session, aviso, agora: datetime | None = None) -> int:
 
 def processar(db: Session, agora: datetime | None = None) -> dict[str, int]:
     """Uma rodada do worker: libera avisos agendados, envia e-mails devidos e aplica a retenção."""
-    return {
+    from app.retencao import elimina_vencidos
+
+    r = {
         "avisos": publica_agendados(db, agora),
         "emails": envia_emails(db, agora),
         "apagadas": limpa_antigas(db, agora),
     }
+    return r | {f"eliminados_{k}": v for k, v in elimina_vencidos(db, agora).items()}

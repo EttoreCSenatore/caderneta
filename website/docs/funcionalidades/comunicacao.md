@@ -21,7 +21,7 @@ Substitui bilhetes na agenda e grupos de WhatsApp por canais com destinatário c
 - O remetente vê quem leu e quem ainda não leu; pode reenviar lembrete aos pendentes.
 - Mensagens individuais ficam no histórico do aluno; a coordenação pode acompanhar as conversas de professores
   (transparência e proteção para ambos os lados).
-- Anexos: PDF e imagens até 10 MB, verificados antes de liberar o download.
+- Anexos: PDF e imagens até 10 MB, verificados pelo antivírus antes de guardar.
 - Agendamento de envio (ex.: publicar segunda às 7h).
 - **Horário silencioso**: e-mails fora do horário definido por cada pessoa esperam até o fim do silêncio (padrão 21h às 7h).
 
@@ -111,7 +111,18 @@ O e-mail, os avisos agendados e a retenção rodam por um comando, pensado para 
 
 ![Notificações no celular](/img/screenshots/notificacoes-celular.png)
 
-Ainda falta no M3: **push (PWA)**, que depende de decisões de privacidade (o endereço de push identifica o aparelho). Anexos dependem do armazenamento de arquivos (M5).
+### Anexos nas mensagens
+
+Nas conversas é possível anexar até **3 arquivos** (PDF, JPG ou PNG, 10 MB cada), por exemplo um atestado.
+
+- Fotos são enviadas **sem EXIF**: localização, data e modelo do aparelho são removidos antes de guardar.
+- Todo anexo passa pelo antivírus, fica **cifrado** e é baixado por **link assinado de 5 minutos**, preso ao usuário. Cada download é auditado
+  (`mensagem.baixar`), inclusive quando a coordenação supervisiona a conversa.
+- Só quem participa da conversa abre o anexo. Após 365 dias o anexo é eliminado e o texto da mensagem permanece.
+
+![Anexo em uma conversa](/img/screenshots/mensagem-anexo.png)
+
+Ainda falta no M3: **push (PWA)**, que depende de decisões de privacidade (o endereço de push identifica o aparelho). 
 
 ## Critérios de pronto (M3)
 
