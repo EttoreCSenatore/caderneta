@@ -25,7 +25,7 @@ de advogado(a) ou do encarregado.
 | O1 | P1 | [jurídico] Definir quem é a **operadora** e firmar o contrato de operação de dados com cada escola (art. 39) |
 | O2 | P1 | [jurídico] Confirmar o enquadramento. Avaliação técnica: **regime padrão** (alto risco por saúde e menores afasta as dispensas de ATPP); só mudar se o parecer disser o contrário |
 | O3 | P1 | Nomear **encarregado** (Res. 18/2024) e publicar o contato (no regime padrão não há dispensa; o canal ATPP só valeria se o parecer enquadrar como baixo risco) |
-| O4 | P1 | [jurídico] Confirmar a aplicabilidade do **ECA Digital** (Lei 15.211/2025, art. 1º) e do Decreto 12.880/2026 |
+| O4 | P1 | **ECA Digital tratado como aplicável** (decisão de 2026-11-16). [jurídico] Confirmar e mapear as obrigações do Decreto 12.880/2026 (aferição de idade, supervisão parental) antes do piloto. Novas funções do M3 em diante seguem privacidade por padrão (art. 7º) |
 | O5 | P1 | [jurídico] Validar a base legal de cada atividade (A002 a A006), em especial saúde (A004) e adolescentes |
 | O6 | P1 | **RIPD** preventivo e **ROPA** consolidado (checkpoints humanos) |
 | O7 | P1 | **Política de privacidade** e termos, em linguagem simples, públicos (art. 14, §2º e §6º) |
