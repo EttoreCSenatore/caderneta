@@ -9,9 +9,9 @@ média é calculada automaticamente; alunos e famílias acompanham notas, faltas
 pelo celular. A escola organiza turmas, calendário, comunicação e a fila de impressão de provas, e o histórico do aluno
 passa de um ano para o outro.
 
-**Status:** M2 (notas, médias e frequência) concluído: diário de notas com média automática, regra configurável,
-boletim para tela e impressão, chamada e fechamento de período. Antes, o M1 trouxe login com 2FA, convites, turmas,
-alunos e ficha de saúde. Próximo: M3, comunicação.
+**Status:** marcos M1 a M6 concluídos (fundação, notas e frequência, comunicação, calendário, provas e impressão, histórico e anotações).
+Próximos: o app de celular (M7), a revisão de conformidade e segurança (M8) e o piloto (M9). Ainda **não** use com dados reais de alunos
+antes do M8.
 **[Ler a documentação](https://ettorecsenatore.github.io/caderneta/)** · [Roadmap](https://ettorecsenatore.github.io/caderneta/docs/roadmap)
 
 ![Diário de notas](website/static/img/screenshots/diario-notas.png)
@@ -58,3 +58,15 @@ caderneta/
 
 A plataforma lida com dados de menores e de saúde. Veja
 [Segurança e LGPD](https://ettorecsenatore.github.io/caderneta/docs/tecnico/seguranca-e-lgpd).
+
+## Licença
+
+A Caderneta é software livre sob a **[GNU Affero General Public License v3.0 ou posterior](LICENSE)** (`AGPL-3.0-or-later`).
+
+- Você pode usar, estudar, modificar e distribuir o código.
+- Se você **modificar** a Caderneta e oferecê-la como serviço pela internet, precisa disponibilizar o código-fonte da sua versão
+  modificada a quem usa o serviço (seção 13 da licença). Isso mantém o software aberto para as escolas que dependem dele.
+- Os componentes de terceiros e suas licenças estão em [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+- Mais detalhes, em português, na [página de licença](https://ettorecsenatore.github.io/caderneta/docs/licenca).
+
+Copyright (C) 2026 @EttoreCSenatore e colaboradores da Caderneta.

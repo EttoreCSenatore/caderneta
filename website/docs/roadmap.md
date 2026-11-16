@@ -154,9 +154,9 @@ junto com o texto da Lei nº 13.709/2018 e as orientações da ANPD.
 
 ### Licenças
 
-- [ ] **Escolher e publicar a licença do código** (hoje o repositório não tem arquivo `LICENSE`, o que, por padrão, reserva todos os direitos); decidir entre aberta (ex.: AGPL-3.0) e proprietária, considerando o modelo de negócio
+- [x] **Licença do código: AGPL-3.0-or-later** (decisão do responsável), com `LICENSE`, metadados nos manifestos e a [página de licença](./licenca.md)
 - [ ] Licença da documentação e dos screenshots (ex.: CC BY 4.0) e uso de dados fictícios nas demonstrações
-- [ ] **Auditoria de licenças de dependências** (npm e Python), garantindo compatibilidade com a licença escolhida; arquivo `THIRD_PARTY_NOTICES`
+- [x] **Auditoria de licenças de dependências** (npm e Python): `scripts/auditar-licencas.py` no CI e `THIRD_PARTY_NOTICES.md` gerado
 - [ ] Licenças de fontes, ícones, imagens e logotipo
 - [ ] Marca "Caderneta": checar disponibilidade e registro (INPI)
 

@@ -32,6 +32,8 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
       - run: npm audit --audit-level=high --omit=dev
+      - name: Licenças das dependências (AGPL-3.0)
+        run: python3 ../scripts/auditar-licencas.py --npm website
       - run: npm run build
       - uses: actions/upload-pages-artifact@v5
         with:
@@ -78,6 +80,8 @@ jobs:
       - run: ruff format --check app tests
       - run: pytest -p no:warnings
       - run: pip-audit --skip-editable
+      - name: Licenças das dependências (AGPL-3.0)
+        run: python ../scripts/auditar-licencas.py --python
 
   web:
     name: Web (typecheck, testes, build)
@@ -98,6 +102,8 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: npm audit --audit-level=high
+      - name: Licenças das dependências (AGPL-3.0)
+        run: python3 ../scripts/auditar-licencas.py --npm web
       - run: npm run build
 
   deploy:
