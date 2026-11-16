@@ -164,3 +164,7 @@ export type PainelAutorizacao = {
   autorizacao: Autorizacao; total: number; autorizado: number; negado: number; pendente: number;
   alunos: {aluno_id: string; aluno: string; situacao: 'autorizado' | 'negado' | 'pendente'; observacao: string | null; respondido_em: string | null}[];
 };
+
+export type Conversa = {id: string; assunto: string; aluno_id: string; aluno: string; escola_usuario: string; ultima_em: string; previa: string; nao_lida: boolean};
+export type Mensagem = {id: string; autor: string | null; minha: boolean; corpo: string; criado_em: string};
+export type ConversaAberta = Conversa & {mensagens: Mensagem[]};

@@ -14,6 +14,7 @@ const MENU: Record<Papel, Item[]> = {
     {to: '/', rotulo: 'Início', icone: 'inicio'},
     {to: '/avisos', rotulo: 'Avisos', icone: 'avisos'},
     {to: '/autorizacoes', rotulo: 'Autorizações', icone: 'autorizacoes'},
+    {to: '/mensagens', rotulo: 'Mensagens', icone: 'mensagens'},
     {to: '/turmas', rotulo: 'Turmas', icone: 'turmas'},
     {to: '/alunos', rotulo: 'Alunos', icone: 'alunos'},
     {to: '/equipe', rotulo: 'Equipe', icone: 'equipe'},
@@ -24,6 +25,7 @@ const MENU: Record<Papel, Item[]> = {
     {to: '/', rotulo: 'Início', icone: 'inicio'},
     {to: '/avisos', rotulo: 'Avisos', icone: 'avisos'},
     {to: '/autorizacoes', rotulo: 'Autorizações', icone: 'autorizacoes'},
+    {to: '/mensagens', rotulo: 'Mensagens', icone: 'mensagens'},
     {to: '/turmas', rotulo: 'Turmas', icone: 'turmas'},
     {to: '/alunos', rotulo: 'Alunos', icone: 'alunos'},
     {to: '/equipe', rotulo: 'Equipe', icone: 'equipe'},
@@ -33,6 +35,7 @@ const MENU: Record<Papel, Item[]> = {
     {to: '/', rotulo: 'Início', icone: 'inicio'},
     {to: '/avisos', rotulo: 'Avisos', icone: 'avisos'},
     {to: '/autorizacoes', rotulo: 'Autorizações', icone: 'autorizacoes'},
+    {to: '/mensagens', rotulo: 'Mensagens', icone: 'mensagens'},
     {to: '/turmas', rotulo: 'Minhas turmas', icone: 'turmas'},
     {to: '/alunos', rotulo: 'Alunos', icone: 'alunos'},
   ],
@@ -40,6 +43,7 @@ const MENU: Record<Papel, Item[]> = {
     {to: '/', rotulo: 'Início', icone: 'inicio'},
     {to: '/avisos', rotulo: 'Avisos', icone: 'avisos'},
     {to: '/autorizacoes', rotulo: 'Autorizações', icone: 'autorizacoes'},
+    {to: '/mensagens', rotulo: 'Mensagens', icone: 'mensagens'},
   ],
   aluno: [
     {to: '/', rotulo: 'Início', icone: 'inicio'},
@@ -75,6 +79,8 @@ export function Layout() {
   const itens = MENU[papel];
   const pendentes = useQuery({queryKey: ['avisos-pendentes'], queryFn: () => api<{nao_lidos: number}>('/avisos-pendentes'), refetchInterval: 60000});
   const naoLidos = pendentes.data?.nao_lidos ?? 0;
+  const msgs = useQuery({queryKey: ['mensagens-pendentes'], queryFn: () => api<{nao_lidas: number}>('/mensagens-pendentes'), refetchInterval: 30000});
+  const naoLidas = msgs.data?.nao_lidas ?? 0;
   return (
     <div className="app">
       <aside className="lateral">
@@ -85,6 +91,7 @@ export function Layout() {
           {itens.map((i) => (
             <NavLink key={i.to} to={i.to} end={i.to === '/'}>
               {Icone[i.icone]} {i.rotulo}
+              {i.to === '/mensagens' && naoLidas > 0 && <span className="selo vermelho" aria-label={`${naoLidas} conversas novas`}>{naoLidas}</span>}
               {i.to === '/avisos' && naoLidos > 0 && <span className="selo vermelho" aria-label={`${naoLidos} não lidos`}>{naoLidos}</span>}
             </NavLink>
           ))}
