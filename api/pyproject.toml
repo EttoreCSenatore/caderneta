@@ -2,6 +2,7 @@
 name = "caderneta-api"
 version = "0.1.0"
 description = "Caderneta: API da plataforma escolar"
+license = "AGPL-3.0-or-later"
 requires-python = ">=3.13"
 dependencies = [
     "fastapi>=0.118",
@@ -21,7 +22,7 @@ dependencies = [
 dev = ["pytest>=8.4", "httpx>=0.28", "ruff>=0.14", "pip-audit>=2.9"]
 
 [build-system]
-requires = ["setuptools>=75"]
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]

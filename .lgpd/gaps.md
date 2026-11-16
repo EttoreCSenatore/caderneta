@@ -44,7 +44,7 @@ de advogado(a) ou do encarregado.
 | O7 | P1 | **Política de privacidade** e termos, em linguagem simples, públicos (art. 14, §2º e §6º) |
 | O8 | P2 | Escolher hospedagem e provedor de e-mail e classificar o papel de cada um; avaliar transferência internacional |
 | O9 | P2 | Plano de resposta a incidentes e registro interno de 5 anos (Res. 15/2024, segundo a skill), com simulação |
-| O10 | P2 | Escolher a **licença do código** (o repositório público ainda não tem `LICENSE`) |
+| O10 | P2 | ~~Escolher a licença do código~~ **feito: AGPL-3.0-or-later** (2026-11-16). Resta decidir a licença da documentação e dos screenshots e ajustar o titular do copyright |
 
 ## Já atendido
 
