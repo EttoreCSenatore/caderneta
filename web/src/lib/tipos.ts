@@ -178,3 +178,16 @@ export type ItemCalendario = {
   inicio: string; fim: string; turma_id: string | null; turma: string | null; autor: string | null; editavel: boolean;
 };
 export type FeriadoSugerido = {data: string; nome: string; nacional: boolean; base: string; ja_cadastrado: boolean};
+
+export type StatusPedido = 'rascunho' | 'enviada' | 'ajustes' | 'aprovada' | 'impressa';
+export type TipoPedido = 'prova' | 'trabalho' | 'lista';
+export type Pedido = {
+  id: string; tipo: TipoPedido; titulo: string; turma: string | null; turma_id: string; atribuicao_id: string; disciplina: string;
+  professor: string; data_aplicacao: string; status: StatusPedido; publicado: boolean;
+  arquivo: {nome: string; tamanho: number; mime: string};
+  autor_id?: string; copias?: number; copias_calculadas?: number; copias_adaptadas?: number;
+  frente_verso?: boolean; colorido?: boolean; grampear?: boolean; observacoes?: string | null;
+  adaptado?: {nome: string; tamanho: number} | null; atrasado?: boolean;
+  comentarios?: {id: string; autor: string | null; corpo: string; criado_em: string}[];
+};
+export type ConfigImpressao = {aprovacao: boolean; reserva_copias: number; antecedencia_dias: number};

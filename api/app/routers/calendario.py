@@ -23,7 +23,9 @@ from app.models import (
     Escola,
     Evento,
     Papel,
+    PedidoImpressao,
     TipoEvento,
+    TipoPedido,
     Turma,
     Usuario,
     UsuarioPerfil,
@@ -126,6 +128,38 @@ def itens_do_periodo(ctx: Contexto, inicio: date, fim: date, turma_id: uuid.UUID
                 "descricao": None,
                 "inicio": av.data,
                 "fim": av.data,
+                "turma_id": t.id,
+                "turma": t.nome,
+                "autor": at.professor.nome,
+                "editavel": False,
+            }
+        )
+    # trabalhos e listas publicados aparecem com a data de entrega (provas já vêm das avaliações)
+    qp = (
+        select(PedidoImpressao, Atribuicao, Turma)
+        .join(Atribuicao, Atribuicao.id == PedidoImpressao.atribuicao_id)
+        .join(Turma, Turma.id == Atribuicao.turma_id)
+        .where(
+            PedidoImpressao.publicado.is_(True),
+            PedidoImpressao.tipo.in_([TipoPedido.trabalho, TipoPedido.lista]),
+            PedidoImpressao.data_aplicacao >= inicio,
+            PedidoImpressao.data_aplicacao <= fim,
+        )
+    )
+    if escopo is not None:
+        qp = qp.where(Turma.id.in_(escopo))
+    if turma_id:
+        qp = qp.where(Turma.id == turma_id)
+    for pe, at, t in ctx.db.execute(qp):
+        itens.append(
+            {
+                "id": pe.id,
+                "origem": "trabalho",
+                "tipo": "prazo",
+                "titulo": f"Entrega: {pe.titulo} · {at.disciplina.nome}",
+                "descricao": None,
+                "inicio": pe.data_aplicacao,
+                "fim": pe.data_aplicacao,
                 "turma_id": t.id,
                 "turma": t.nome,
                 "autor": at.professor.nome,

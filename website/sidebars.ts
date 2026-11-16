@@ -38,7 +38,7 @@ const sidebars: SidebarsConfig = {
     {
       type: 'category',
       label: 'Decisões (ADRs)',
-      items: ['decisoes/stack', 'decisoes/multiescola', 'decisoes/pwa-primeiro'],
+      items: ['decisoes/stack', 'decisoes/multiescola', 'decisoes/pwa-primeiro', 'decisoes/armazenamento-de-arquivos'],
     },
     'roadmap',
   ],

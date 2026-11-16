@@ -33,6 +33,10 @@ class Settings(BaseSettings):
 
     invite_days: int = 7
     max_upload_bytes: int = 2_000_000
+    # Arquivos de provas e trabalhos: cifrados em repouso (AES-GCM) num diretório fora do código.
+    storage_dir: str = "./storage"
+    max_arquivo_bytes: int = 15_000_000
+    link_validade_s: int = 300
 
 
 @lru_cache
@@ -41,6 +45,8 @@ def get_settings() -> Settings:
     if s.env == "prod":
         if not s.data_key:
             raise RuntimeError("CADERNETA_DATA_KEY é obrigatória em produção")
+        if not s.storage_dir.startswith("/"):
+            raise RuntimeError("CADERNETA_STORAGE_DIR deve ser um caminho absoluto em produção")
         if not s.cookie_secure:
             raise RuntimeError("CADERNETA_COOKIE_SECURE deve ser true em produção")
     return s

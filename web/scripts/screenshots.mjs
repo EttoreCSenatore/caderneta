@@ -330,6 +330,38 @@ if (roda('m4')) {
   await foto(fam, 'calendario-lista-celular', true);
 }
 
+if (roda('m5')) {
+  console.log('M5');
+  const adm = await sessao('direcao');
+  await adm.goto(BASE + '/provas');
+  await adm.waitForSelector('text=Prova de Frações');
+  await foto(adm, 'provas-fila', true);
+  await adm.click('text=Prova de Frações');
+  await adm.waitForSelector('text=Baixar');
+  await foto(adm, 'pedido-revisao');
+  await adm.keyboard.press('Escape');
+  await adm.click('button:has-text("Regras")');
+  await adm.waitForSelector('text=Antecedência mínima');
+  await foto(adm, 'impressao-regras');
+  await adm.keyboard.press('Escape');
+
+  const prof = await sessao('ana.matematica');
+  await prof.goto(BASE + '/provas');
+  await prof.click('button:has-text("+ Novo pedido")');
+  await prof.fill('.modal input >> nth=0', 'Prova de Geometria');
+  await prof.fill('.modal input[type=date]', new Date(Date.now() + 8 * 864e5).toISOString().slice(0, 10));
+  await prof.locator('.modal input[type=checkbox]').first().check();
+  await prof.setInputFiles('.modal input[type=file] >> nth=0', {name: 'prova-geometria.pdf', mimeType: 'application/pdf', buffer: Buffer.from('%PDF-1.4\n1 0 obj\n<<>>\nendobj\ntrailer\n<<>>\n%%EOF\n')});
+  await prof.waitForSelector('text=sugerido');
+  await foto(prof, 'pedido-novo');
+  await prof.keyboard.press('Escape');
+
+  const fam = await sessao('familia', {mobile: true});
+  await fam.goto(BASE + '/provas');
+  await fam.waitForSelector('text=Trabalho sobre o Brasil Colônia');
+  await foto(fam, 'materiais-celular', true);
+}
+
 await b.close();
 if (erros.length) {
   console.error('Erros no navegador:\n' + erros.join('\n'));

@@ -7,6 +7,7 @@ export const Icone = {
   mensagens: <svg viewBox="0 0 24 24" {...P}><path d="M21 12a8 8 0 0 1-11.5 7.2L4 20l1-4.6A8 8 0 1 1 21 12z" /></svg>,
   notificacoes: <svg viewBox="0 0 24 24" {...P}><path d="M12 3a6 6 0 0 0-6 6v4l-2 3h16l-2-3V9a6 6 0 0 0-6-6z" /><circle cx="18" cy="5" r="2.5" /><path d="M10 20a2 2 0 0 0 4 0" /></svg>,
   calendario: <svg viewBox="0 0 24 24" {...P}><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M16 3v4M8 3v4M3 10h18" /></svg>,
+  provas: <svg viewBox="0 0 24 24" {...P}><path d="M6 9V3h12v6" /><rect x="3" y="9" width="18" height="8" rx="2" /><path d="M7 14h10v7H7z" /></svg>,
   turmas: <svg viewBox="0 0 24 24" {...P}><rect x="3" y="4" width="18" height="14" rx="2" /><path d="M8 21h8M12 18v3" /></svg>,
   alunos: <svg viewBox="0 0 24 24" {...P}><circle cx="9" cy="8" r="3.5" /><path d="M2.5 20c.8-3.5 3.4-5.5 6.5-5.5s5.7 2 6.5 5.5" /><circle cx="17" cy="9" r="2.5" /><path d="M17 14.5c2.3 0 4 1.5 4.5 4" /></svg>,
   equipe: <svg viewBox="0 0 24 24" {...P}><circle cx="12" cy="7" r="3.5" /><path d="M5 21c.6-4 3.4-6.5 7-6.5s6.4 2.5 7 6.5" /></svg>,
