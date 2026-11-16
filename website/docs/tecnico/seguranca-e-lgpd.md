@@ -8,6 +8,11 @@ A Caderneta guarda dados de **crianças e adolescentes**, incluindo **dados de s
 dados de menores devem ser tratados no seu **melhor interesse** (art. 14) e dados de saúde são **sensíveis** (art. 11).
 Segurança é requisito desde o primeiro marco, não etapa final.
 
+:::info Revisão geral prevista
+O [M8 do roadmap](../roadmap.md#m8-conformidade-e-segurança) reúne a revisão geral de segurança, licenças e adequação à LGPD
+(incluindo RIPD, direitos dos titulares, retenção, resposta a incidentes e validação jurídica) antes do piloto.
+:::
+
 ## Papéis na LGPD
 
 - **Controladora**: a escola, que decide por que e como os dados são usados.
