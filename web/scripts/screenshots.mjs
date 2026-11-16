@@ -301,6 +301,35 @@ if (roda('m3-notif')) {
   await foto(famPc, 'notificacoes', true);
 }
 
+if (roda('m4')) {
+  console.log('M4');
+  const adm = await sessao('direcao');
+  await adm.goto(BASE + '/calendario');
+  await adm.waitForSelector('text=Conselho de classe');
+  await foto(adm, 'calendario-mes', true);
+  await adm.click('button:has-text("Semana")');
+  await foto(adm, 'calendario-semana');
+  await adm.click('button:has-text("Mês")');
+  await adm.click('button:has-text("Feriados")');
+  await adm.waitForSelector('text=Confraternização Universal');
+  await foto(adm, 'calendario-feriados', true);
+  await adm.keyboard.press('Escape');
+  await adm.click('button:has-text("+ Novo evento")');
+  await adm.fill('.modal input >> nth=0', 'Recesso escolar');
+  await adm.selectOption('.modal select >> nth=0', 'sem_aula');
+  await foto(adm, 'calendario-novo-evento');
+  await adm.keyboard.press('Escape');
+  await adm.click('button:has-text("Assinar")');
+  await adm.click('button:has-text("Gerar link")');
+  await adm.waitForSelector('input[aria-label="Link do calendário"]');
+  await foto(adm, 'calendario-assinar');
+
+  const fam = await sessao('familia', {mobile: true});
+  await fam.goto(BASE + '/calendario');
+  await fam.waitForSelector('text=Reunião de pais');
+  await foto(fam, 'calendario-lista-celular', true);
+}
+
 await b.close();
 if (erros.length) {
   console.error('Erros no navegador:\n' + erros.join('\n'));

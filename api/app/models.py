@@ -11,6 +11,7 @@ from decimal import Decimal
 
 from sqlalchemy import (
     Boolean,
+    CheckConstraint,
     Date,
     DateTime,
     Enum,
@@ -544,4 +545,48 @@ class AlertaFalta(Base):
     escola_id: Mapped[uuid.UUID] = _escola()
     matricula_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("matricula.id", ondelete="CASCADE"), index=True)
     nivel: Mapped[int] = mapped_column(Integer)
+    criado_em: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=agora)
+
+
+# --- M4: calendário -------------------------------------------------------------------------------------
+
+
+class TipoEvento(enum.StrEnum):
+    feriado = "feriado"
+    sem_aula = "sem_aula"
+    avaliacao = "avaliacao"
+    evento = "evento"
+    prazo = "prazo"
+
+
+BLOQUEIA_AULA = {TipoEvento.feriado, TipoEvento.sem_aula}
+
+
+class Evento(Base):
+    """Evento de dia inteiro. Sem `turma_id` vale para a escola toda; feriado e sem_aula bloqueiam a chamada."""
+
+    __tablename__ = "evento"
+    __table_args__ = (CheckConstraint("fim >= inicio", name="ck_evento_periodo"),)
+    id: Mapped[uuid.UUID] = _id()
+    escola_id: Mapped[uuid.UUID] = _escola()
+    autor_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("usuario.id", ondelete="SET NULL"))
+    turma_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("turma.id", ondelete="CASCADE"), index=True)
+    tipo: Mapped[TipoEvento] = mapped_column(_enum(TipoEvento, "tipo_evento"))
+    titulo: Mapped[str] = mapped_column(String(200))
+    descricao: Mapped[str | None] = mapped_column(String(1000))
+    inicio: Mapped[date] = mapped_column(Date, index=True)
+    fim: Mapped[date] = mapped_column(Date)
+    criado_em: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=agora)
+
+    autor: Mapped[Usuario | None] = relationship(lazy="joined")
+
+
+class CalendarioToken(Base):
+    """Credencial da assinatura iCal de um perfil. Só o hash fica guardado; o link aparece uma vez."""
+
+    __tablename__ = "calendario_token"
+    id: Mapped[uuid.UUID] = _id()
+    escola_id: Mapped[uuid.UUID] = _escola()
+    perfil_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("usuario_perfil.id", ondelete="CASCADE"), unique=True)
+    token_hash: Mapped[str] = mapped_column(String(64), unique=True)
     criado_em: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=agora)

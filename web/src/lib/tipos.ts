@@ -171,3 +171,10 @@ export type ConversaAberta = Conversa & {mensagens: Mensagem[]};
 
 export type Notificacao = {id: string; tipo: string; titulo: string; corpo: string; url: string; criado_em: string; lida: boolean};
 export type PreferenciasNotif = {email: boolean; silencio_inicio: string; silencio_fim: string};
+
+export type TipoEvento = 'feriado' | 'sem_aula' | 'avaliacao' | 'evento' | 'prazo';
+export type ItemCalendario = {
+  id: string; origem: 'evento' | 'avaliacao'; tipo: TipoEvento; titulo: string; descricao: string | null;
+  inicio: string; fim: string; turma_id: string | null; turma: string | null; autor: string | null; editavel: boolean;
+};
+export type FeriadoSugerido = {data: string; nome: string; nacional: boolean; base: string; ja_cadastrado: boolean};

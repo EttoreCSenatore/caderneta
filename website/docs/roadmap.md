@@ -13,8 +13,8 @@ adicionados às páginas de funcionalidade.
 | **M0: Planejamento** | Visão, perfis, funcionalidades, arquitetura, modelo de dados, segurança, documentação | ✅ Concluído |
 | **M1: Fundação** | Monorepo, CI, login e perfis, escola/turmas/disciplinas, cadastro de alunos e responsáveis, importação CSV, convites | ✅ Concluído |
 | **M2: Notas, médias e frequência** | Avaliações, grade de lançamento, motor de médias configurável, boletim, chamada, fechamento de período | ✅ Concluído |
-| **M3: Comunicação** | Avisos gerais e de turma, mensagens individuais, "ciente", autorizações, push e e-mail | ⏳ Próximo |
-| **M4: Calendário** | Calendário escolar e de turma, feriados nacionais, dias sem aula, iCal | Planejado |
+| **M3: Comunicação** | Avisos gerais e de turma, mensagens individuais, "ciente", autorizações, notificações e e-mail (push pendente) | ✅ Concluído, exceto push |
+| **M4: Calendário** | Calendário escolar e de turma, feriados nacionais, dias sem aula, iCal | ✅ Concluído |
 | **M5: Provas e impressão** | Upload, aprovação, fila de impressão com cópias calculadas, trabalhos | Planejado |
 | **M6: Histórico e anotações** | Rematrícula em lote, linha do tempo, anotações versionadas, histórico escolar em PDF | Planejado |
 | **M7: App de celular** | PWA refinada, offline para notas e chamada, Capacitor nas lojas | Planejado |
@@ -93,7 +93,7 @@ Veja [Notas e médias](./funcionalidades/notas-e-medias.md) e [Frequência](./fu
   escolar do M6.
 :::
 
-## M3: Comunicação (próximo)
+## M3: Comunicação (concluído, exceto push)
 
 - [x] Avisos da escola e de turma, com agendamento (segmento e grupo de turmas ficam para depois)
 - [x] Mensagens individuais escola/professor ↔ família (anexos passam para o M5, com o armazenamento de arquivos)
@@ -170,6 +170,17 @@ junto com o texto da Lei nº 13.709/2018 e as orientações da ANPD.
 Cada marco anterior deve **atualizar o inventário de dados e o RIPD** quando coletar dado novo, e cada PR é revisado quanto
 a acesso mínimo, auditoria e retenção. O M8 é a revisão geral, não o primeiro momento em que a lei é considerada.
 :::
+
+## M4: Calendário (concluído)
+
+Veja [Calendário](./funcionalidades/calendario.md).
+
+- [x] Eventos da escola e das turmas, com permissões por papel
+- [x] Feriados nacionais por lei, confirmados pela escola; datas móveis calculadas
+- [x] Dias sem aula e feriados bloqueiam a chamada e avisam as famílias
+- [x] Avaliações com data aparecem no calendário da turma
+- [x] Visões lista, mês e semana
+- [x] Assinatura iCal por link secreto, revogável
 
 ## Depois do piloto (ideias)
 

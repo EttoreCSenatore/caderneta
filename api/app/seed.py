@@ -17,6 +17,7 @@ import pyotp
 from sqlalchemy import create_engine, delete, select
 from sqlalchemy.orm import Session
 
+from app.calendario import feriados_sugeridos
 from app.config import get_settings
 from app.models import (
     Aluno,
@@ -27,6 +28,7 @@ from app.models import (
     Convite,
     Disciplina,
     Escola,
+    Evento,
     FichaSaude,
     Frequencia,
     Matricula,
@@ -35,6 +37,7 @@ from app.models import (
     Periodo,
     StatusNota,
     StatusPresenca,
+    TipoEvento,
     TipoPeriodo,
     Turma,
     Usuario,
@@ -271,7 +274,46 @@ def seed() -> None:
                     )
         db.flush()
         avs, aulas = _seed_m2(db, e, ano, rnd)
+        _seed_m4(db, e, turmas)
         print(f"Escola de demonstração criada com {n} alunos, {len(turmas)} turmas, {avs} avaliações e {aulas} aulas.")
+
+
+def _seed_m4(db: Session, e: Escola, turmas: list[Turma]) -> None:
+    """Calendário: feriados nacionais do ano e alguns eventos próximos de hoje."""
+    hoje = date.today()
+    for f in feriados_sugeridos(hoje.year):
+        if f["nacional"]:
+            db.add(
+                Evento(
+                    escola_id=e.id,
+                    tipo=TipoEvento.feriado,
+                    titulo=f["nome"],
+                    descricao=f["base"],
+                    inicio=f["data"],
+                    fim=f["data"],
+                )
+            )
+
+    def ev(tipo: TipoEvento, titulo: str, dias: int, duracao: int = 1, turma: Turma | None = None) -> None:
+        ini = hoje + timedelta(days=dias)
+        db.add(
+            Evento(
+                escola_id=e.id,
+                turma_id=turma.id if turma else None,
+                tipo=tipo,
+                titulo=titulo,
+                inicio=ini,
+                fim=ini + timedelta(days=duracao - 1),
+            )
+        )
+
+    ev(TipoEvento.evento, "Reunião de pais", 3)
+    ev(TipoEvento.sem_aula, "Conselho de classe", 9, 2)
+    ev(TipoEvento.evento, "Feira de ciências", 14)
+    ev(TipoEvento.evento, "Formatura do 9º ano", 25)
+    ev(TipoEvento.prazo, "Entrega do trabalho de História", 6, turma=turmas[0])
+    ev(TipoEvento.evento, "Passeio ao Museu da Língua Portuguesa", 11, turma=turmas[0])
+    ev(TipoEvento.prazo, "Entrega do projeto de Ciências", 8, turma=turmas[1])
 
 
 def _seed_m2(db: Session, e: Escola, ano: AnoLetivo, rnd: random.Random) -> tuple[int, int]:
