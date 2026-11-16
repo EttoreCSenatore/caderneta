@@ -247,6 +247,35 @@ if (roda('m3-aut')) {
   await foto(adm, 'autorizacao-painel');
 }
 
+if (roda('m3-msg')) {
+  console.log('M3 mensagens');
+  const adm = await sessao('direcao');
+  await adm.goto(BASE + '/mensagens');
+  await adm.click('button:has-text("+ Nova conversa")');
+  const op = adm.locator('.modal select option', {hasText: 'Lucas Moreira Lima'});
+  await adm.selectOption('.modal select', await op.getAttribute('value'));
+  await adm.fill('.modal input >> nth=0', 'Reunião sobre o desempenho em Matemática');
+  await adm.fill('.modal textarea', 'Olá! Gostaria de conversar sobre o desempenho do Lucas no 3º bimestre. Qual o melhor horário para vocês?');
+  await foto(adm, 'mensagem-nova');
+  await adm.click('.modal button:has-text("Enviar")');
+  await adm.waitForSelector('text=Responder');
+
+  const fam = await sessao('familia', {mobile: true});
+  await fam.goto(BASE + '/mensagens');
+  await fam.waitForSelector('text=Reunião sobre o desempenho em Matemática');
+  await foto(fam, 'mensagens-lista-celular');
+  await fam.click('text=Reunião sobre o desempenho em Matemática');
+  await fam.fill('textarea', 'Boa tarde! Podemos conversar na quinta-feira, às 17h?');
+  await fam.click('button:has-text("Enviar")');
+  await fam.waitForSelector('text=quinta-feira');
+  await foto(fam, 'mensagens-conversa-celular', true);
+
+  await adm.reload();
+  await adm.click('text=Reunião sobre o desempenho em Matemática');
+  await adm.waitForSelector('text=quinta-feira');
+  await foto(adm, 'mensagens-conversa');
+}
+
 await b.close();
 if (erros.length) {
   console.error('Erros no navegador:\n' + erros.join('\n'));

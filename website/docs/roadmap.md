@@ -94,7 +94,7 @@ Veja [Notas e médias](./funcionalidades/notas-e-medias.md) e [Frequência](./fu
 ## M3: Comunicação (próximo)
 
 - [x] Avisos da escola e de turma, com agendamento (segmento e grupo de turmas ficam para depois)
-- [ ] Mensagens individuais escola/professor ↔ família, com anexos
+- [x] Mensagens individuais escola/professor ↔ família (anexos passam para o M5, com o armazenamento de arquivos)
 - [x] "Ciente" e painel de leitura para quem enviou
 - [ ] Lembrete aos pendentes
 - [x] Autorizações digitais (passeio, saída antecipada)

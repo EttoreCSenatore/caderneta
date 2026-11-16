@@ -4,7 +4,19 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
 from app.config import get_settings
-from app.routers import alunos, auth, autorizacoes, avisos, boletim, convites, diario, escola, importacao, turmas
+from app.routers import (
+    alunos,
+    auth,
+    autorizacoes,
+    avisos,
+    boletim,
+    convites,
+    diario,
+    escola,
+    importacao,
+    mensagens,
+    turmas,
+)
 
 METODOS_SEGUROS = {"GET", "HEAD", "OPTIONS"}
 CSRF_HEADER = "x-caderneta"
@@ -38,7 +50,7 @@ def create_app() -> FastAPI:
     def saude():
         return {"ok": True}
 
-    for r in (auth, convites, escola, turmas, alunos, importacao, diario, boletim, avisos, autorizacoes):
+    for r in (auth, convites, escola, turmas, alunos, importacao, diario, boletim, avisos, autorizacoes, mensagens):
         app.include_router(r.router, prefix="/api")
     return app
 

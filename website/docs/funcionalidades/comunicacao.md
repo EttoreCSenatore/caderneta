@@ -64,12 +64,28 @@ Tela **Autorizações** para equipe, professores e responsáveis.
 
 ![Painel de respostas](/img/screenshots/autorizacao-painel.png)
 
-Ainda falta no M3: mensagens individuais, anexos, lembrete aos pendentes, push/e-mail e alertas.
+## O que já funciona (M3.3: mensagens individuais)
+
+Tela **Mensagens** para equipe, professores e responsáveis. Cada conversa é sobre **um aluno**.
+
+- **Quem inicia:** professor (para alunos das suas turmas), direção e coordenação (qualquer aluno) e o responsável, que escolhe um
+  professor da turma do filho.
+- **Quem participa:** o profissional da escola envolvido e os responsáveis do aluno sem vínculo restrito. Todos os responsáveis do
+  aluno veem a mesma conversa. A conta do aluno não participa.
+- **Transparência:** direção e coordenação podem abrir qualquer conversa; cada acesso a conversa de outra pessoa fica na auditoria
+  (`conversa.supervisao`). Outros professores não veem.
+- **Não lidas:** selo no menu e destaque "nova" na lista; abrir a conversa marca como lida.
+
+![Conversa vista pela direção](/img/screenshots/mensagens-conversa.png)
+
+![Lista de conversas no celular](/img/screenshots/mensagens-lista-celular.png)
+
+Ainda falta no M3: lembrete aos pendentes, push/e-mail com horário silencioso e alertas. Anexos dependem do armazenamento de arquivos (M5).
 
 ## Critérios de pronto (M3)
 
 - [x] Avisos da escola toda e de turma, com agendamento (M3.1)
-- [ ] Mensagens individuais em conversa, com anexos
+- [x] Mensagens individuais em conversa (M3.3); anexos ficam para o M5, junto com o armazenamento de arquivos
 - [x] Confirmação "ciente" e painel de leitura para o remetente (M3.1)
 - [x] Autorizações digitais com resposta registrada (M3.2)
 - [ ] Notificações push e e-mail com horário silencioso

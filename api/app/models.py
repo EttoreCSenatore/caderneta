@@ -465,3 +465,45 @@ class AutorizacaoResposta(Base):
     autoriza: Mapped[bool] = mapped_column(Boolean)
     observacao: Mapped[str | None] = mapped_column(String(300))
     respondido_em: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=agora)
+
+
+class Conversa(Base):
+    """Conversa sobre um aluno entre alguém da escola (`escola_usuario_id`) e os responsáveis dele."""
+
+    __tablename__ = "conversa"
+    id: Mapped[uuid.UUID] = _id()
+    escola_id: Mapped[uuid.UUID] = _escola()
+    aluno_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("aluno.id", ondelete="CASCADE"), index=True)
+    escola_usuario_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("usuario.id", ondelete="CASCADE"), index=True)
+    assunto: Mapped[str] = mapped_column(String(200))
+    ultima_em: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=agora, index=True)
+    ultima_autor_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("usuario.id", ondelete="SET NULL"))
+    ultima_previa: Mapped[str] = mapped_column(String(140), default="")
+    criado_em: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=agora)
+
+    aluno: Mapped[Aluno] = relationship(lazy="joined")
+    escola_usuario: Mapped[Usuario] = relationship(lazy="joined", foreign_keys=[escola_usuario_id])
+
+
+class Mensagem(Base):
+    __tablename__ = "mensagem"
+    id: Mapped[uuid.UUID] = _id()
+    escola_id: Mapped[uuid.UUID] = _escola()
+    conversa_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("conversa.id", ondelete="CASCADE"), index=True)
+    autor_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("usuario.id", ondelete="SET NULL"))
+    corpo: Mapped[str] = mapped_column(String(5000))
+    criado_em: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=agora)
+
+    autor: Mapped[Usuario | None] = relationship(lazy="joined")
+
+
+class ConversaLeitura(Base):
+    """Até quando cada usuário leu a conversa (base do contador de não lidas)."""
+
+    __tablename__ = "conversa_leitura"
+    __table_args__ = (UniqueConstraint("conversa_id", "usuario_id"),)
+    id: Mapped[uuid.UUID] = _id()
+    escola_id: Mapped[uuid.UUID] = _escola()
+    conversa_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("conversa.id", ondelete="CASCADE"), index=True)
+    usuario_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("usuario.id", ondelete="CASCADE"), index=True)
+    lido_ate: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=agora)
