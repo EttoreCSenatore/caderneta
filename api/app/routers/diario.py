@@ -329,6 +329,8 @@ def publica(avaliacao_id: uuid.UUID, dados: PublicarIn, ctx: Contexto = Depends(
     assert periodo is not None
     if not (ctx.papel.value == "professor" and a.professor_id == ctx.usuario.id) and ctx.papel.value != "admin":
         raise HTTPException(403, "Sem permissão para esta ação.")
+    if periodo.fechado and ctx.papel.value != "admin":
+        raise HTTPException(409, f"O {periodo.nome} está fechado. Peça à direção para corrigir.")
     av.publicada = dados.publicada
     return avaliacao_out(av)
 

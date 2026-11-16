@@ -87,6 +87,7 @@ def test_fechamento_trava_professor(diario, entrar):
     assert coord.post(f"/api/periodos/{per}/fechamento", json={"fechado": True}).json()["fechado"] is True
     nota = {"notas": [{"matricula_id": m["João"], "valor": 5}]}
     assert c.put(f"/api/avaliacoes/{p1}/notas", json=nota).status_code == 409
+    assert c.post(f"/api/avaliacoes/{p1}/publicar", json={"publicada": True}).status_code == 409
     assert c.get(f"/api/atribuicoes/{diario['atrib']}/diario").json()["pode_editar"] is False
     assert coord.post(f"/api/periodos/{per}/fechamento", json={"fechado": False}).status_code == 403
     adm = entrar("admin.a@teste.com")
