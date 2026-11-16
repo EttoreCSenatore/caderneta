@@ -211,3 +211,8 @@ export type Anotacao = {
   visivel_responsaveis: boolean; editavel: boolean; versao?: number; removida?: boolean;
 };
 export type VersaoAnotacao = {versao: number; tipo: TipoAnotacao; corpo: string; visivel_responsaveis: boolean; editado_por: string | null; criado_em: string};
+
+export type ItemDesligado = {status: 'aguardando' | 'avisado' | 'concluido'; prevista: string | null; dias_restantes: number | null; avisado_em: string | null; concluido_em: string | null; desligado_em: string; adiado: boolean};
+export type AlunoDesligado = ItemDesligado & {id: string; nome: string; situacao: string};
+export type UsuarioDesligado = ItemDesligado & {perfil_id: string; nome: string; papel: Papel};
+export type Desligados = {config: {retencao_aluno_dias: number; retencao_usuario_dias: number; aviso_dias: number}; alunos: AlunoDesligado[]; usuarios: UsuarioDesligado[]};

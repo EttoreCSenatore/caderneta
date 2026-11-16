@@ -8,7 +8,7 @@ de advogado(a) ou do encarregado.
 | # | Pri | Lacuna | Marco sugerido |
 |---|---|---|---|
 | T1 | P1 | **Direitos dos titulares (art. 18)**: não há exportação nem pedido de correção/eliminação de dados de um titular | M8 (DSAR) |
-| T2 | P1 | **Retenção e eliminação**: feita só para `notificacao` (90/180 dias, M3.4). Faltam sessões, auditoria, mensagens, avisos e demais tabelas | M8 |
+| T2 | P1 | **Retenção e eliminação**: feita para notificações, arquivos, anotações removidas, push e **desligados** (alunos e contas). Faltam sessões, auditoria e IP, avisos e mensagens de alunos ativos | M8 |
 | T3 | P1 | Texto livre sem proteção específica: justificativa de falta (`frequencia`) e mensagens podem conter dado de saúde. Avaliar aviso na tela, campo estruturado ou cifragem | M8 |
 | T4 | P2 | **CPF do aluno** guardado sem cifragem (`aluno.cpf`). Tornar opcional por escola e/ou cifrar | M8 |
 | T5 | P2 | IP e user agent em `sessao` e `auditoria`: definir prazo, mascarar ou truncar após o período do Marco Civil (art. 15) | M8 |
@@ -23,12 +23,14 @@ de advogado(a) ou do encarregado.
 | T16 | P1 | **Anexos de mensagens podem trazer dado de saúde** (atestado, laudo). Definir a base legal (consentimento do responsável, art. 11, I) e avisar na tela; considerar prazo menor para esses anexos | M8 |
 | T17 | P2 | Conversor LibreOffice: rodar em contêiner sem rede e sem privilégios no servidor de produção | M8 |
 | T15 | P3 | Orientar professores a **não escrever nomes de alunos** em provas adaptadas e no campo de observações | M8 |
-| T18 | P1 | **Retenção das anotações mantidas**: hoje só a removida some (30 dias). Definir prazo (ex.: enquanto matriculado + N anos) e aplicar às versões antigas | M8 |
+| T18 | P1 | **Retenção das anotações mantidas**: a anotação some 30 dias após remover e **com o apagamento do aluno desligado** (T23). Falta definir prazo para o aluno que continua matriculado | M8 |
 | T19 | P1 | [jurídico] **Direito de acesso (art. 18, II)**: o responsável tem direito aos dados do filho, o que inclui anotações pedagógicas e reservadas, hoje invisíveis a ele. Definir o procedimento (pedido ao encarregado) e eventuais limites legítimos | M8 |
+| T24 | P2 | O **apagamento de aluno** não alcança backups. Documentar que o backup expira no próprio ciclo e que uma restauração precisa reaplicar o apagamento | M9 |
+| T25 | P3 | **Anonimização manual de usuário** não está na API (a conta é de outro titular e o RLS impede). Hoje só o worker faz, com aviso. Avaliar fluxo para pedido do titular (DSAR) | M8 |
 | T20 | P2 | **Correção e eliminação x versões**: pedido de correção/eliminação precisa apagar também as versões antigas (hoje só a remoção pela autora/equipe). Incluir no DSAR (T1) | M8 |
 | T21 | P2 | Rota pública de conferência do histórico (`/api/historico/verificar`): sem limite de taxa. O código tem 48 bits, mas adicionar limite por IP e registro de tentativas | M8 |
 | T22 | P2 | [jurídico/pedagógico] O PDF é informativo. Confirmar com a rede de ensino o **modelo oficial** do histórico escolar (campos obrigatórios, assinatura, validade) antes de o piloto tratá-lo como documento de transferência | M8 |
-| T23 | P1 | **Sessão de desligados** (decisão do responsável): área separada de alunos e funcionários desligados com **apagamento depois de um tempo e aviso antes**. Desenho proposto: (1) **núcleo histórico mantido** do aluno: identificação, matrículas, médias finais e frequência (base do histórico escolar); (2) **apagados após o prazo**: ficha de saúde, anotações e versões, mensagens e anexos, contatos dos responsáveis, respostas de autorizações, CPF; (3) funcionário: conta **anonimizada** (nome, e-mail, telefone, 2FA, sessões, tokens), mantendo a autoria como "ex-funcionário"; (4) **aviso 30 dias antes** à direção (no app e e-mail sem conteúdo) com opção de **manter** ou **adiar**, tudo auditado; (5) prazos configuráveis por escola. [jurídico] confirmar o prazo mínimo de guarda do histórico escolar | M8 |
+| T23 | P1 | ~~Sessão de desligados~~ **feita**. Falta o parecer jurídico: (1) prazos padrão (365 e 180 dias) e (2) **prazo mínimo de guarda do histórico escolar** da rede de ensino, que define o que o núcleo mantido pode conter e por quanto tempo | M8 |
 | T10 | P3 | Registro de consentimento versionado (ledger), se alguma atividade usar consentimento | M8 |
 
 ## Organizacionais e jurídicas

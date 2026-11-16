@@ -303,6 +303,7 @@ def notifica_aviso(db: Session, aviso, agora: datetime | None = None) -> int:
 
 def processar(db: Session, agora: datetime | None = None) -> dict[str, int]:
     """Uma rodada do worker: libera avisos agendados, envia e-mails devidos e aplica a retenção."""
+    from app.desligados import processa_desligados
     from app.retencao import elimina_vencidos
 
     r = {
@@ -311,4 +312,5 @@ def processar(db: Session, agora: datetime | None = None) -> dict[str, int]:
         "apagadas": limpa_antigas(db, agora),
         "inscricoes_apagadas": limpa_inscricoes(db, agora),
     } | envia_pushes(db, agora)
-    return r | {f"eliminados_{k}": v for k, v in elimina_vencidos(db, agora).items()}
+    r |= {f"eliminados_{k}": v for k, v in elimina_vencidos(db, agora).items()}
+    return r | {f"desligados_{k}": v for k, v in processa_desligados(db, agora).items()}

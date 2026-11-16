@@ -131,7 +131,7 @@ junto com o texto da Lei nº 13.709/2018 e as orientações da ANPD.
 - [ ] **Dados de saúde** (sensíveis): finalidade restrita, acesso mínimo, criptografia e trilha de acesso, já implementados e a revisar
 - [ ] **RIPD** (Relatório de Impacto à Proteção de Dados), com os riscos e as medidas
 - [ ] **Direitos dos titulares** (art. 18): acesso, correção, anonimização, portabilidade, eliminação e informação sobre compartilhamento, com tela ou fluxo e prazo de resposta
-- [ ] **Sessão de desligados** (decisão do responsável): área separada para **alunos e funcionários desligados**, com contagem regressiva, **aviso antes** de apagar e opção de manter. O que fica e o que sai está em `.lgpd/gaps.md` (T23)
+- [x] **Sessão de desligados** (decisão do responsável): área separada para alunos e usuários desligados, com contagem regressiva, **aviso antes** de apagar e opção de adiar. Veja [Desligados](./funcionalidades/desligados.md). Falta confirmar com o jurídico o prazo mínimo de guarda do histórico escolar
 - [ ] **Retenção e eliminação**: prazos por tipo de dado, respeitando a guarda obrigatória do histórico escolar; rotina de descarte
 - [ ] **Encarregado (DPO)** nomeado pela escola, com canal público de contato
 - [ ] **Operadores e suboperadores**: contratos de operação de dados com a escola e com provedores (hospedagem, e-mail, push); transferência internacional de dados, se houver, com mecanismo legal
@@ -202,6 +202,11 @@ Veja [Histórico e anotações](./funcionalidades/historico-e-anotacoes.md).
 - [x] Acesso a alunos e turmas só pelo ano letivo aberto (privacidade na virada)
 - [x] M6.2: anotações versionadas (pedagógica, ocorrência, elogio, reservada) com visibilidade por tipo, auditoria da reservada e eliminação 30 dias após remover
 - [x] M6.3: histórico escolar em PDF (gerador próprio, [ADR 0005](./decisoes/pdf-proprio.md)), emissão registrada e conferência pública do código
+
+## Retenção de desligados (feito antes do M8)
+
+- [x] Apagamento dos dados complementares do aluno e anonimização de contas, com prazos por escola, aviso antes e adiamento
+- [ ] Parecer jurídico sobre os prazos padrão (365 e 180 dias) e sobre o prazo mínimo de guarda do histórico
 
 ## Depois do piloto (ideias)
 
