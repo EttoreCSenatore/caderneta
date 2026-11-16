@@ -13,7 +13,7 @@ de advogado(a) ou do encarregado.
 | T4 | P2 | **CPF do aluno** guardado sem cifragem (`aluno.cpf`). Tornar opcional por escola e/ou cifrar | M8 |
 | T5 | P2 | IP e user agent em `sessao` e `auditoria`: definir prazo, mascarar ou truncar após o período do Marco Civil (art. 15) | M8 |
 | T6 | P2 | Contas de alunos: definir o que o aluno vê e se há mecanismo de supervisão parental (ECA Digital) | M3.4 / M8 |
-| T7 | P2 | ~~E-mail de notificação mínimo, horário silencioso e e-mail só para adultos~~ **feito no M3.4**. Falta o push: o endpoint identifica o aparelho, então decidir base legal, consentimento e retenção antes | M3 |
+| T7 | P2 | ~~Push~~ **feito** (M3.5): vazio, sem aluno, retenção do aparelho. Falta classificar o papel dos serviços de push e a transferência internacional (A014) | M8 |
 | T8 | P2 | Backups cifrados e teste de restauração; backup também precisa respeitar eliminação | M9 |
 | T9 | P3 | Trilha de auditoria com encadeamento de hash (hoje é só append-only por permissão) | M8 |
 | T11 | P2 | Link iCal é credencial sem validade: definir expiração (ex.: 1 ano) e aviso para renovar; revisar cabeçalho `Referrer` e log de acesso ao feed | M8 |
@@ -28,6 +28,7 @@ de advogado(a) ou do encarregado.
 | T20 | P2 | **Correção e eliminação x versões**: pedido de correção/eliminação precisa apagar também as versões antigas (hoje só a remoção pela autora/equipe). Incluir no DSAR (T1) | M8 |
 | T21 | P2 | Rota pública de conferência do histórico (`/api/historico/verificar`): sem limite de taxa. O código tem 48 bits, mas adicionar limite por IP e registro de tentativas | M8 |
 | T22 | P2 | [jurídico/pedagógico] O PDF é informativo. Confirmar com a rede de ensino o **modelo oficial** do histórico escolar (campos obrigatórios, assinatura, validade) antes de o piloto tratá-lo como documento de transferência | M8 |
+| T23 | P1 | **Sessão de desligados** (decisão do responsável): área separada de alunos e funcionários desligados com **apagamento depois de um tempo e aviso antes**. Desenho proposto: (1) **núcleo histórico mantido** do aluno: identificação, matrículas, médias finais e frequência (base do histórico escolar); (2) **apagados após o prazo**: ficha de saúde, anotações e versões, mensagens e anexos, contatos dos responsáveis, respostas de autorizações, CPF; (3) funcionário: conta **anonimizada** (nome, e-mail, telefone, 2FA, sessões, tokens), mantendo a autoria como "ex-funcionário"; (4) **aviso 30 dias antes** à direção (no app e e-mail sem conteúdo) com opção de **manter** ou **adiar**, tudo auditado; (5) prazos configuráveis por escola. [jurídico] confirmar o prazo mínimo de guarda do histórico escolar | M8 |
 | T10 | P3 | Registro de consentimento versionado (ledger), se alguma atividade usar consentimento | M8 |
 
 ## Organizacionais e jurídicas

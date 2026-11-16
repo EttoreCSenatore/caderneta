@@ -34,8 +34,18 @@ def notificar() -> None:
     print(
         f"avisos liberados: {r['avisos']} · e-mails enviados: {r['emails']} · notificações apagadas: {r['apagadas']}"
         f" · pedidos eliminados: {r['eliminados_pedidos']} · anexos: {r['eliminados_anexos']}"
-        f" · arquivos órfãos: {r['eliminados_orfaos']}"
+        f" · arquivos órfãos: {r['eliminados_orfaos']} · pushes: {r['pushes']}"
     )
+
+
+def gerar_vapid() -> None:
+    from app.push import gerar_chaves
+
+    privada, publica = gerar_chaves()
+    print("Coloque no ambiente da API (a chave privada é segredo e não vai para o Git):")
+    print(f"CADERNETA_VAPID_PRIVATE_KEY={privada}")
+    print(f"CADERNETA_VAPID_PUBLIC_KEY={publica}")
+    print("CADERNETA_VAPID_SUBJECT=mailto:contato-de-privacidade@sua-escola.com.br")
 
 
 def main() -> None:
@@ -45,12 +55,15 @@ def main() -> None:
     c.add_argument("nome")
     c.add_argument("email")
     c.add_argument("nome_admin")
+    sub.add_parser("gerar-vapid", help="gera as chaves do push (VAPID)")
     sub.add_parser("notificar", help="worker de notificações (agendados, e-mails, retenção)")
     a = p.parse_args()
     if a.cmd == "criar-escola":
         criar_escola(a.nome, a.email, a.nome_admin)
     elif a.cmd == "notificar":
         notificar()
+    elif a.cmd == "gerar-vapid":
+        gerar_vapid()
 
 
 if __name__ == "__main__":

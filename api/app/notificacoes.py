@@ -134,6 +134,7 @@ def notificar(
     n = 0
     for u in db.scalars(select(Usuario).where(Usuario.id.in_(alvo), Usuario.ativo.is_(True))):
         quer_email = u.notif_email and u.id not in so_aluno
+        quer_push = u.id not in so_aluno  # contas de aluno (menores) não recebem push; o worker confere se há aparelho
         db.add(
             Notificacao(
                 escola_id=escola_id,
@@ -144,7 +145,10 @@ def notificar(
                 url=url,
                 criado_em=agora,
                 email_pendente=quer_email,
-                enviar_apos=proximo_envio(agora, fuso, u.silencio_inicio, u.silencio_fim) if quer_email else None,
+                push_pendente=quer_push,
+                enviar_apos=(
+                    proximo_envio(agora, fuso, u.silencio_inicio, u.silencio_fim) if quer_email or quer_push else None
+                ),
             )
         )
         n += 1
@@ -190,6 +194,67 @@ def envia_emails(db: Session, agora: datetime | None = None) -> int:
             i.email_enviado_em = agora
             i.email_pendente = False
     return enviados
+
+
+def envia_pushes(db: Session, agora: datetime | None = None) -> dict[str, int]:
+    """Um push vazio por aparelho de quem tem novidade não lida e já passou do horário silencioso.
+
+    Aparelho que responde 404/410 não existe mais e a inscrição é apagada. Falha temporária mantém a pendência para a
+    próxima rodada. Quem não tem aparelho cadastrado simplesmente encerra a pendência.
+    """
+    from app import push
+    from app.models import PushInscricao
+
+    agora = agora or datetime.now(UTC)
+    if not push.ativo():
+        return {"pushes": 0, "inscricoes_removidas": 0}
+    pendentes = list(
+        db.scalars(
+            select(Notificacao).where(
+                Notificacao.push_pendente.is_(True),
+                Notificacao.push_enviado_em.is_(None),
+                Notificacao.enviar_apos <= agora,
+            )
+        )
+    )
+    por_usuario: dict[uuid.UUID, list[Notificacao]] = {}
+    for n in pendentes:
+        por_usuario.setdefault(n.usuario_id, []).append(n)
+    enviados = removidas = 0
+    for uid, itens in por_usuario.items():
+        falhou = False
+        nao_lidas = any(i.lida_em is None for i in itens)
+        u = db.get(Usuario, uid)
+        if nao_lidas and u and u.ativo:
+            for ins in list(db.scalars(select(PushInscricao).where(PushInscricao.usuario_id == uid))):
+                status = push.envia(ins.endpoint)
+                if status in (404, 410):
+                    db.delete(ins)
+                    removidas += 1
+                elif 200 <= status < 300:
+                    ins.ultimo_uso_em = agora
+                    enviados += 1
+                else:
+                    falhou = True
+        if not falhou:
+            for i in itens:
+                i.push_pendente, i.push_enviado_em = False, agora
+    return {"pushes": enviados, "inscricoes_removidas": removidas}
+
+
+def limpa_inscricoes(db: Session, agora: datetime | None = None) -> int:
+    """Retenção: inscrição sem uso há `retencao_push_dias` ou de conta desativada é apagada."""
+    from app.models import PushInscricao
+
+    agora = agora or datetime.now(UTC)
+    corte = agora - timedelta(days=get_settings().retencao_push_dias)
+    r = db.execute(
+        delete(PushInscricao).where(
+            (PushInscricao.ultimo_uso_em < corte)
+            | PushInscricao.usuario_id.in_(select(Usuario.id).where(Usuario.ativo.is_(False)))
+        )
+    )
+    return r.rowcount or 0
 
 
 def limpa_antigas(db: Session, agora: datetime | None = None) -> int:
@@ -244,5 +309,6 @@ def processar(db: Session, agora: datetime | None = None) -> dict[str, int]:
         "avisos": publica_agendados(db, agora),
         "emails": envia_emails(db, agora),
         "apagadas": limpa_antigas(db, agora),
-    }
+        "inscricoes_apagadas": limpa_inscricoes(db, agora),
+    } | envia_pushes(db, agora)
     return r | {f"eliminados_{k}": v for k, v in elimina_vencidos(db, agora).items()}

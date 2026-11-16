@@ -551,6 +551,8 @@ class Notificacao(Base):
     email_pendente: Mapped[bool] = mapped_column(Boolean, default=False)
     enviar_apos: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     email_enviado_em: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    push_pendente: Mapped[bool] = mapped_column(Boolean, default=False)
+    push_enviado_em: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
 
 class AlertaFalta(Base):
@@ -745,3 +747,14 @@ class HistoricoEmitido(Base):
     resumo_sha256: Mapped[str] = mapped_column(String(64))
 
     emissor: Mapped[Usuario | None] = relationship(lazy="joined")
+
+
+class PushInscricao(Base):
+    """Aparelho que aceitou receber push. Só o endereço do serviço de push é guardado (a mensagem não leva conteúdo)."""
+
+    __tablename__ = "push_inscricao"
+    id: Mapped[uuid.UUID] = _id()
+    usuario_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("usuario.id", ondelete="CASCADE"), index=True)
+    endpoint: Mapped[str] = mapped_column(String(1000), unique=True)
+    criado_em: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=agora)
+    ultimo_uso_em: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=agora)

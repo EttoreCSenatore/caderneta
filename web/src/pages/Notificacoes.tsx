@@ -3,10 +3,41 @@ import {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router';
 import {Carregando, Erro, Vazio} from '../components/ui';
 import {api} from '../lib/api';
+import {ativarPush, desativarPush, inscricaoAtual, pushSuportado, type ConfigPush} from '../lib/push';
 import type {Notificacao, PreferenciasNotif} from '../lib/tipos';
 
 const quando = (iso: string) => new Date(iso).toLocaleString('pt-BR', {dateStyle: 'short', timeStyle: 'short'});
 const ROTULO: Record<string, string> = {aviso: 'Aviso', autorizacao: 'Autorização', mensagem: 'Mensagem', nota: 'Nota', falta: 'Faltas', lembrete: 'Lembrete'};
+
+function PushAparelho() {
+  const qc = useQueryClient();
+  const cfg = useQuery({queryKey: ['push-config'], queryFn: () => api<ConfigPush>('/push/config')});
+  const ins = useQuery({queryKey: ['push-inscrito'], queryFn: async () => !!(await inscricaoAtual()), enabled: pushSuportado()});
+  const liga = useMutation({mutationFn: () => ativarPush(cfg.data!), onSuccess: () => qc.invalidateQueries({queryKey: ['push-inscrito']})});
+  const desliga = useMutation({mutationFn: desativarPush, onSuccess: () => qc.invalidateQueries({queryKey: ['push-inscrito']})});
+  if (!cfg.data) return null;
+  let corpo;
+  if (!cfg.data.permitido) corpo = <p className="suave pequeno" style={{margin: 0}}>Contas de alunos usam só as notificações dentro do app, sem aviso no aparelho.</p>;
+  else if (!cfg.data.ativo) corpo = <p className="suave pequeno" style={{margin: 0}}>O aviso no aparelho ainda não foi ativado neste servidor.</p>;
+  else if (!pushSuportado()) corpo = <p className="suave pequeno" style={{margin: 0}}>Este navegador não oferece aviso no aparelho. No iPhone, instale o app na tela inicial (iOS 16.4 ou mais novo).</p>;
+  else corpo = (
+    <div className="linha">
+      {ins.data ? (
+        <><span className="selo verde">Ativado neste aparelho</span><button className="botao secundario pequeno" disabled={desliga.isPending} onClick={() => desliga.mutate()}>Desativar</button></>
+      ) : (
+        <button className="botao pequeno" disabled={liga.isPending} onClick={() => liga.mutate()}>Ativar neste aparelho</button>
+      )}
+    </div>
+  );
+  return (
+    <div className="cartao pilha">
+      <h2 style={{fontSize: '1.1rem', margin: 0}}>Aviso no aparelho (push)</h2>
+      <p className="suave pequeno" style={{margin: 0}}>O aviso não mostra o conteúdo: só diz "Você tem novidades" e abre o app, onde tudo fica atrás do seu login. Nenhum texto passa pelo Google, pela Apple ou pela Mozilla. Respeita o horário silencioso e é desligado quando você sai do app.</p>
+      {corpo}
+      <Erro erro={liga.error || desliga.error} />
+    </div>
+  );
+}
 
 function Preferencias() {
   const qc = useQueryClient();
@@ -70,7 +101,7 @@ export default function Notificacoes() {
           </button>
         ))}
       </div>
-      <div style={{marginTop: '1.5rem'}}><Preferencias /></div>
+      <div className="pilha" style={{marginTop: '1.5rem'}}><Preferencias /><PushAparelho /></div>
       <p className="suave pequeno">Notificações lidas somem após 90 dias, e as não lidas após 180.</p>
     </>
   );

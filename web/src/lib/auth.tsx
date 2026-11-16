@@ -1,4 +1,5 @@
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
+import {desativarPush} from './push';
 import {api, ApiError} from './api';
 import type {Me, Papel} from './tipos';
 
@@ -34,7 +35,11 @@ export function useTrocaPerfil() {
 export function useSair() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: () => api('/auth/logout', {method: 'POST'}),
+    // ao sair, este aparelho deixa de receber push (podem ser vários usuários no mesmo navegador)
+    mutationFn: async () => {
+      await desativarPush().catch(() => undefined);
+      return api('/auth/logout', {method: 'POST'});
+    },
     onSettled: () => {
       qc.clear();
       window.location.assign('/entrar');

@@ -25,6 +25,8 @@ export default defineConfig({
       },
       workbox: {
         // Dados da API nunca vão para o cache do service worker (são pessoais).
+        // eventos de push (aviso genérico, sem conteúdo)
+        importScripts: ['push-sw.js'],
         navigateFallbackDenylist: [/^\/api\//],
         runtimeCaching: [],
       },

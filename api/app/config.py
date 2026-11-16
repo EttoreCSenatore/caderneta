@@ -47,6 +47,12 @@ class Settings(BaseSettings):
     conversor: str = "off"  # off | libreoffice
     soffice_path: str = "soffice"
     conversor_timeout_s: int = 60
+    # Push (Web Push com VAPID, sem conteúdo na mensagem). Gere as chaves com `python -m app.cli gerar-vapid`.
+    vapid_private_key: str = ""
+    vapid_public_key: str = ""
+    vapid_subject: str = "mailto:privacidade@caderneta.local"
+    push_hosts_extra: str = ""  # hosts extras permitidos (separados por vírgula), só para testes e ambientes internos
+    retencao_push_dias: int = 90  # inscrição de aparelho sem uso é apagada
     # Retenção (dias). Aplicada pelo worker `app.cli notificar`.
     retencao_pedidos_dias: int = 365  # depois da data de aplicação
     retencao_rascunho_dias: int = 90  # rascunho parado
