@@ -39,3 +39,26 @@ export async function api<T = unknown>(path: string, opts: Opts = {}): Promise<T
   if (!res.ok) throw new ApiError(res.status, mensagem((data as {detail?: unknown})?.detail));
   return data as T;
 }
+
+/** Baixa um arquivo gerado pela API (POST) e entrega ao navegador como download. */
+export async function baixarArquivo(path: string, nomePadrao: string): Promise<void> {
+  let res: Response;
+  try {
+    res = await fetch(`/api${path}`, {method: 'POST', headers: {'X-Caderneta': '1'}, credentials: 'same-origin'});
+  } catch {
+    throw new ApiError(0, 'Sem conexão. Verifique a internet.');
+  }
+  if (!res.ok) {
+    const data = res.headers.get('content-type')?.includes('json') ? await res.json() : null;
+    throw new ApiError(res.status, mensagem((data as {detail?: unknown} | null)?.detail));
+  }
+  const nome = /filename="([^"]+)"/.exec(res.headers.get('content-disposition') ?? '')?.[1] ?? nomePadrao;
+  const url = URL.createObjectURL(await res.blob());
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = nome;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 10000);
+}

@@ -26,6 +26,8 @@ de advogado(a) ou do encarregado.
 | T18 | P1 | **Retenção das anotações mantidas**: hoje só a removida some (30 dias). Definir prazo (ex.: enquanto matriculado + N anos) e aplicar às versões antigas | M8 |
 | T19 | P1 | [jurídico] **Direito de acesso (art. 18, II)**: o responsável tem direito aos dados do filho, o que inclui anotações pedagógicas e reservadas, hoje invisíveis a ele. Definir o procedimento (pedido ao encarregado) e eventuais limites legítimos | M8 |
 | T20 | P2 | **Correção e eliminação x versões**: pedido de correção/eliminação precisa apagar também as versões antigas (hoje só a remoção pela autora/equipe). Incluir no DSAR (T1) | M8 |
+| T21 | P2 | Rota pública de conferência do histórico (`/api/historico/verificar`): sem limite de taxa. O código tem 48 bits, mas adicionar limite por IP e registro de tentativas | M8 |
+| T22 | P2 | [jurídico/pedagógico] O PDF é informativo. Confirmar com a rede de ensino o **modelo oficial** do histórico escolar (campos obrigatórios, assinatura, validade) antes de o piloto tratá-lo como documento de transferência | M8 |
 | T10 | P3 | Registro de consentimento versionado (ledger), se alguma atividade usar consentimento | M8 |
 
 ## Organizacionais e jurídicas

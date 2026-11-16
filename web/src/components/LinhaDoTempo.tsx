@@ -1,5 +1,5 @@
-import {useQuery} from '@tanstack/react-query';
-import {api} from '../lib/api';
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
+import {api, baixarArquivo} from '../lib/api';
 import {NOME_SITUACAO, numBR} from '../lib/formato';
 import type {LinhaTempo} from '../lib/tipos';
 import {Carregando, Erro, Vazio} from './ui';
@@ -9,13 +9,32 @@ const num = (v: number | string | null | undefined) => (v === null || v === unde
 
 /** Um cartão por ano letivo: turma, resultado e, quando o perfil pode ver, médias finais e frequência. */
 export function LinhaDoTempo({alunoId}: {alunoId: string}) {
+  const qc = useQueryClient();
   const q = useQuery({queryKey: ['linha-do-tempo', alunoId], queryFn: () => api<LinhaTempo>(`/alunos/${alunoId}/linha-do-tempo`)});
+  const equipe = q.data?.equipe ?? false;
+  const emitidos = useQuery({queryKey: ['historicos-emitidos', alunoId], queryFn: () => api<{codigo: string; emitido_em: string; emitido_por: string | null}[]>(`/alunos/${alunoId}/historicos-emitidos`), enabled: equipe});
+  const emite = useMutation({
+    mutationFn: () => baixarArquivo(`/alunos/${alunoId}/historico-escolar`, 'historico-escolar.pdf'),
+    onSuccess: () => qc.invalidateQueries({queryKey: ['historicos-emitidos', alunoId]}),
+  });
   if (q.isLoading) return <Carregando />;
   if (q.error) return <Erro erro={q.error} />;
   const t = q.data!;
   if (t.anos.length === 0) return <Vazio>Sem matrículas registradas.</Vazio>;
   return (
     <div className="pilha">
+      {t.equipe && (
+        <div className="cartao pilha">
+          <div className="linha entre">
+            <div><strong>Histórico escolar em PDF</strong><div className="suave pequeno">Para transferência. Cada emissão fica registrada e leva um código de conferência.</div></div>
+            <button className="botao" disabled={emite.isPending} onClick={() => emite.mutate()}>Emitir PDF</button>
+          </div>
+          <Erro erro={emite.error} />
+          {emitidos.data && emitidos.data.length > 0 && (
+            <div className="suave pequeno">Emitidos: {emitidos.data.map((h) => `${h.codigo} (${new Date(h.emitido_em).toLocaleDateString('pt-BR')}, ${h.emitido_por})`).join(' · ')}</div>
+          )}
+        </div>
+      )}
       {t.so_publicadas && <p className="suave pequeno" style={{margin: 0}}>Aparecem só as notas que os professores publicaram.</p>}
       {[...t.anos].reverse().map((a) => (
         <article key={a.ano_letivo_id} className="cartao">
@@ -23,7 +42,7 @@ export function LinhaDoTempo({alunoId}: {alunoId: string}) {
             <h2 style={{fontSize: '1.15rem', margin: 0}}>{a.ano} · {a.turma}</h2>
             <div className="linha">
               <span className={`selo ${COR[a.situacao] ?? ''}`}>{NOME_SITUACAO[a.situacao] ?? a.situacao}</span>
-              {!a.encerrado && <span className="selo">Em andamento</span>}
+              {a.situacao === 'cursando' && <span className="selo">Em andamento</span>}
             </div>
           </div>
           <div className="suave pequeno">{a.serie}{t.notas_visiveis && a.frequencia_geral != null && ` · frequência geral ${num(a.frequencia_geral)}%`}</div>

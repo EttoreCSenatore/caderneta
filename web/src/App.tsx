@@ -22,6 +22,7 @@ const Notificacoes = lazy(() => import('./pages/Notificacoes'));
 const Calendario = lazy(() => import('./pages/Calendario'));
 const Provas = lazy(() => import('./pages/Provas'));
 const Virada = lazy(() => import('./pages/Virada'));
+const Verificar = lazy(() => import('./pages/Verificar'));
 const Diario = lazy(() => import('./pages/Diario'));
 
 /** Guarda: leva o usuário à etapa pendente (entrar, código, 2FA, perfil) antes do app. */
@@ -44,6 +45,8 @@ export function App() {
         <Route path="/esqueci-senha" element={<Esqueci />} />
         <Route path="/redefinir-senha" element={<Redefinir />} />
         <Route path="/convite/:token" element={<Convite />} />
+        <Route path="/verificar" element={<Verificar />} />
+        <Route path="/verificar/:codigo" element={<Verificar />} />
         <Route path="/configurar-2fa" element={<Configurar2fa />} />
         <Route path="/perfil" element={<EscolherPerfil />} />
         <Route element={<Protegido />}>
