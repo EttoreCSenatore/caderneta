@@ -33,11 +33,17 @@ A API (Python) e o app web usam componentes de código aberto com licenças perm
 O CI verifica a cada alteração (`scripts/auditar-licencas.py`) e **reprova** a mudança se entrar uma dependência de runtime com licença desconhecida, proprietária ou
 incompatível (por exemplo GPL-2.0 apenas, SSPL ou "uso não comercial").
 
+## Documentação e imagens
+
+O texto do site de documentação e os screenshots (feitos só com dados fictícios) estão sob a licença
+[**Creative Commons Atribuição-CompartilhaIgual 4.0 Internacional (CC BY-SA 4.0)**](https://creativecommons.org/licenses/by-sa/4.0/deed.pt-br).
+Você pode copiar, adaptar e redistribuir, inclusive para fins comerciais, desde que **dê o crédito** e **mantenha a mesma licença** nas versões derivadas. É o equivalente,
+para textos e imagens, do espírito da AGPL. O aviso está em [`LICENSE-DOCS.md`](https://github.com/EttoreCSenatore/caderneta/blob/main/LICENSE-DOCS.md).
+
 ## O que ainda está em aberto
 
-- **Documentação e imagens:** o texto do site e os screenshots (com dados fictícios) ainda não têm uma licença própria definida. Até a decisão, valem os direitos
-  reservados do projeto. A decisão (por exemplo CC BY 4.0 ou a própria AGPL) fica para o [M8](./roadmap.md#m8-conformidade-e-segurança).
-- **Nome e logotipo "Caderneta":** a licença cobre o código, **não** a marca. A checagem de disponibilidade e o registro (INPI) também estão no M8.
+- **Nome e logotipo "Caderneta":** a licença cobre o código e a documentação, **não** a marca. O registro no INPI é opcional e não será feito por enquanto; antes do
+  piloto basta uma consulta rápida e gratuita à base do INPI, porque o serviço de instalação é comercial. Se houver conflito, o nome pode ser trocado.
 - **Copyright:** o aviso usa o usuário do GitHub do responsável. Ajuste para o nome legal da pessoa ou da organização titular antes do piloto.
 
 :::note Aviso

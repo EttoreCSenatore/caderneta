@@ -30,7 +30,7 @@ de advogado(a) ou do encarregado.
 | T20 | P2 | **Correção e eliminação x versões**: pedido de correção/eliminação precisa apagar também as versões antigas (hoje só a remoção pela autora/equipe). Incluir no DSAR (T1) | M8 |
 | T21 | P2 | Rota pública de conferência do histórico (`/api/historico/verificar`): sem limite de taxa. O código tem 48 bits, mas adicionar limite por IP e registro de tentativas | M8 |
 | T22 | P2 | [jurídico/pedagógico] O PDF é informativo. Confirmar com a rede de ensino o **modelo oficial** do histórico escolar (campos obrigatórios, assinatura, validade) antes de o piloto tratá-lo como documento de transferência | M8 |
-| T23 | P1 | ~~Sessão de desligados~~ **feita**. Falta o parecer jurídico: (1) prazos padrão (365 e 180 dias) e (2) **prazo mínimo de guarda do histórico escolar** da rede de ensino, que define o que o núcleo mantido pode conter e por quanto tempo | M8 |
+| T23 | P1 | ~~Sessão de desligados~~ **feita**. Decisão do responsável: padrão **365 dias** (aluno) e 180 (usuário), configuráveis por escola no software; avaliar prazo menor só para saúde. Falta o parecer jurídico sobre (1) esses prazos e (2) **prazo mínimo de guarda do histórico escolar** da rede de ensino, que define o que o núcleo mantido pode conter e por quanto tempo | M8 |
 | T10 | P3 | Registro de consentimento versionado (ledger), se alguma atividade usar consentimento | M8 |
 
 ## Organizacionais e jurídicas
@@ -46,7 +46,7 @@ de advogado(a) ou do encarregado.
 | O7 | P1 | **Política de privacidade** e termos, em linguagem simples, públicos (art. 14, §2º e §6º) |
 | O8 | P2 | Escolher hospedagem e provedor de e-mail e classificar o papel de cada um; avaliar transferência internacional |
 | O9 | P2 | Plano de resposta a incidentes e registro interno de 5 anos (Res. 15/2024, segundo a skill), com simulação |
-| O10 | P2 | ~~Escolher a licença do código~~ **feito: AGPL-3.0-or-later** (2026-11-16). Resta decidir a licença da documentação e dos screenshots e ajustar o titular do copyright |
+| O10 | P2 | ~~Escolher a licença do código~~ **feito: AGPL-3.0-or-later** (2026-11-16). Licença da documentação e dos screenshots: **CC BY-SA 4.0** (feito). Resta ajustar o titular do copyright |
 
 ## Já atendido
 
