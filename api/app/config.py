@@ -22,6 +22,10 @@ class Settings(BaseSettings):
     session_idle_hours: int = 12
     session_max_days: int = 30
     require_staff_2fa: bool = True
+    totp_anti_reuso: bool = (
+        True  # o mesmo código de 6 dígitos não vale duas vezes (desligado só nos testes que logam várias vezes)
+    )
+    rate_limit: bool = True  # limite de tentativas por IP e por e-mail (desligado só nos testes que não o exercitam)
 
     smtp_host: str = "127.0.0.1"
     smtp_port: int = 1025

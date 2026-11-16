@@ -5,7 +5,7 @@ import secrets
 import unicodedata
 import uuid
 
-from fastapi import APIRouter, Depends, HTTPException, Response
+from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from sqlalchemy import select, text
 from sqlalchemy.orm import Session
 
@@ -14,6 +14,7 @@ from app.config import get_settings
 from app.db import get_db
 from app.deps import Contexto, aluno_visivel, equipe
 from app.historico_escolar import dados_do_historico, renderiza, resumo_sha256
+from app.limite import excedeu
 from app.models import Escola, HistoricoEmitido
 from app.routers.historico import anos_do_aluno
 
@@ -93,8 +94,10 @@ def emitidos(aluno_id: uuid.UUID, ctx: Contexto = Depends(equipe)):
 
 
 @router.get("/historico/verificar/{codigo}")
-def verificar(codigo: str, db: Session = Depends(get_db, scope="function")):
+def verificar(codigo: str, request: Request, db: Session = Depends(get_db, scope="function")):
     """Público (quem confere não tem login): confirma o código e mostra só o mínimo para reconhecer o documento."""
+    if excedeu(request, "verificar-historico", 20, 60):  # 20 conferências por minuto por IP: impede adivinhar códigos
+        raise HTTPException(429, "Muitas tentativas. Tente de novo em instantes.")
     c = normaliza_codigo(codigo)
     linha = None
     if c:

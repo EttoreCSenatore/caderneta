@@ -80,6 +80,12 @@ jobs:
       - run: ruff format --check app tests
       - run: pytest -p no:warnings
       - run: pip-audit --skip-editable
+      - name: SBOM da API (CycloneDX)
+        run: pip-audit --skip-editable -f cyclonedx-json -o ../sbom-api.cdx.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sbom-api
+          path: sbom-api.cdx.json
       - name: Licenças das dependências (AGPL-3.0)
         run: python ../scripts/auditar-licencas.py --python
 
@@ -102,6 +108,12 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: npm audit --audit-level=high
+      - name: SBOM do app web (CycloneDX)
+        run: npm sbom --omit=dev --sbom-format cyclonedx > ../sbom-web.cdx.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sbom-web
+          path: sbom-web.cdx.json
       - name: Licenças das dependências (AGPL-3.0)
         run: python3 ../scripts/auditar-licencas.py --npm web
       - run: npm run build

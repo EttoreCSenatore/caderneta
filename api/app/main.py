@@ -27,6 +27,28 @@ from app.routers import (
     turmas,
 )
 
+ROTEADORES = (
+    auth,
+    convites,
+    escola,
+    turmas,
+    alunos,
+    importacao,
+    diario,
+    boletim,
+    avisos,
+    autorizacoes,
+    mensagens,
+    notificacoes,
+    calendario,
+    impressao,
+    downloads,
+    historico,
+    anotacoes,
+    historico_escolar,
+    push,
+    desligados,
+)
 METODOS_SEGUROS = {"GET", "HEAD", "OPTIONS"}
 CSRF_HEADER = "x-caderneta"
 
@@ -53,28 +75,18 @@ def create_app() -> FastAPI:
         response.headers["X-Content-Type-Options"] = "nosniff"
         response.headers["Referrer-Policy"] = "no-referrer"
         response.headers["X-Frame-Options"] = "DENY"
+        response.headers["Cross-Origin-Resource-Policy"] = "same-origin"
+        if "json" in response.headers.get("content-type", ""):  # respostas da API não carregam nada: CSP vazia
+            response.headers["Content-Security-Policy"] = "default-src 'none'; frame-ancestors 'none'"
+        if get_settings().cookie_secure:
+            response.headers["Strict-Transport-Security"] = "max-age=63072000; includeSubDomains"
         return response
 
     @app.get("/api/saude", tags=["infra"])
     def saude():
         return {"ok": True}
 
-    routers = (auth, convites, escola, turmas, alunos, importacao, diario, boletim)
-    for r in (
-        *routers,
-        avisos,
-        autorizacoes,
-        mensagens,
-        notificacoes,
-        calendario,
-        impressao,
-        downloads,
-        historico,
-        anotacoes,
-        historico_escolar,
-        push,
-        desligados,
-    ):
+    for r in ROTEADORES:
         app.include_router(r.router, prefix="/api")
     return app
 

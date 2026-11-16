@@ -154,14 +154,17 @@ O M8 é grande, então corre em etapas, cada uma com seu PR:
 
 ### Segurança
 
-- [ ] Revisão de segurança completa do código (autenticação, autorização, RLS, uploads, injeção, CSRF, cabeçalhos) e **teste de intrusão** por terceiro
-- [ ] Revisão de dependências (`pip-audit`, `npm audit`, SBOM) e política de atualização
+- [x] **M8.1** revisão de segurança do código (autenticação, autorização, RLS, uploads, injeção, CSRF, cabeçalhos): veja a [revisão](./tecnico/revisao-de-seguranca.md)
+- [ ] **Teste de intrusão** por terceiro
+- [x] Dependências: `pip-audit` e `npm audit` no CI e SBOM CycloneDX gerado a cada alteração. Falta a política de atualização (cadência de revisão)
 - [ ] Gestão de segredos e chaves (rotação, separação por ambiente), cifragem em repouso e em trânsito (TLS)
 - [ ] Backups cifrados, teste de restauração, retenção alinhada à política de eliminação
 - [ ] Logs sem dados pessoais desnecessários; monitoramento e alertas
 - [ ] Revisão de permissões por perfil (princípio do menor privilégio) e dos acessos de suporte
-- [ ] Limite de taxa, bloqueio de abuso e revisão do 2FA para todos os perfis que acessam dados sensíveis
-- [ ] Checklist OWASP ASVS (nível 2) e OWASP Top 10 verificados e registrados
+- [x] Limite de taxa (login, recuperação de senha, convites, conferência do histórico), código 2FA de uso único, trocar senha e sair em todos os aparelhos
+- [ ] Decidir 2FA para professores, lista de senhas fracas e códigos de reserva do 2FA
+- [x] OWASP Top 10 verificado e registrado na [revisão](./tecnico/revisao-de-seguranca.md)
+- [ ] OWASP ASVS nível 2 completo (o pen test cobre o restante)
 
 ### Licenças
 

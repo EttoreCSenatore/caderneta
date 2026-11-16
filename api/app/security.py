@@ -96,6 +96,24 @@ def verifica_totp(secret: str, codigo: str) -> bool:
         return False
 
 
+def passo_totp(secret: str, codigo: str, ultimo: int | None) -> int | None:
+    """Passo de 30 s em que o código vale (janela de +-1), ou None. Rejeita passo já usado (reuso do mesmo código)."""
+    codigo = codigo.strip().replace(" ", "")
+    if not codigo.isdigit():
+        return None
+    if not get_settings().totp_anti_reuso:
+        ultimo = None
+    try:
+        t = pyotp.TOTP(secret)
+        agora = int(time.time()) // 30
+        for passo in (agora, agora - 1, agora + 1):
+            if hmac.compare_digest(t.at(passo * 30), codigo):
+                return passo if ultimo is None or passo > ultimo else None
+    except ValueError:  # segredo corrompido: trata como código inválido, sem erro 500
+        return None
+    return None
+
+
 def cifra_bytes(dado: bytes, contexto: str) -> bytes:
     """Como `cifra`, para arquivos: nonce (12) + texto cifrado + tag, com o contexto como dado associado."""
     nonce = os.urandom(12)

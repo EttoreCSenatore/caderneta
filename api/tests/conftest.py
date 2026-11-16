@@ -18,6 +18,8 @@ os.environ.setdefault(
 os.environ["CADERNETA_MAIL_BACKEND"] = "memory"
 os.environ["CADERNETA_STORAGE_DIR"] = tempfile.mkdtemp(prefix="caderneta-test-storage-")
 os.environ["CADERNETA_ENV"] = "test"
+os.environ["CADERNETA_RATE_LIMIT"] = "false"  # test_seguranca.py liga de volta para exercitar o limite
+os.environ["CADERNETA_TOTP_ANTI_REUSO"] = "false"
 
 import pyotp  # noqa: E402
 import pytest  # noqa: E402

@@ -242,7 +242,7 @@ export function Layout() {
           <div className="linha" style={{flexWrap: 'nowrap'}}>
             <Avatar nome={me.usuario.nome} />
             <div style={{minWidth: 0}}>
-              <div style={{fontWeight: 700, overflow: 'hidden', textOverflow: 'ellipsis'}}>{me.usuario.nome}</div>
+              <NavLink to="/conta" style={{fontWeight: 700, overflow: 'hidden', textOverflow: 'ellipsis', display: 'block', color: 'inherit'}} title="Minha conta">{me.usuario.nome}</NavLink>
               <div className="suave pequeno">{NOME_PAPEL[papel]}</div>
             </div>
           </div>
@@ -267,8 +267,9 @@ export function Layout() {
           </button>
         </header>
         <main className="conteudo">
-          <div className="so-movel" style={{marginBottom: '0.75rem'}}>
+          <div className="so-movel linha" style={{marginBottom: '0.75rem', justifyContent: 'space-between'}}>
             <TrocaPerfil />
+            <NavLink to="/conta" className="botao secundario pequeno">Minha conta</NavLink>
           </div>
           <InstalarApp />
           <FaixaOffline />

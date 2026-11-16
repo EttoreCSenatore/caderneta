@@ -35,6 +35,7 @@ const sidebars: SidebarsConfig = {
         'tecnico/arquitetura',
         'tecnico/modelo-de-dados',
         'tecnico/seguranca-e-lgpd',
+        'tecnico/revisao-de-seguranca',
         'tecnico/desenvolvimento',
       ],
     },
