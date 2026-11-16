@@ -7,7 +7,7 @@ resposta. O navegador recebia o OK do login e chamava /auth/me antes de a sessã
 from fastapi.routing import APIRoute
 
 from app.db import get_db
-from app.routers import alunos, auth, convites, escola, importacao, turmas
+from app.routers import alunos, auth, boletim, convites, diario, escola, importacao, turmas
 
 
 def _deps(dep):
@@ -18,7 +18,7 @@ def _deps(dep):
 
 def test_get_db_sempre_com_escopo_de_funcao():
     usos = 0
-    rotas = [r for m in (alunos, auth, convites, escola, importacao, turmas) for r in m.router.routes]
+    rotas = [r for m in (alunos, auth, boletim, convites, diario, escola, importacao, turmas) for r in m.router.routes]
     for rota in rotas:
         if not isinstance(rota, APIRoute):
             continue

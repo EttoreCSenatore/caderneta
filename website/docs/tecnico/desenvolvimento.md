@@ -40,6 +40,18 @@ npm test
 npm run build
 ```
 
+## Screenshots da documentação
+
+Com a API e o web app rodando e o seed aplicado:
+
+```bash
+cd web
+npm run screenshots          # todos
+npm run screenshots -- m2    # só um grupo (m1, m2)
+```
+
+As imagens vão para `website/static/img/screenshots/`. O script falha se aparecer qualquer erro no console do navegador.
+
 ## Contas de demonstração
 
 O seed cria a escola fictícia **Colégio Horizonte (demonstração)** com 136 alunos gerados aleatoriamente. As contas e a

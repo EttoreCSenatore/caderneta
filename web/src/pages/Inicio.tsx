@@ -60,16 +60,24 @@ function InicioProfessor() {
       <h2>Minhas turmas</h2>
       <div className="grade">
         {turmas.data.map((t) => (
-          <Link key={t.id} to={`/turmas/${t.id}`} className="cartao" style={{color: 'inherit', textDecoration: 'none'}}>
+          <div key={t.id} className="cartao">
             <div className="linha entre">
-              <h3 style={{fontSize: '1.3rem'}}>{t.nome}</h3>
+              <Link to={`/turmas/${t.id}`}><h3 style={{fontSize: '1.3rem', margin: 0}}>{t.nome}</h3></Link>
               <span className="selo">{t.alunos} alunos</span>
             </div>
             <div className="suave pequeno">{t.serie} · {t.turno}</div>
-            <div className="linha" style={{marginTop: '0.75rem', gap: '0.35rem'}}>
-              {t.atribuicoes.map((a) => <span key={a.id} className="selo verde">{a.disciplina}</span>)}
+            <div className="pilha" style={{marginTop: '0.75rem'}}>
+              {t.atribuicoes.map((a) => (
+                <div key={a.id} className="linha entre">
+                  <strong>{a.disciplina}</strong>
+                  <span className="linha" style={{gap: '0.35rem'}}>
+                    <Link className="botao pequeno" to={`/diario/${a.id}`}>Notas</Link>
+                    <Link className="botao secundario pequeno" to={`/diario/${a.id}?aba=chamada`}>Chamada</Link>
+                  </span>
+                </div>
+              ))}
             </div>
-          </Link>
+          </div>
         ))}
       </div>
     </>
@@ -99,7 +107,7 @@ function InicioFamilia({proprio}: {proprio: boolean}) {
       </div>
       <div className="cartao" style={{marginTop: '1rem'}}>
         <h3>Em breve por aqui</h3>
-        <p className="suave" style={{margin: 0}}>Notas, médias, faltas, avisos e o calendário da escola aparecerão nesta tela.</p>
+        <p className="suave" style={{margin: 0}}>Avisos da escola e o calendário aparecerão nesta tela. Notas e faltas já estão no boletim de cada aluno.</p>
       </div>
     </>
   );

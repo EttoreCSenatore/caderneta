@@ -12,8 +12,8 @@ adicionados às páginas de funcionalidade.
 |---|---|---|
 | **M0: Planejamento** | Visão, perfis, funcionalidades, arquitetura, modelo de dados, segurança, documentação | ✅ Concluído |
 | **M1: Fundação** | Monorepo, CI, login e perfis, escola/turmas/disciplinas, cadastro de alunos e responsáveis, importação CSV, convites | ✅ Concluído |
-| **M2: Notas, médias e frequência** | Avaliações, grade de lançamento, motor de médias configurável, boletim, chamada, fechamento de período | ⏳ Próximo |
-| **M3: Comunicação** | Avisos gerais e de turma, mensagens individuais, "ciente", autorizações, push e e-mail | Planejado |
+| **M2: Notas, médias e frequência** | Avaliações, grade de lançamento, motor de médias configurável, boletim, chamada, fechamento de período | ✅ Concluído |
+| **M3: Comunicação** | Avisos gerais e de turma, mensagens individuais, "ciente", autorizações, push e e-mail | ⏳ Próximo |
 | **M4: Calendário** | Calendário escolar e de turma, feriados nacionais, dias sem aula, iCal | Planejado |
 | **M5: Provas e impressão** | Upload, aprovação, fila de impressão com cópias calculadas, trabalhos | Planejado |
 | **M6: Histórico e anotações** | Rematrícula em lote, linha do tempo, anotações versionadas, histórico escolar em PDF | Planejado |
@@ -68,15 +68,37 @@ e [Cadastro de alunos](./funcionalidades/cadastro-de-alunos.md).
 - JavaScript inicial do web app: cerca de 100 KB (gzip), metade da meta de 200 KB.
 :::
 
-## M2: Notas, médias e frequência (próximo)
+## M2: Notas, médias e frequência (concluído)
 
-- [ ] Avaliações com peso e período; grade de lançamento com teclado e salvamento automático
-- [ ] Motor de médias configurável por escola, com testes de tabela para cada regra
-- [ ] Boletim do aluno e do responsável, publicação controlada pelo professor
-- [ ] Chamada por aula e percentual de frequência
-- [ ] Fechamento de período com alteração justificada e auditada
-- [ ] Boletim em PDF
+Veja [Notas e médias](./funcionalidades/notas-e-medias.md) e [Frequência](./funcionalidades/frequencia.md).
 
+- [x] Avaliações com peso e período; grade de lançamento com teclado e salvamento automático
+- [x] Motor de médias configurável por escola, com testes de tabela para cada regra
+- [x] Boletim do aluno e do responsável, publicação controlada pelo professor
+- [x] Chamada por aula e percentual de frequência
+- [x] Fechamento de período com correção justificada e auditada
+- [x] Boletim para impressão e PDF pelo navegador
+
+:::note Notas do M2
+- 72 testes na API (motor de médias em tabela, permissões do diário, fechamento, boletim da família, chamada,
+  regra de média e um teste que exige RLS em toda tabela escolar nova).
+- Encontrado nos testes manuais e corrigido: o boletim dava "Reprovado" com o último bimestre ainda aberto; agora a
+  situação final só sai com todos os períodos fechados. A busca de alunos passou a aceitar o nome completo. No celular,
+  tabelas largas alargavam a página; agora rolam dentro do cartão, e o boletim vira cartões por disciplina.
+- Screenshots gerados por `npm run screenshots` em `web/` (Playwright), a partir da escola de demonstração.
+- Mudanças de escopo: alertas de faltas e aviso de nota nova vão para o M3 (notificações); bloqueio de chamada em dia
+  sem aula vai para o M4 (calendário); lançamento offline vai para o M7; PDF gerado no servidor fica para o histórico
+  escolar do M6.
+:::
+
+## M3: Comunicação (próximo)
+
+- [ ] Avisos gerais (escola, segmento, grupo de turmas) e de turma, com agendamento
+- [ ] Mensagens individuais escola/professor ↔ família, com anexos
+- [ ] "Ciente" e painel de leitura para quem enviou; lembrete aos pendentes
+- [ ] Autorizações digitais (passeio, saída antecipada)
+- [ ] Notificações no app, push (PWA) e e-mail, com horário silencioso
+- [ ] Alertas de faltas (15% e 20%) e de nota nova publicada
 
 ## Depois do piloto (ideias)
 

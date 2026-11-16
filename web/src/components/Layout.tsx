@@ -21,6 +21,7 @@ const MENU: Record<Papel, Item[]> = {
     {to: '/turmas', rotulo: 'Turmas', icone: 'turmas'},
     {to: '/alunos', rotulo: 'Alunos', icone: 'alunos'},
     {to: '/equipe', rotulo: 'Equipe', icone: 'equipe'},
+    {to: '/escola', rotulo: 'Escola', icone: 'escola'},
   ],
   professor: [
     {to: '/', rotulo: 'Início', icone: 'inicio'},

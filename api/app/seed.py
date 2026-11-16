@@ -10,7 +10,8 @@ senha `caderneta-demo` para todas; a equipe usa 2FA com o segredo DEMO_TOTP abai
 import random
 import sys
 import uuid
-from datetime import date
+from datetime import date, timedelta
+from decimal import Decimal
 
 import pyotp
 from sqlalchemy import create_engine, delete, select
@@ -21,13 +22,19 @@ from app.models import (
     Aluno,
     AnoLetivo,
     Atribuicao,
+    Aula,
+    Avaliacao,
     Convite,
     Disciplina,
     Escola,
     FichaSaude,
+    Frequencia,
     Matricula,
+    Nota,
     Papel,
     Periodo,
+    StatusNota,
+    StatusPresenca,
     TipoPeriodo,
     Turma,
     Usuario,
@@ -262,7 +269,121 @@ def seed() -> None:
                             alerta_enc=cifra(alerta, f"alerta:{a.id}"),
                         )
                     )
-        print(f"Escola de demonstração criada com {n} alunos e {len(turmas)} turmas.")
+        db.flush()
+        avs, aulas = _seed_m2(db, e, ano, rnd)
+        print(f"Escola de demonstração criada com {n} alunos, {len(turmas)} turmas, {avs} avaliações e {aulas} aulas.")
+
+
+def _seed_m2(db: Session, e: Escola, ano: AnoLetivo, rnd: random.Random) -> tuple[int, int]:
+    """Ano letivo em andamento: 1º e 2º bimestres fechados, 3º completo, 4º com a primeira prova lançada."""
+    hoje = date.today()
+    periodos = list(db.scalars(select(Periodo).where(Periodo.ano_letivo_id == ano.id).order_by(Periodo.numero)))
+    for p in periodos[:2]:
+        p.fechado = True
+    nivel: dict[uuid.UUID, float] = {}
+    n_av = n_aulas = 0
+    for a in db.scalars(select(Atribuicao).where(Atribuicao.escola_id == e.id)):
+        mats = list(db.scalars(select(Matricula).where(Matricula.turma_id == a.turma_id)))
+        for m in mats:
+            nivel.setdefault(m.aluno_id, rnd.uniform(4.5, 9.6))
+        for p in periodos:
+            planos = [("Prova 1", "prova", 2, 10), ("Trabalho", "trabalho", 1, 10), ("Prova 2", "prova", 2, 10)]
+            if p.numero == 4:
+                planos = planos[:1]  # bimestre em andamento
+            for i, (nome, tipo, peso, maxima) in enumerate(planos):
+                d = p.inicio + timedelta(days=20 + 18 * i)
+                if d > hoje:
+                    continue
+                av = Avaliacao(
+                    escola_id=e.id,
+                    atribuicao_id=a.id,
+                    periodo_id=p.id,
+                    nome=nome,
+                    tipo=tipo,
+                    data=d,
+                    peso=Decimal(peso),
+                    nota_maxima=Decimal(maxima),
+                    publicada=p.numero < 4,
+                )
+                db.add(av)
+                db.flush()
+                n_av += 1
+                for m in mats:
+                    if rnd.random() < 0.03:
+                        db.add(
+                            Nota(
+                                escola_id=e.id,
+                                avaliacao_id=av.id,
+                                matricula_id=m.id,
+                                valor=None,
+                                status=StatusNota.falta_justificada,
+                            )
+                        )
+                        continue
+                    v = max(0.0, min(10.0, rnd.gauss(nivel[m.aluno_id], 1.3)))
+                    db.add(
+                        Nota(
+                            escola_id=e.id, avaliacao_id=av.id, matricula_id=m.id, valor=Decimal(str(round(v * 2) / 2))
+                        )
+                    )
+            if p.numero == 2:  # recuperação para quem ficou abaixo da média
+                rec = Avaliacao(
+                    escola_id=e.id,
+                    atribuicao_id=a.id,
+                    periodo_id=p.id,
+                    nome="Recuperação",
+                    tipo="recuperacao",
+                    recuperacao=True,
+                    data=p.fim - timedelta(days=3),
+                    peso=Decimal(1),
+                    nota_maxima=Decimal(10),
+                    publicada=True,
+                )
+                db.add(rec)
+                db.flush()
+                n_av += 1
+                for m in mats:
+                    if nivel[m.aluno_id] < 6.2:
+                        v = max(0.0, min(10.0, rnd.gauss(6.5, 1.0)))
+                        db.add(
+                            Nota(
+                                escola_id=e.id,
+                                avaliacao_id=rec.id,
+                                matricula_id=m.id,
+                                valor=Decimal(str(round(v * 2) / 2)),
+                            )
+                        )
+            # Chamada: duas aulas por semana (uma delas dupla), até hoje
+            d = p.inicio
+            while d <= min(p.fim, hoje):
+                if d.weekday() in (1, 3):
+                    q = 2 if d.weekday() == 1 else 1
+                    aula = Aula(escola_id=e.id, atribuicao_id=a.id, data=d, quantidade=q)
+                    db.add(aula)
+                    db.flush()
+                    n_aulas += 1
+                    for m in mats:
+                        r = rnd.random()
+                        faltoso = nivel[m.aluno_id] < 5.2
+                        if r < (0.12 if faltoso else 0.035):
+                            st = StatusPresenca.justificada if rnd.random() < 0.3 else StatusPresenca.falta
+                            db.add(
+                                Frequencia(
+                                    escola_id=e.id,
+                                    aula_id=aula.id,
+                                    matricula_id=m.id,
+                                    status=st,
+                                    justificativa="Atestado médico" if st == StatusPresenca.justificada else None,
+                                )
+                            )
+                        elif r < 0.05:
+                            db.add(
+                                Frequencia(
+                                    escola_id=e.id, aula_id=aula.id, matricula_id=m.id, status=StatusPresenca.atraso
+                                )
+                            )
+                d += timedelta(days=1)
+    return n_av, n_aulas
 
 
 if __name__ == "__main__":

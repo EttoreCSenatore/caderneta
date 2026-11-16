@@ -7,6 +7,7 @@ que exigiria visibilidade pela política de leitura.
 import enum
 import uuid
 from datetime import UTC, date, datetime
+from decimal import Decimal
 
 from sqlalchemy import (
     Boolean,
@@ -16,6 +17,7 @@ from sqlalchemy import (
     ForeignKey,
     Integer,
     LargeBinary,
+    Numeric,
     String,
     UniqueConstraint,
 )
@@ -285,3 +287,108 @@ class Auditoria(Base):
     detalhes: Mapped[dict | None] = mapped_column(JSONB)
     ip: Mapped[str | None] = mapped_column(String(64))
     criado_em: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=agora)
+
+
+# --- M2: notas, médias e frequência ---------------------------------------------------------------------
+
+
+class TipoMedia(enum.StrEnum):
+    aritmetica = "aritmetica"
+    ponderada = "ponderada"
+
+
+class Recuperacao(enum.StrEnum):
+    nenhuma = "nenhuma"
+    substitui_se_maior = "substitui_se_maior"
+    media = "media"
+
+
+class Arredondamento(enum.StrEnum):
+    nenhum = "nenhum"
+    decimo = "decimo"
+    meio = "meio"
+
+
+class StatusNota(enum.StrEnum):
+    normal = "normal"
+    dispensada = "dispensada"
+    falta_justificada = "falta_justificada"
+
+
+class StatusPresenca(enum.StrEnum):
+    presente = "presente"
+    falta = "falta"
+    justificada = "justificada"
+    atraso = "atraso"
+
+
+class RegraMedia(Base):
+    """Regra de cálculo da escola num ano letivo. A média nunca é digitada: sai daqui."""
+
+    __tablename__ = "regra_media"
+    ano_letivo_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("ano_letivo.id", ondelete="CASCADE"), primary_key=True)
+    escola_id: Mapped[uuid.UUID] = _escola()
+    tipo_media: Mapped[TipoMedia] = mapped_column(_enum(TipoMedia, "tipo_media"), default=TipoMedia.ponderada)
+    pesos_periodos: Mapped[list | None] = mapped_column(JSONB)  # ex.: [2, 2, 3, 3]; None = todos iguais
+    recuperacao: Mapped[Recuperacao] = mapped_column(
+        _enum(Recuperacao, "recuperacao"), default=Recuperacao.substitui_se_maior
+    )
+    arredondamento: Mapped[Arredondamento] = mapped_column(
+        _enum(Arredondamento, "arredondamento"), default=Arredondamento.decimo
+    )
+    nota_maxima: Mapped[Decimal] = mapped_column(Numeric(5, 2), default=Decimal(10))
+    media_aprovacao: Mapped[Decimal] = mapped_column(Numeric(5, 2), default=Decimal(6))
+    frequencia_minima: Mapped[int] = mapped_column(Integer, default=75)
+
+
+class Avaliacao(Base):
+    __tablename__ = "avaliacao"
+    id: Mapped[uuid.UUID] = _id()
+    escola_id: Mapped[uuid.UUID] = _escola()
+    atribuicao_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("atribuicao.id", ondelete="CASCADE"), index=True)
+    periodo_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("periodo.id", ondelete="RESTRICT"), index=True)
+    nome: Mapped[str] = mapped_column(String(80))
+    tipo: Mapped[str] = mapped_column(String(20), default="prova")  # prova, trabalho, participacao, simulado
+    data: Mapped[date | None] = mapped_column(Date)
+    peso: Mapped[Decimal] = mapped_column(Numeric(5, 2), default=Decimal(1))
+    nota_maxima: Mapped[Decimal] = mapped_column(Numeric(5, 2), default=Decimal(10))
+    recuperacao: Mapped[bool] = mapped_column(Boolean, default=False)
+    publicada: Mapped[bool] = mapped_column(Boolean, default=False)
+    criado_em: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=agora)
+
+
+class Nota(Base):
+    __tablename__ = "nota"
+    __table_args__ = (UniqueConstraint("avaliacao_id", "matricula_id"),)
+    id: Mapped[uuid.UUID] = _id()
+    escola_id: Mapped[uuid.UUID] = _escola()
+    avaliacao_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("avaliacao.id", ondelete="CASCADE"), index=True)
+    matricula_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("matricula.id", ondelete="CASCADE"), index=True)
+    valor: Mapped[Decimal | None] = mapped_column(Numeric(5, 2))
+    status: Mapped[StatusNota] = mapped_column(_enum(StatusNota, "status_nota"), default=StatusNota.normal)
+    atualizado_por: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("usuario.id", ondelete="SET NULL"))
+    atualizado_em: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=agora)
+
+
+class Aula(Base):
+    __tablename__ = "aula"
+    id: Mapped[uuid.UUID] = _id()
+    escola_id: Mapped[uuid.UUID] = _escola()
+    atribuicao_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("atribuicao.id", ondelete="CASCADE"), index=True)
+    data: Mapped[date] = mapped_column(Date)
+    quantidade: Mapped[int] = mapped_column(Integer, default=1)  # aula dupla = 2
+    conteudo: Mapped[str | None] = mapped_column(String(300))
+    criado_em: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=agora)
+
+
+class Frequencia(Base):
+    """Só ausências, atrasos e justificativas são gravados; sem linha = presente."""
+
+    __tablename__ = "frequencia"
+    __table_args__ = (UniqueConstraint("aula_id", "matricula_id"),)
+    id: Mapped[uuid.UUID] = _id()
+    escola_id: Mapped[uuid.UUID] = _escola()
+    aula_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("aula.id", ondelete="CASCADE"), index=True)
+    matricula_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("matricula.id", ondelete="CASCADE"), index=True)
+    status: Mapped[StatusPresenca] = mapped_column(_enum(StatusPresenca, "status_presenca"))
+    justificativa: Mapped[str | None] = mapped_column(String(300))

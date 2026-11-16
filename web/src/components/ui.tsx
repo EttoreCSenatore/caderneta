@@ -19,7 +19,7 @@ export function Avatar({nome, grande}: {nome: string; grande?: boolean}) {
   return <div className={`avatar${grande ? ' grande' : ''}`} aria-hidden="true">{iniciais(nome)}</div>;
 }
 
-export function Modal({titulo, aberto, fechar, children}: {titulo: string; aberto: boolean; fechar: () => void; children: ReactNode}) {
+export function Modal({titulo, aberto, fechar, children, largo}: {titulo: string; aberto: boolean; fechar: () => void; children: ReactNode; largo?: boolean}) {
   useEffect(() => {
     if (!aberto) return;
     const esc = (e: KeyboardEvent) => e.key === 'Escape' && fechar();
@@ -29,7 +29,7 @@ export function Modal({titulo, aberto, fechar, children}: {titulo: string; abert
   if (!aberto) return null;
   return (
     <div className="modal-fundo" onMouseDown={(e) => e.target === e.currentTarget && fechar()}>
-      <div className="modal" role="dialog" aria-modal="true" aria-label={titulo}>
+      <div className="modal" style={largo ? {width: 'min(960px, 100%)'} : undefined} role="dialog" aria-modal="true" aria-label={titulo}>
         <div className="linha entre" style={{marginBottom: '1rem'}}>
           <h2 style={{margin: 0}}>{titulo}</h2>
           <button className="botao secundario pequeno" onClick={fechar} aria-label="Fechar">✕</button>

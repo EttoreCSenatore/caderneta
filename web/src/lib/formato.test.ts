@@ -27,3 +27,21 @@ describe('formato', () => {
     expect(periodoAtual(p, new Date('2026-12-10T12:00:00Z'))).toBeUndefined();
   });
 });
+
+import {leNota, numBR} from './formato';
+
+describe('notas', () => {
+  it('lê o que o professor digita', () => {
+    expect(leNota('7,5')).toEqual({valor: 7.5, status: 'normal'});
+    expect(leNota(' 8 ')).toEqual({valor: 8, status: 'normal'});
+    expect(leNota('')).toEqual({valor: null, status: 'normal'});
+    expect(leNota('D')).toEqual({valor: null, status: 'dispensada'});
+    expect(leNota('j')).toEqual({valor: null, status: 'falta_justificada'});
+    expect(leNota('abc')).toBe('invalido');
+    expect(leNota('-1')).toBe('invalido');
+  });
+  it('formata com vírgula', () => {
+    expect(numBR(7.5)).toBe('7,5');
+    expect(numBR(null)).toBe('');
+  });
+});

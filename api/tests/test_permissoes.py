@@ -97,3 +97,10 @@ def test_coordenacao_ve_mas_nao_edita(mundo, entrar):
     assert len(c.get("/api/alunos").json()) == 3
     assert c.patch(f"/api/alunos/{a.alunos['joao'].id}", json={"nome": "Z"}).status_code == 403
     assert c.get("/api/convites").status_code == 200
+
+
+def test_busca_por_nome_completo(mundo, entrar):
+    c = entrar("admin.a@teste.com")
+    assert _nomes(c.get("/api/alunos", params={"q": "joão  silva"})) == {"João"}
+    assert _nomes(c.get("/api/alunos", params={"q": "a-maria"})) == {"Maria"}  # RA
+    assert c.get("/api/alunos", params={"q": "%"}).json() == []  # % não é curinga

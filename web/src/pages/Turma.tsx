@@ -3,7 +3,7 @@ import {useState} from 'react';
 import {Link, useNavigate, useParams} from 'react-router';
 import {Abas, Avatar, Carregando, Erro, Vazio} from '../components/ui';
 import {api} from '../lib/api';
-import {usePapel} from '../lib/auth';
+import {useMe, usePapel} from '../lib/auth';
 import {nomeExibicao} from '../lib/formato';
 import type {Disciplina, MembroEquipe, Turma as TTurma} from '../lib/tipos';
 
@@ -69,6 +69,7 @@ function Alertas({turmaId}: {turmaId: string}) {
 export default function Turma() {
   const {id = ''} = useParams();
   const papel = usePapel();
+  const {data: me} = useMe();
   const nav = useNavigate();
   const qc = useQueryClient();
   const [aba, setAba] = useState<Aba>('alunos');
@@ -125,6 +126,9 @@ export default function Turma() {
                   <strong>{a.disciplina}</strong>
                   <div className="suave pequeno">{a.professor}</div>
                 </div>
+                {(papel === 'admin' || papel === 'coordenacao' || a.professor_id === me?.usuario.id) && (
+                  <Link className="botao secundario pequeno" to={`/diario/${a.id}`}>Abrir diário</Link>
+                )}
                 {papel === 'admin' && (
                   <button className="botao perigo pequeno" onClick={() => remover.mutate(a.id)}>Remover</button>
                 )}

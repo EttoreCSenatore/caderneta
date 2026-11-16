@@ -60,5 +60,7 @@ erDiagram
 | `anotacao` | tipo, visibilidade, versão, autor | Nunca apagada, só versionada |
 | `auditoria` | quem, o quê, quando, IP, antes/depois | Só inserção; sem update/delete |
 
-Médias **não são armazenadas como fonte de verdade**: são calculadas a partir das notas e da regra, e guardadas em cache
-(tabela materializada) para o boletim abrir rápido.
+Médias **não são armazenadas**: são calculadas a partir das notas e da regra a cada consulta (`api/app/medias.py`).
+No M2 isso é rápido o bastante; um cache só entra se o piloto mostrar necessidade.
+
+Na `frequencia`, só ausências, faltas justificadas e atrasos são gravados: sem linha significa presente.
