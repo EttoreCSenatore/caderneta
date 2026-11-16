@@ -17,7 +17,7 @@ adicionados às páginas de funcionalidade.
 | **M4: Calendário** | Calendário escolar e de turma, feriados nacionais, dias sem aula, iCal | ✅ Concluído |
 | **M5: Provas e impressão** | Upload, aprovação, fila de impressão com cópias calculadas, trabalhos | ✅ Concluído |
 | **M6: Histórico e anotações** | Rematrícula em lote, linha do tempo, anotações versionadas, histórico escolar em PDF | ✅ Concluído |
-| **M7: App de celular** | PWA refinada, offline para notas e chamada, Capacitor nas lojas | Em andamento |
+| **M7: App de celular** | PWA refinada, offline para notas e chamada (lojas ficam para depois do piloto) | ✅ Concluído |
 | **M8: Conformidade e segurança** | Revisão geral de segurança, licenças e adequação à LGPD e à legislação aplicável, com validação jurídica | Planejado |
 | **M9: Piloto** | Deploy de produção, backups, piloto com uma escola (só começa com o M8 aprovado) | Planejado |
 
@@ -113,6 +113,17 @@ lançamento, não detalhe. O piloto (M9) **só começa com este marco aprovado**
 Referência principal: a [campanha de LGPD do Ministério do Desenvolvimento e Assistência Social](https://www.gov.br/mds/pt-br/acesso-a-informacao/governanca/integridade/campanhas/lgpd),
 junto com o texto da Lei nº 13.709/2018 e as orientações da ANPD.
 
+### Ordem de trabalho do M8
+
+O M8 é grande, então corre em etapas, cada uma com seu PR:
+
+1. **M8.1 Segurança do código:** auditoria de dependências (`pip-audit`, `npm audit`, SBOM), revisão de autenticação, autorização e RLS, limites de taxa (T21), cabeçalhos, checklist OWASP Top 10/ASVS e corrigir o que aparecer
+2. **M8.2 Direitos dos titulares (art. 18):** fluxo de pedido de acesso, correção, eliminação e portabilidade, com prazo e registro (T1, T19, T20, T25)
+3. **M8.3 Transparência:** política de privacidade e termos em linguagem simples, aceite registrado e versionado, canal do encarregado
+4. **M8.4 Documentos de conformidade:** ROPA e RIPD (rascunhos com a skill `lgpd-audit`, **revisão humana e jurídica obrigatória**), plano de resposta a incidentes
+5. **M8.5 Operação segura:** backups cifrados e teste de restauração, gestão de chaves, logs sem dado pessoal (T14, T24; parte já prevista para o M9)
+6. **Fechamento:** parecer jurídico anexado, pen test por terceiro, critério de aprovação abaixo
+
 ### Como a conformidade é conduzida
 
 - **Método:** a skill `lgpd-audit` do repositório [goul4rt/lgpd-skills](https://github.com/goul4rt/lgpd-skills) (pipeline C, híbrido),
@@ -203,15 +214,15 @@ Veja [Histórico e anotações](./funcionalidades/historico-e-anotacoes.md).
 - [x] M6.2: anotações versionadas (pedagógica, ocorrência, elogio, reservada) com visibilidade por tipo, auditoria da reservada e eliminação 30 dias após remover
 - [x] M6.3: histórico escolar em PDF (gerador próprio, [ADR 0005](./decisoes/pdf-proprio.md)), emissão registrada e conferência pública do código
 
-## M7: App de celular (em andamento)
+## M7: App de celular (concluído)
 
 Veja [Modo offline](./funcionalidades/offline.md).
 
 - [x] M7.1: notas e chamada offline para professores, com cofre cifrado no aparelho, fila de envio, apagamento ao sair e após 7 dias sem conexão
 - [x] Correção: sair da conta travava quando o navegador não tinha service worker
 - [x] M7.2 PWA: o app abre sem internet (identidade, turmas e diários vêm do cofre cifrado), convite de instalação (Android/desktop e dica para iPhone), atalhos, tema escuro na barra, teste de ponta a ponta com Chromium e internet cortada (`npm run e2e:offline`)
-- [ ] Testar em aparelhos reais (Android e iPhone) com a PWA instalada, incluindo o push
-- [ ] Capacitor: empacotar para as lojas (decidir se vale a pena antes do piloto)
+- [ ] Testar em aparelhos reais (Android e iPhone) com a PWA instalada, incluindo o push: **passa para o M9** (checklist do piloto)
+- [x] Capacitor/lojas: **decisão do responsável (2026-11-17): fora do piloto.** A PWA instalada basta; lojas custam conta paga, revisão e reabrem a análise de privacidade. Reavaliar depois do piloto se a escola pedir
 
 ## Retenção de desligados (feito antes do M8)
 
