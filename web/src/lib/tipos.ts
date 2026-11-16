@@ -192,3 +192,15 @@ export type Pedido = {
   comentarios?: {id: string; autor: string | null; corpo: string; criado_em: string}[];
 };
 export type ConfigImpressao = {aprovacao: boolean; reserva_copias: number; antecedencia_dias: number};
+
+export type AnoTempo = {
+  ano: number; ano_letivo_id: string; encerrado: boolean; turma: string; serie: string; situacao: string;
+  frequencia_geral?: number | string | null;
+  disciplinas?: {disciplina: string; media_anual: number | string | null; frequencia: number | string | null; situacao: string}[];
+};
+export type LinhaTempo = {aluno: {id: string; nome: string; situacao: string}; anos: AnoTempo[]; notas_visiveis: boolean; so_publicadas: boolean; equipe: boolean};
+export type PreviaRematricula = {
+  turma: {id: string; nome: string; serie: string; ano: number}; ano_destino: {id: string; ano: number}; ultima_serie: boolean;
+  turmas_destino: {id: string; nome: string; serie: string}[];
+  alunos: {aluno_id: string; nome: string; situacao_aluno: string; matricula_situacao: string; sugestao: 'aprovado' | 'retido' | 'pendente'; motivo: string | null; turma_destino_sugerida: string | null; ja_rematriculado: boolean}[];
+};

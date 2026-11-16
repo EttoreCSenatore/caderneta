@@ -62,4 +62,8 @@ export const NOME_SITUACAO: Record<string, string> = {
   aprovado: 'Aprovado',
   reprovado: 'Reprovado',
   reprovado_por_falta: 'Reprovado por falta',
+  retido: 'Retido',
+  transferido: 'Transferido',
+  concluido: 'Concluiu',
+  concluiu: 'Concluiu',
 };

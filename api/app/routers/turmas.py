@@ -40,10 +40,15 @@ def turmas_visiveis(ctx: Contexto):
     """Ids de turmas que o perfil ativo pode ver (None = todas)."""
     if ctx.papel in STAFF:
         return None
+    abertos = select(AnoLetivo.id).where(AnoLetivo.aberto.is_(True))
     if ctx.papel == Papel.professor:
-        return select(Atribuicao.turma_id).where(Atribuicao.professor_id == ctx.usuario.id)
+        return (
+            select(Atribuicao.turma_id)
+            .join(Turma, Turma.id == Atribuicao.turma_id)
+            .where(Atribuicao.professor_id == ctx.usuario.id, Turma.ano_letivo_id.in_(abertos))
+        )
     escopo = ids_alunos_visiveis(ctx)
-    return select(Matricula.turma_id).where(Matricula.aluno_id.in_(escopo))
+    return select(Matricula.turma_id).where(Matricula.aluno_id.in_(escopo), Matricula.ano_letivo_id.in_(abertos))
 
 
 def turma_visivel(ctx: Contexto, turma_id: uuid.UUID) -> Turma:

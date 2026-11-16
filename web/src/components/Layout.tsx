@@ -22,6 +22,7 @@ const MENU: Record<Papel, Item[]> = {
     {to: '/alunos', rotulo: 'Alunos', icone: 'alunos'},
     {to: '/equipe', rotulo: 'Equipe', icone: 'equipe'},
     {to: '/importar', rotulo: 'Importar', icone: 'importar'},
+    {to: '/virada', rotulo: 'Virada de ano', icone: 'turmas'},
     {to: '/escola', rotulo: 'Escola', icone: 'escola'},
   ],
   coordenacao: [
@@ -35,6 +36,7 @@ const MENU: Record<Papel, Item[]> = {
     {to: '/provas', rotulo: 'Provas', icone: 'provas'},
     {to: '/alunos', rotulo: 'Alunos', icone: 'alunos'},
     {to: '/equipe', rotulo: 'Equipe', icone: 'equipe'},
+    {to: '/virada', rotulo: 'Virada de ano', icone: 'turmas'},
     {to: '/escola', rotulo: 'Escola', icone: 'escola'},
   ],
   professor: [
@@ -67,7 +69,7 @@ const MENU: Record<Papel, Item[]> = {
 };
 
 // Ordem de importância no menu do celular (cabem cinco itens)
-const PRIORIDADE_ESCOLA = ['/', '/turmas', '/provas', '/calendario', '/avisos', '/mensagens', '/autorizacoes', '/alunos', '/equipe', '/importar', '/escola'];
+const PRIORIDADE_ESCOLA = ['/', '/turmas', '/provas', '/calendario', '/avisos', '/mensagens', '/autorizacoes', '/alunos', '/equipe', '/importar', '/virada', '/escola'];
 const PRIORIDADE_FAMILIA = ['/', '/calendario', '/avisos', '/autorizacoes', '/mensagens', '/provas'];
 
 function TrocaPerfil() {

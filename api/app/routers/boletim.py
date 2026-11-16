@@ -96,8 +96,11 @@ def grava_regra(dados: RegraIn, request: Request, ctx: Contexto = Depends(so_adm
 
 @router.get("/alunos/{aluno_id}/boletim")
 def boletim(aluno_id: uuid.UUID, ctx: Contexto = Depends(com_perfil)):
-    aluno = aluno_visivel(ctx, aluno_id)
-    ano = ano_atual(ctx)
+    return monta_boletim(ctx, aluno_visivel(ctx, aluno_id), ano_atual(ctx))
+
+
+def monta_boletim(ctx: Contexto, aluno, ano):
+    """Boletim do aluno em um ano letivo (o atual ou um anterior, para a linha do tempo e o histórico)."""
     m = (
         ctx.db.scalar(select(Matricula).where(Matricula.aluno_id == aluno.id, Matricula.ano_letivo_id == ano.id))
         if ano

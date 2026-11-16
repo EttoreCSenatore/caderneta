@@ -135,7 +135,9 @@ def lista_anos(ctx: Contexto = Depends(com_perfil)):
 def cria_ano(dados: AnoIn, ctx: Contexto = Depends(so_admin)):
     if ctx.db.scalar(select(AnoLetivo.id).where(AnoLetivo.ano == dados.ano)):
         raise HTTPException(409, f"O ano letivo {dados.ano} já existe.")
-    ano = AnoLetivo(escola_id=ctx.escola_id, **dados.model_dump())
+    # o primeiro ano da escola nasce aberto; os seguintes ficam planejados até a virada (encerrar um e abrir o próximo)
+    ha_aberto = ctx.db.scalar(select(AnoLetivo.id).where(AnoLetivo.aberto.is_(True)).limit(1)) is not None
+    ano = AnoLetivo(escola_id=ctx.escola_id, aberto=not ha_aberto, **dados.model_dump())
     ctx.db.add(ano)
     ctx.db.flush()
     for i, (a, b) in enumerate(divide_periodos(dados.inicio, dados.fim, QTD_PERIODOS[dados.tipo_periodo]), 1):

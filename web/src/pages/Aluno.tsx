@@ -3,6 +3,7 @@ import {useState} from 'react';
 import {Link, useParams} from 'react-router';
 import {Boletim} from '../components/Boletim';
 import {Icone} from '../components/icones';
+import {LinhaDoTempo} from '../components/LinhaDoTempo';
 import {Abas, Avatar, Carregando, Erro, LinkConvite, Modal, Vazio} from '../components/ui';
 import {api} from '../lib/api';
 import {useMe, usePapel} from '../lib/auth';
@@ -243,7 +244,7 @@ export default function Aluno() {
   const abas: [Aba, string][] = [['boletim', 'Boletim'], ['dados', 'Dados']];
   if (a.responsaveis) abas.push(['familia', 'Família']);
   if (papel !== 'aluno') abas.push(['saude', 'Saúde']);
-  if (a.historico) abas.push(['historico', 'Histórico']);
+  abas.push(['historico', 'Histórico']);
   const voltar = papel === 'admin' || papel === 'coordenacao' || papel === 'professor' ? '/alunos' : '/';
   return (
     <>
@@ -265,14 +266,7 @@ export default function Aluno() {
       {aba === 'dados' && <Dados aluno={a} />}
       {aba === 'familia' && <Familia aluno={a} />}
       {aba === 'saude' && <SaudeAba aluno={a} />}
-      {aba === 'historico' && (
-        <div className="cartao lista">
-          {a.historico!.map((h) => (
-            <div key={h.ano_letivo_id} className="item"><strong>{h.turma}</strong><span className="suave">{h.serie}</span><span className="selo">{h.situacao}</span></div>
-          ))}
-          <p className="suave pequeno">As notas e a frequência do ano atual estão na aba Boletim. Anotações entre anos chegam no M6.</p>
-        </div>
-      )}
+      {aba === 'historico' && <LinhaDoTempo alunoId={a.id} />}
     </>
   );
 }
