@@ -5,6 +5,7 @@ import {api, baixarArquivo} from '../lib/api';
 import {useMe, usePapel} from '../lib/auth';
 import {dataBR} from '../lib/formato';
 import type {Aluno, PedidoTitular} from '../lib/tipos';
+import {Encarregado} from './Legal';
 
 export const ROTULO_TIPO: Record<string, string> = {
   acesso: 'Acesso aos meus dados',
@@ -103,6 +104,8 @@ export default function MeusDados() {
           <p style={{margin: 0}}>A <strong>escola</strong> decide como os dados são usados; a Caderneta só os guarda e processa para ela. Usamos para notas, frequência, avisos, calendário, provas, histórico escolar e segurança da conta. Não vendemos dados nem fazemos propaganda.
             Saúde e dados de menores têm proteção reforçada. Você pode baixar seus dados, pedir correção, pedir eliminação (o histórico escolar, porém, a escola precisa guardar por lei) e saber com quem os dados são compartilhados.</p>
         </div>
+        <Encarregado />
+        <p className="suave" style={{margin: 0}}>Leia a <a href="/privacidade">política de privacidade</a> e os <a href="/termos">termos de uso</a>.</p>
         <Baixar filhos={filhos} />
         <NovoPedido filhos={filhos} />
         <div className="cartao pilha">

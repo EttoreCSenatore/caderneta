@@ -21,6 +21,7 @@ from app.routers import (
     historico_escolar,
     importacao,
     impressao,
+    legal,
     mensagens,
     notificacoes,
     push,
@@ -50,6 +51,7 @@ ROTEADORES = (
     push,
     desligados,
     titular,
+    legal,
 )
 METODOS_SEGUROS = {"GET", "HEAD", "OPTIONS"}
 CSRF_HEADER = "x-caderneta"

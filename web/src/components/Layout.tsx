@@ -250,6 +250,11 @@ export function Layout() {
           </div>
           <div className="suave pequeno">{perfil.escola}</div>
           <TrocaPerfil />
+          <div className="rodape-legal suave">
+            <NavLink to="/meus-dados">Meus dados</NavLink>
+            <a href="/privacidade" target="_blank" rel="noreferrer">Privacidade</a>
+            <a href="/termos" target="_blank" rel="noreferrer">Termos</a>
+          </div>
           <button className="botao secundario pequeno largo" onClick={() => sair.mutate()}>
             {Icone.sair} Sair
           </button>

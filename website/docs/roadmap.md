@@ -119,7 +119,7 @@ O M8 é grande, então corre em etapas, cada uma com seu PR:
 
 1. **M8.1 Segurança do código:** auditoria de dependências (`pip-audit`, `npm audit`, SBOM), revisão de autenticação, autorização e RLS, limites de taxa (T21), cabeçalhos, checklist OWASP Top 10/ASVS e corrigir o que aparecer
 2. **M8.2 Direitos dos titulares (art. 18) ✅:** fluxo de pedido de acesso, correção, eliminação e portabilidade, com prazo e registro (T1, T19, T20, T25)
-3. **M8.3 Transparência:** política de privacidade e termos em linguagem simples, aceite registrado e versionado, canal do encarregado
+3. **M8.3 Transparência ✅ (rascunho):** política de privacidade e termos em linguagem simples, aceite registrado e versionado, canal do encarregado
 4. **M8.4 Documentos de conformidade:** ROPA e RIPD (rascunhos com a skill `lgpd-audit`, **revisão humana e jurídica obrigatória**), plano de resposta a incidentes
 5. **M8.5 Operação segura:** backups cifrados e teste de restauração, gestão de chaves, logs sem dado pessoal (T14, T24; parte já prevista para o M9)
 6. **Fechamento:** parecer jurídico anexado, pen test por terceiro, critério de aprovação abaixo
@@ -144,11 +144,11 @@ O M8 é grande, então corre em etapas, cada uma com seu PR:
 - [x] **Direitos dos titulares** (art. 18): baixar os próprios dados na hora, pedidos de correção, eliminação, portabilidade e informação com protocolo e prazo de 15 dias, fila para a direção, registro de pedidos recebidos fora do app. Veja [Direitos do titular](./funcionalidades/direitos-do-titular.md). Falta o parecer sobre anotações internas (T19)
 - [x] **Sessão de desligados** (decisão do responsável): área separada para alunos e usuários desligados, com contagem regressiva, **aviso antes** de apagar e opção de adiar. Veja [Desligados](./funcionalidades/desligados.md). Falta confirmar com o jurídico o prazo mínimo de guarda do histórico escolar
 - [ ] **Retenção e eliminação**: prazos por tipo de dado, respeitando a guarda obrigatória do histórico escolar; rotina de descarte
-- [ ] **Encarregado (DPO)** nomeado pela escola, com canal público de contato
+- [x] **Encarregado (DPO)**: a escola informa nome e e-mail, exibidos na política e em Meus dados. Falta cada escola nomear a pessoa
 - [ ] **Operadores e suboperadores**: contratos de operação de dados com a escola e com provedores (hospedagem, e-mail, push); transferência internacional de dados, se houver, com mecanismo legal
 - [ ] **Plano de resposta a incidentes**: detecção, contenção e comunicação à ANPD e aos titulares nos prazos da regulamentação vigente; simulação de incidente
-- [ ] **Política de privacidade e termos de uso** em linguagem simples, com aceite registrado e versionado
-- [ ] **Aviso de cookies/armazenamento** só se houver itens não essenciais (hoje o app usa apenas o cookie de sessão)
+- [x] **Política de privacidade e termos de uso** em linguagem simples, com ciência registrada por versão: veja [Privacidade e termos](./funcionalidades/privacidade-e-termos.md). **Rascunho**: publicar só depois do parecer jurídico
+- [x] **Aviso de cookies**: não é necessário (só o cookie de sessão, essencial); a política explica isso e o armazenamento do modo offline
 - [ ] **Acessibilidade e consumo**: revisar o que a lei exige conforme o modelo de oferta da plataforma (contrato com escolas)
 - [ ] **Revisão jurídica**: advogado(a) especializado(a) em proteção de dados valida os documentos acima. A documentação técnica orienta, mas **não substitui parecer jurídico**
 

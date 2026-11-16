@@ -26,6 +26,7 @@ const sidebars: SidebarsConfig = {
         'funcionalidades/historico-e-anotacoes',
         'funcionalidades/desligados',
         'funcionalidades/direitos-do-titular',
+        'funcionalidades/privacidade-e-termos',
         'funcionalidades/offline',
       ],
     },

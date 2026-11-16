@@ -1,12 +1,16 @@
+import {useQuery} from '@tanstack/react-query';
 import {lazy, Suspense} from 'react';
 import {Navigate, Route, Routes, useLocation} from 'react-router';
 import {Layout} from './components/Layout';
 import {Carregando, Erro} from './components/ui';
 import {useMe} from './lib/auth';
+import type {LegalPendente} from './lib/tipos';
 import {Convite} from './pages/Convite';
 import {Configurar2fa, EscolherPerfil} from './pages/Etapas';
 import {Entrar, Esqueci, Redefinir} from './pages/Entrar';
 import {Inicio} from './pages/Inicio';
+import Aceitar from './pages/Aceitar';
+import {api, ApiError} from './lib/api';
 
 const Turmas = lazy(() => import('./pages/Turmas'));
 const Turma = lazy(() => import('./pages/Turma'));
@@ -26,6 +30,7 @@ const Verificar = lazy(() => import('./pages/Verificar'));
 const Desligados = lazy(() => import('./pages/Desligados'));
 const MeusDados = lazy(() => import('./pages/MeusDados'));
 const PedidosTitulares = lazy(() => import('./pages/PedidosTitulares'));
+const Legal = lazy(() => import('./pages/Legal'));
 const Conta = lazy(() => import('./pages/Conta'));
 const Diario = lazy(() => import('./pages/Diario'));
 
@@ -38,6 +43,26 @@ function Protegido() {
   if (!me || me.status === 'codigo') return <Navigate to="/entrar" replace state={{de: local.pathname}} />;
   if (me.status === 'configurar_2fa') return <Navigate to="/configurar-2fa" replace />;
   if (!me.perfil_ativo) return <Navigate to="/perfil" replace />;
+  return <ConfirmaTextos />;
+}
+
+/** Antes do app: confirmar a política de privacidade e os termos (de novo, se o texto mudou de versão). */
+function ConfirmaTextos() {
+  const local = useLocation();
+  const q = useQuery({
+    queryKey: ['legal-pendentes'],
+    queryFn: async () => {
+      try {
+        return await api<LegalPendente[]>('/legal/pendentes');
+      } catch (e) {
+        if (e instanceof ApiError && e.status === 0) return []; // sem internet (modo offline): confirma na próxima vez
+        throw e;
+      }
+    },
+  });
+  if (q.isLoading) return <Carregando />;
+  if (q.data?.length) return local.pathname === '/aceitar' ? <Aceitar pendentes={q.data} /> : <Navigate to="/aceitar" replace />;
+  if (local.pathname === '/aceitar') return <Navigate to="/" replace />;
   return <Layout />;
 }
 
@@ -51,6 +76,8 @@ export function App() {
         <Route path="/convite/:token" element={<Convite />} />
         <Route path="/verificar" element={<Verificar />} />
         <Route path="/verificar/:codigo" element={<Verificar />} />
+        <Route path="/privacidade" element={<Legal />} />
+        <Route path="/termos" element={<Legal />} />
         <Route path="/configurar-2fa" element={<Configurar2fa />} />
         <Route path="/perfil" element={<EscolherPerfil />} />
         <Route element={<Protegido />}>
@@ -71,6 +98,7 @@ export function App() {
           <Route path="virada" element={<Virada />} />
           <Route path="desligados" element={<Desligados />} />
           <Route path="diario/:id" element={<Diario />} />
+          <Route path="aceitar" element={null} />
           <Route path="conta" element={<Conta />} />
           <Route path="meus-dados" element={<MeusDados />} />
           <Route path="pedidos-titulares" element={<PedidosTitulares />} />

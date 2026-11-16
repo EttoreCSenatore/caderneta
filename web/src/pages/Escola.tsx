@@ -137,6 +137,38 @@ function Pendencias({periodo}: {periodo: Periodo}) {
   );
 }
 
+function Encarregado() {
+  const qc = useQueryClient();
+  const q = useQuery({queryKey: ['escola'], queryFn: () => api<TEscola>('/escola')});
+  const [f, setF] = useState<{nome: string; email: string} | null>(null);
+  const salva = useMutation({
+    mutationFn: () => api('/escola', {method: 'PATCH', body: {encarregado_nome: f!.nome || null, encarregado_email: f!.email || null}}),
+    onSuccess: () => { qc.invalidateQueries({queryKey: ['escola']}); setF(null); },
+  });
+  const e = q.data?.encarregado;
+  return (
+    <div className="cartao pilha">
+      <h2 style={{margin: 0}}>Encarregado de proteção de dados (DPO)</h2>
+      <p className="suave" style={{margin: 0}}>Canal público para dúvidas e pedidos sobre dados pessoais (LGPD, art. 41). O contato aparece na política de privacidade e na página Meus dados.</p>
+      {f ? (
+        <form className="pilha" onSubmit={(ev) => { ev.preventDefault(); salva.mutate(); }}>
+          <div className="form-grade">
+            <label className="campo">Nome<input value={f.nome} maxLength={200} onChange={(ev) => setF({...f, nome: ev.target.value})} /></label>
+            <label className="campo">E-mail de contato<input type="email" value={f.email} onChange={(ev) => setF({...f, email: ev.target.value})} /></label>
+          </div>
+          <Erro erro={salva.error} />
+          <div className="linha"><button className="botao" disabled={salva.isPending}>Salvar</button><button type="button" className="botao secundario" onClick={() => setF(null)}>Cancelar</button></div>
+        </form>
+      ) : (
+        <div className="linha entre">
+          <span>{e?.nome || e?.email ? `${e.nome ?? ''}${e.nome && e.email ? ' · ' : ''}${e.email ?? ''}` : <span className="suave">Ainda não informado.</span>}</span>
+          <button className="botao secundario pequeno" onClick={() => setF({nome: e?.nome ?? '', email: e?.email ?? ''})}>Editar</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function Escola() {
   const papel = usePapel();
   const admin = papel === 'admin';
@@ -163,6 +195,7 @@ export default function Escola() {
       <div className="topo">
         <div><h1>{e.nome}</h1><div className="suave">{[e.cidade, e.uf].filter(Boolean).join(' / ')}</div></div>
       </div>
+      {admin && <Encarregado />}
       <div className="cartao">
         <h2>Ano letivo {ano?.ano ?? ''}</h2>
         {ano ? (

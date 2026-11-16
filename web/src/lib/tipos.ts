@@ -18,6 +18,7 @@ export type Escola = {
   cidade: string | null;
   uf: string | null;
   ano_atual: AnoLetivo | null;
+  encarregado?: {nome: string | null; email: string | null};
   resumo?: {alunos: number; turmas: number; professores: number; convites_pendentes: number};
 };
 
@@ -234,3 +235,7 @@ export type PedidoTitular = {
   aluno_id: string | null;
   solicitante?: {nome: string | null; email: string | null} | null;
 };
+
+// --- M8.3: textos legais ---
+export type TextoLegal = {doc: 'privacidade' | 'termos'; versao: string; titulo: string; status: 'rascunho' | 'vigente'; texto: string};
+export type LegalPendente = {doc: 'privacidade' | 'termos'; versao: string; titulo: string; status: string};
