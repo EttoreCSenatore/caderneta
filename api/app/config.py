@@ -61,6 +61,7 @@ class Settings(BaseSettings):
     retencao_pedidos_dias: int = 365  # depois da data de aplicação
     retencao_rascunho_dias: int = 90  # rascunho parado
     retencao_anexos_dias: int = 365  # anexos de mensagens
+    retencao_pedidos_titular_dias: int = 365  # pedidos de titulares já respondidos (contados da resposta)
 
 
 @lru_cache

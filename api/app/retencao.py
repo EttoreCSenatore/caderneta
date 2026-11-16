@@ -18,7 +18,7 @@ from sqlalchemy.orm import Session
 from app import arquivos
 from app.audit import registrar
 from app.config import get_settings
-from app.models import Anotacao, Arquivo, MensagemAnexo, PedidoImpressao, StatusPedido
+from app.models import Anotacao, Arquivo, MensagemAnexo, PedidoImpressao, PedidoTitular, StatusPedido
 
 DIAS_ANOTACAO_REMOVIDA = 30
 
@@ -82,6 +82,19 @@ def elimina_vencidos(db: Session, agora: datetime | None = None) -> dict[str, in
         db.delete(an)
     db.flush()
 
+    # pedidos de titulares já respondidos: a prova de atendimento vale pelo mesmo prazo dos demais registros
+    for pt in list(
+        db.scalars(
+            select(PedidoTitular).where(
+                PedidoTitular.respondido_em.is_not(None),
+                PedidoTitular.respondido_em < agora - timedelta(days=s.retencao_pedidos_titular_dias),
+            )
+        ).unique()
+    ):
+        por_escola[(pt.escola_id, "pedidos_titular")] += 1
+        db.delete(pt)
+    db.flush()
+
     _apaga_arquivos(db, candidatos)
     for (escola_id, tipo), n in por_escola.items():
         registrar(db, "retencao.eliminar", escola_id=escola_id, usuario_id=None, detalhes={"tipo": tipo, "itens": n})
@@ -90,6 +103,7 @@ def elimina_vencidos(db: Session, agora: datetime | None = None) -> dict[str, in
         "pedidos": sum(n for (_, t), n in por_escola.items() if t == "pedidos"),
         "anexos": sum(n for (_, t), n in por_escola.items() if t == "anexos"),
         "anotacoes": sum(n for (_, t), n in por_escola.items() if t == "anotacoes"),
+        "pedidos_titular": sum(n for (_, t), n in por_escola.items() if t == "pedidos_titular"),
         "orfaos": orfaos,
     }
 
