@@ -112,9 +112,19 @@ lançamento, não detalhe. O piloto (M9) **só começa com este marco aprovado**
 Referência principal: a [campanha de LGPD do Ministério do Desenvolvimento e Assistência Social](https://www.gov.br/mds/pt-br/acesso-a-informacao/governanca/integridade/campanhas/lgpd),
 junto com o texto da Lei nº 13.709/2018 e as orientações da ANPD.
 
+### Como a conformidade é conduzida
+
+- **Método:** a skill `lgpd-audit` do repositório [goul4rt/lgpd-skills](https://github.com/goul4rt/lgpd-skills) (pipeline C, híbrido),
+  com pausa obrigatória para revisão humana e jurídica no ROPA, no RIPD, na política de privacidade e em comunicações à ANPD.
+- **Texto das normas:** conferido no repositório [ctresb/leis](https://github.com/ctresb/leis) (LGPD, ECA Digital, Decreto 12.880/2026, Marco Civil).
+  As resoluções da ANPD ainda não estão nele e devem ser conferidas no texto oficial.
+- **Artefatos versionados** em [`.lgpd/`](https://github.com/EttoreCSenatore/caderneta/tree/main/.lgpd): `STATUS.md`, `data-map.md` e `gaps.md`.
+  O mapa de dados preliminar (M1 a M3.3) já existe; as lacunas priorizadas estão em `gaps.md`.
+- **Regra:** todo PR que coletar dado pessoal novo atualiza o mapa de dados e as lacunas.
+
 ### Adequação à LGPD e à legislação
 
-- [ ] **Mapeamento de dados** (inventário/ROPA): que dado é coletado, por quê, base legal, quem acessa, quanto tempo é guardado, com quem é compartilhado
+- [ ] **Mapeamento de dados** (inventário/ROPA), com a versão preliminar já feita em `.lgpd/data-map.md`: que dado é coletado, por quê, base legal, quem acessa, quanto tempo é guardado, com quem é compartilhado
 - [ ] **Base legal por finalidade** (art. 7º e 11): execução do serviço educacional, obrigação legal e escolar, consentimento só onde for realmente necessário
 - [ ] **Dados de crianças e adolescentes** (art. 14): melhor interesse, consentimento específico de um responsável quando for a base, aviso em linguagem clara; revisar também o ECA Digital (Lei nº 15.211/2025)
 - [ ] **Dados de saúde** (sensíveis): finalidade restrita, acesso mínimo, criptografia e trilha de acesso, já implementados e a revisar

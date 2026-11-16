@@ -10,7 +10,8 @@ Segurança é requisito desde o primeiro marco, não etapa final.
 
 :::info Revisão geral prevista
 O [M8 do roadmap](../roadmap.md#m8-conformidade-e-segurança) reúne a revisão geral de segurança, licenças e adequação à LGPD
-(incluindo RIPD, direitos dos titulares, retenção, resposta a incidentes e validação jurídica) antes do piloto.
+(incluindo RIPD, direitos dos titulares, retenção, resposta a incidentes e validação jurídica) antes do piloto. O mapa de dados e as lacunas já levantadas estão em
+[`.lgpd/`](https://github.com/EttoreCSenatore/caderneta/tree/main/.lgpd).
 :::
 
 ## Papéis na LGPD

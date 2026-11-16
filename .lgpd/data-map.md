@@ -1,0 +1,51 @@
+# Mapa de Dados Pessoais — Caderneta
+
+**Versão:** v1 · **Status:** Preliminar (bases legais são **propostas a validar**) · **Data:** 2026-11-16
+**Escopo do código:** `api/app/models.py` até a migração 0005 (M1 a M3.3)
+**Encarregado:** não designado
+
+Todos os dados são da escola-controladora e ficam isolados por escola (RLS no PostgreSQL). Titulares: funcionários,
+responsáveis (adultos), **alunos (crianças e adolescentes)**.
+
+## 1. Atividades de tratamento
+
+| ID | Atividade | Dados (tabela) | Sensível / menores | Base legal proposta (a validar) | Retenção proposta |
+|---|---|---|---|---|---|
+| A001 | Autenticação e sessão | `usuario` (e-mail, nome, telefone, hash de senha, segredo TOTP cifrado, falhas de login), `sessao` (hash do token, **IP, user agent**), `token_senha` | Contas de alunos podem ser menores | Art. 7º, V (execução de contrato) | Conta ativa; sessões expiram em até 30 dias; logs de acesso 6 meses (Marco Civil art. 15) |
+| A002 | Cadastro escolar do aluno | `aluno` (nome, sobrenome, nome social, **data de nascimento, CPF**, RA, situação), `matricula`, `turma`, `ano_letivo` | **Menores** | Art. 7º, II (obrigação legal/regulatória escolar) e V; art. 14 (melhor interesse) | Guarda do histórico escolar conforme norma educacional (a definir com jurídico) |
+| A003 | Vínculo com responsáveis e convites | `vinculo_responsavel` (nome, parentesco, telefone, e-mail, pode buscar, emergência, **restrito**), `convite` (e-mail, nome, papel) | Menores indiretamente | Art. 7º, V e IX (legítimo interesse, segurança do aluno) | Enquanto o vínculo estiver ativo; convites expiram em 7 dias |
+| A004 | Ficha de saúde | `ficha_saude` (dados e alerta **cifrados com AES-GCM**) | **Sensível (art. 5º, II e art. 11) + menor** | Provável: art. 11, I (consentimento específico e destacado do responsável) para a ficha; art. 11, II, "e" (proteção da vida/incolumidade) para o alerta de emergência. A alínea "f" (tutela da saúde) vale só para profissionais e serviços de saúde, então **não** serve à escola. **Decisão jurídica** | Enquanto matriculado, depois eliminar (a definir) |
+| A005 | Notas, médias e frequência | `avaliacao`, `nota`, `aula`, `frequencia` (**justificativa de falta em texto livre**) | Menor; texto livre pode revelar saúde | Art. 7º, II e V | Parte do histórico escolar |
+| A006 | Comunicação com famílias | `aviso` e `aviso_leitura` (quem leu e deu ciente), `conversa`/`mensagem`/`conversa_leitura` (**texto livre**), `autorizacao`/`autorizacao_resposta` (quem respondeu, observação) | Menor; texto livre pode conter dados sensíveis | Art. 7º, V; autorização de passeio é manifestação do responsável | Aviso: ano letivo; mensagens: a definir; autorização: ano letivo |
+| A007 | Auditoria e segurança | `auditoria` (ação, entidade, **IP**, detalhes), append-only | Possível | Art. 7º, IX e art. 46 (segurança); art. 37 (registro) | Mínimo 6 meses (Marco Civil); definir prazo |
+| A008 | Envio de e-mail transacional | Endereço, nome, link de convite/redefinição, via SMTP configurável | Menor (conta de aluno) | Art. 7º, V | Sem armazenamento próprio além do envio |
+
+## 2. Cookies, SDKs e telemetria
+
+| Item | Tipo | Finalidade | Essencial? | Observação |
+|---|---|---|---|---|
+| `cad_session` | Cookie HttpOnly, SameSite=Lax, Secure em produção | Sessão autenticada | Sim | Único cookie. Sem consentimento necessário |
+| Service worker / cache da PWA | Armazenamento local | Funcionamento do app | Sim | Verificar que não guarda respostas da API com dados pessoais (M7) |
+| Analytics, pixels, replay de sessão, rastreadores | **Nenhum** | n/a | n/a | Mantenha assim: o ECA Digital e o princípio do melhor interesse desaconselham perfilamento de menores |
+
+## 3. Terceiros e papéis jurídicos
+
+| Terceiro | Papel | País | Situação |
+|---|---|---|---|
+| Hospedagem/banco de dados | Operador | **A definir** | Sem produção ainda. Preferir região no Brasil. Se fora do país, mecanismo de transferência internacional (art. 33) |
+| Provedor de e-mail (SMTP) | Operador | **A definir** | Mailpit só em desenvolvimento |
+| Push web (M3, previsto) | Operador (serviços de push dos navegadores) | Variável | Avaliar antes de implementar: o endpoint de push identifica o dispositivo |
+| Provedor de armazenamento de arquivos (M5) | Operador | A definir | Provas e anexos |
+
+## 4. Triagem de alto risco
+
+Preventivo **sim** (RIPD): tratamento de dados de **saúde** e de **crianças e adolescentes** em escala de escola
+(critérios geral e específico da Res. CD/ANPD 2/2022, art. 4º, segundo a skill `lgpd-data-mapping`).
+
+## 5. Melhor interesse da criança e do adolescente (LGPD art. 14)
+
+- O consentimento específico de um dos pais (art. 14, §1º) vale para **crianças**. Para adolescentes aplica-se o melhor interesse
+  e uma base legal adequada; a escola deve registrar qual base usa para cada atividade.
+- Informações sobre dados coletados, uso e exercício de direitos devem ser **públicas** (art. 14, §2º) e em linguagem simples (§6º).
+- Não condicionar o uso a dados além do estritamente necessário (art. 14, §4º): hoje o CPF do aluno é opcional no cadastro.
+- ECA Digital: privacidade no modelo **mais protetivo por padrão** (art. 7º) e medidas desde a concepção (art. 6º).
