@@ -13,6 +13,7 @@ const MENU: Record<Papel, Item[]> = {
   admin: [
     {to: '/', rotulo: 'Início', icone: 'inicio'},
     {to: '/avisos', rotulo: 'Avisos', icone: 'avisos'},
+    {to: '/autorizacoes', rotulo: 'Autorizações', icone: 'autorizacoes'},
     {to: '/turmas', rotulo: 'Turmas', icone: 'turmas'},
     {to: '/alunos', rotulo: 'Alunos', icone: 'alunos'},
     {to: '/equipe', rotulo: 'Equipe', icone: 'equipe'},
@@ -22,6 +23,7 @@ const MENU: Record<Papel, Item[]> = {
   coordenacao: [
     {to: '/', rotulo: 'Início', icone: 'inicio'},
     {to: '/avisos', rotulo: 'Avisos', icone: 'avisos'},
+    {to: '/autorizacoes', rotulo: 'Autorizações', icone: 'autorizacoes'},
     {to: '/turmas', rotulo: 'Turmas', icone: 'turmas'},
     {to: '/alunos', rotulo: 'Alunos', icone: 'alunos'},
     {to: '/equipe', rotulo: 'Equipe', icone: 'equipe'},
@@ -30,12 +32,14 @@ const MENU: Record<Papel, Item[]> = {
   professor: [
     {to: '/', rotulo: 'Início', icone: 'inicio'},
     {to: '/avisos', rotulo: 'Avisos', icone: 'avisos'},
+    {to: '/autorizacoes', rotulo: 'Autorizações', icone: 'autorizacoes'},
     {to: '/turmas', rotulo: 'Minhas turmas', icone: 'turmas'},
     {to: '/alunos', rotulo: 'Alunos', icone: 'alunos'},
   ],
   responsavel: [
     {to: '/', rotulo: 'Início', icone: 'inicio'},
     {to: '/avisos', rotulo: 'Avisos', icone: 'avisos'},
+    {to: '/autorizacoes', rotulo: 'Autorizações', icone: 'autorizacoes'},
   ],
   aluno: [
     {to: '/', rotulo: 'Início', icone: 'inicio'},

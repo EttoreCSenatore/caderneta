@@ -97,7 +97,7 @@ Veja [Notas e médias](./funcionalidades/notas-e-medias.md) e [Frequência](./fu
 - [ ] Mensagens individuais escola/professor ↔ família, com anexos
 - [x] "Ciente" e painel de leitura para quem enviou
 - [ ] Lembrete aos pendentes
-- [ ] Autorizações digitais (passeio, saída antecipada)
+- [x] Autorizações digitais (passeio, saída antecipada)
 - [ ] Notificações no app, push (PWA) e e-mail, com horário silencioso
 - [ ] Alertas de faltas (15% e 20%) e de nota nova publicada
 
