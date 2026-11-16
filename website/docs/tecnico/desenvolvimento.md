@@ -89,3 +89,11 @@ Guarde-a fora do banco e do repositório: sem ela, as fichas de saúde não pode
 Provas e trabalhos ficam cifrados em `CADERNETA_STORAGE_DIR` (padrão `./storage`, já no `.gitignore`). Em produção o caminho
 precisa ser absoluto, fora do código, com permissão só do usuário da API e **dentro do backup**. Veja a
 [ADR 0004](../decisoes/armazenamento-de-arquivos.md). Ajuste o limite com `CADERNETA_MAX_ARQUIVO_BYTES`.
+
+Opcionais em desenvolvimento (em produção o antivírus é obrigatório):
+
+| Variável | Efeito |
+|---|---|
+| `CADERNETA_ANTIVIRUS=clamav` | verifica cada upload no `clamd` (`docker compose --profile antivirus up -d clamav`, porta 3310) |
+| `CADERNETA_CONVERSOR=libreoffice` | converte DOCX em PDF no envio (precisa do `soffice` instalado) |
+| `CADERNETA_RETENCAO_PEDIDOS_DIAS`, `..._RASCUNHO_DIAS`, `..._ANEXOS_DIAS` | prazos de eliminação (365, 90, 365) |

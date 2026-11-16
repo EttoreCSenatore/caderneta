@@ -362,6 +362,29 @@ if (roda('m5')) {
   await foto(fam, 'materiais-celular', true);
 }
 
+if (roda('m5-anexos')) {
+  console.log('M5 anexos');
+  const adm = await sessao('direcao');
+  await adm.goto(BASE + '/mensagens');
+  await adm.click('button:has-text("+ Nova conversa")');
+  const op = adm.locator('.modal select option', {hasText: 'Lucas Moreira Lima'});
+  await adm.selectOption('.modal select', await op.getAttribute('value'));
+  await adm.fill('.modal input >> nth=0', 'Atestado médico');
+  await adm.fill('.modal textarea', 'Olá! Pode enviar o atestado do Lucas por aqui?');
+  await adm.click('.modal button:has-text("Enviar")');
+  await adm.waitForSelector('text=Responder');
+
+  const fam = await sessao('familia');
+  await fam.goto(BASE + '/mensagens');
+  await fam.click('text=Atestado médico');
+  await fam.fill('textarea', 'Segue o atestado, obrigada.');
+  await fam.setInputFiles('input[type=file]', {name: 'atestado-lucas.pdf', mimeType: 'application/pdf', buffer: Buffer.from('%PDF-1.4\n1 0 obj\n<<>>\nendobj\ntrailer\n<<>>\n%%EOF\n')});
+  await foto(fam, 'mensagem-anexo-envio');
+  await fam.click('button:has-text("Enviar")');
+  await fam.waitForSelector('text=atestado-lucas.pdf');
+  await foto(fam, 'mensagem-anexo');
+}
+
 await b.close();
 if (erros.length) {
   console.error('Erros no navegador:\n' + erros.join('\n'));

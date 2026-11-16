@@ -8,9 +8,8 @@ Downloads usam link assinado de curta duração e ficam na auditoria.
 
 import uuid
 from datetime import UTC, date, datetime
-from urllib.parse import quote
 
-from fastapi import APIRouter, Depends, File, Form, HTTPException, Response, UploadFile
+from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
 from pydantic import BaseModel, Field
 from sqlalchemy import select
 
@@ -33,7 +32,7 @@ from app.models import (
 from app.notificacoes import alunos_do_publico, equipe_da_escola, familia_dos_alunos, notificar
 from app.regras import atribuicao_do_diario, matriculas_da_turma
 from app.routers.turmas import turmas_visiveis
-from app.security import assina_link, verifica_link
+from app.security import assina_link
 
 router = APIRouter(tags=["impressao"])
 EDITAVEIS = {StatusPedido.rascunho, StatusPedido.ajustes}
@@ -184,13 +183,13 @@ def copias_sugeridas(atribuicao_id: uuid.UUID, ctx: Contexto = Depends(com_perfi
 # --- Criação e edição ---------------------------------------------------------------------------------------
 
 
-async def _ler(arq: UploadFile) -> bytes:
-    dados = await arq.read(get_settings().max_arquivo_bytes + 1)
-    return dados
+def _ler(arq: UploadFile) -> bytes:
+    # lê só até o limite + 1 byte: arquivos maiores são recusados sem ocupar memória
+    return arq.file.read(get_settings().max_arquivo_bytes + 1)
 
 
 @router.post("/pedidos", status_code=201)
-async def criar(
+def criar(
     titulo: str = Form(min_length=1, max_length=200),
     tipo: TipoPedido = Form(),
     data_aplicacao: date = Form(),
@@ -212,7 +211,7 @@ async def criar(
         raise HTTPException(422, "A data de aplicação não pode ser no passado.")
     atribs = [atribuicao_do_diario(ctx, i) for i in dict.fromkeys(atribuicao_ids)]
     principal = arquivos.grava(
-        ctx.db, escola_id=ctx.escola_id, usuario_id=ctx.usuario.id, nome=arquivo.filename, dados=await _ler(arquivo)
+        ctx.db, escola_id=ctx.escola_id, usuario_id=ctx.usuario.id, nome=arquivo.filename, dados=_ler(arquivo)
     )
     adaptado = None
     if arquivo_adaptado is not None and arquivo_adaptado.filename:
@@ -221,7 +220,7 @@ async def criar(
             escola_id=ctx.escola_id,
             usuario_id=ctx.usuario.id,
             nome=arquivo_adaptado.filename,
-            dados=await _ler(arquivo_adaptado),
+            dados=_ler(arquivo_adaptado),
         )
     reserva = _escola(ctx).reserva_copias
     criados = []
@@ -261,7 +260,7 @@ async def criar(
 
 
 @router.post("/pedidos/{pedido_id}/arquivo")
-async def trocar_arquivo(
+def trocar_arquivo(
     pedido_id: uuid.UUID,
     versao: str = Form(default="principal", pattern="^(principal|adaptado)$"),
     arquivo: UploadFile = File(),
@@ -271,7 +270,7 @@ async def trocar_arquivo(
     p = _pedido(ctx, pedido_id, escrita=True)
     _pode_editar(ctx, p)
     novo = arquivos.grava(
-        ctx.db, escola_id=ctx.escola_id, usuario_id=ctx.usuario.id, nome=arquivo.filename, dados=await _ler(arquivo)
+        ctx.db, escola_id=ctx.escola_id, usuario_id=ctx.usuario.id, nome=arquivo.filename, dados=_ler(arquivo)
     )
     antigo = p.arquivo if versao == "principal" else p.arquivo_adaptado
     if versao == "principal":
@@ -555,21 +554,3 @@ def link(pedido_id: uuid.UUID, versao: str = "principal", ctx: Contexto = Depend
     ttl = get_settings().link_validade_s
     token = assina_link({"p": str(p.id), "v": versao, "u": str(ctx.usuario.id), "s": str(ctx.escola_id)}, ttl)
     return {"url": f"/api/arquivos/{token}", "expira_em_s": ttl}
-
-
-@router.get("/arquivos/{token}")
-def baixar(token: str, ctx: Contexto = Depends(com_perfil)):
-    carga = verifica_link(token)
-    if not carga or carga.get("u") != str(ctx.usuario.id) or carga.get("s") != str(ctx.escola_id):
-        raise HTTPException(404, "Link inválido ou expirado.")
-    p = _pedido(ctx, uuid.UUID(carga["p"]))  # confere o acesso de novo, na hora do download
-    a = p.arquivo_adaptado if carga["v"] == "adaptado" else p.arquivo
-    if not a or (carga["v"] == "adaptado" and ctx.papel in LEITORES):
-        raise HTTPException(404, "Arquivo não encontrado.")
-    dados = arquivos.le(a)
-    _auditar(ctx, "pedido.baixar", p, versao=carga["v"], arquivo=str(a.id))
-    return Response(
-        dados,
-        media_type=a.mime,
-        headers={"Content-Disposition": f"attachment; filename*=UTF-8''{quote(a.nome)}", "Cache-Control": "no-store"},
-    )

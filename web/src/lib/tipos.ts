@@ -166,7 +166,8 @@ export type PainelAutorizacao = {
 };
 
 export type Conversa = {id: string; assunto: string; aluno_id: string; aluno: string; escola_usuario: string; ultima_em: string; previa: string; nao_lida: boolean};
-export type Mensagem = {id: string; autor: string | null; minha: boolean; corpo: string; criado_em: string};
+export type Anexo = {id: string; nome: string; tamanho: number; mime: string};
+export type Mensagem = {id: string; autor: string | null; minha: boolean; corpo: string; criado_em: string; anexos: Anexo[]};
 export type ConversaAberta = Conversa & {mensagens: Mensagem[]};
 
 export type Notificacao = {id: string; tipo: string; titulo: string; corpo: string; url: string; criado_em: string; lida: boolean};

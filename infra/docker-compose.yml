@@ -26,5 +26,16 @@ services:
       - "127.0.0.1:8025:8025"
       - "127.0.0.1:1025:1025"
 
+  # Antivírus (opcional em desenvolvimento): docker compose --profile antivirus up -d clamav
+  # e rode a API com CADERNETA_ANTIVIRUS=clamav. A primeira subida baixa a base de vírus (alguns minutos).
+  clamav:
+    image: clamav/clamav:1.4
+    profiles: ["antivirus"]
+    ports:
+      - "127.0.0.1:3310:3310"
+    volumes:
+      - caderneta-clamav:/var/lib/clamav
+
 volumes:
   caderneta-db:
+  caderneta-clamav:

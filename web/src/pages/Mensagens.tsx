@@ -5,12 +5,19 @@ import {api} from '../lib/api';
 import {usePapel} from '../lib/auth';
 import type {Aluno, Conversa, ConversaAberta, TurmaResumo} from '../lib/tipos';
 
+const mb = (b: number) => (b < 1e6 ? `${Math.max(1, Math.round(b / 1e3))} KB` : `${(b / 1e6).toFixed(1)} MB`);
+async function baixarAnexo(cid: string, aid: string) {
+  const r = await api<{url: string}>(`/conversas/${cid}/anexos/${aid}/link`, {method: 'POST'});
+  window.location.assign(r.url);
+}
+
 const quando = (iso: string) => new Date(iso).toLocaleString('pt-BR', {dateStyle: 'short', timeStyle: 'short'});
 const VAZIO = {aluno_id: '', professor_id: '', assunto: '', corpo: ''};
 
 function Thread({id, voltar}: {id: string; voltar: () => void}) {
   const qc = useQueryClient();
   const [texto, setTexto] = useState('');
+  const [arquivos, setArquivos] = useState<File[]>([]);
   const c = useQuery({
     queryKey: ['conversa', id],
     queryFn: async () => {
@@ -22,9 +29,16 @@ function Thread({id, voltar}: {id: string; voltar: () => void}) {
     refetchInterval: 20000,
   });
   const envia = useMutation({
-    mutationFn: () => api(`/conversas/${id}/mensagens`, {body: {corpo: texto}}),
+    mutationFn: () => {
+      if (arquivos.length === 0) return api(`/conversas/${id}/mensagens`, {body: {corpo: texto}});
+      const fd = new FormData();
+      fd.append('corpo', texto);
+      arquivos.forEach((f) => fd.append('arquivos', f));
+      return api(`/conversas/${id}/mensagens-anexos`, {form: fd});
+    },
     onSuccess: () => {
       setTexto('');
+      setArquivos([]);
       qc.invalidateQueries({queryKey: ['conversa', id]});
       qc.invalidateQueries({queryKey: ['conversas']});
     },
@@ -48,12 +62,21 @@ function Thread({id, voltar}: {id: string; voltar: () => void}) {
             <div key={m.id} className="cartao" style={{marginLeft: m.minha ? '2rem' : 0, marginRight: m.minha ? 0 : '2rem', background: m.minha ? 'var(--azul-claro)' : undefined}}>
               <div className="suave pequeno">{m.autor} · {quando(m.criado_em)}</div>
               <div style={{whiteSpace: 'pre-wrap'}}>{m.corpo}</div>
+              {m.anexos.map((x) => (
+                <button key={x.id} className="botao secundario pequeno" style={{marginTop: '0.4rem', marginRight: '0.4rem'}} onClick={() => baixarAnexo(id, x.id)}>
+                  📎 {x.nome} ({mb(x.tamanho)})
+                </button>
+              ))}
             </div>
           ))}
           <form className="pilha" onSubmit={(e) => { e.preventDefault(); envia.mutate(); }}>
-            <label className="campo">Responder<textarea required rows={3} maxLength={5000} value={texto} onChange={(e) => setTexto(e.target.value)} /></label>
+            <label className="campo">Responder<textarea required={arquivos.length === 0} rows={3} maxLength={5000} value={texto} onChange={(e) => setTexto(e.target.value)} /></label>
+            <label className="campo">Anexos (opcional: até 3 arquivos PDF, JPG ou PNG de 10 MB)
+              <input type="file" multiple accept=".pdf,.jpg,.jpeg,.png" onChange={(e) => setArquivos(Array.from(e.target.files ?? []).slice(0, 3))} />
+            </label>
+            {arquivos.length > 0 && <span className="suave pequeno">Fotos são enviadas sem localização e outros dados do aparelho.</span>}
             <Erro erro={envia.error} />
-            <div><button className="botao" disabled={envia.isPending || !texto.trim()}>Enviar</button></div>
+            <div><button className="botao" disabled={envia.isPending || (!texto.trim() && arquivos.length === 0)}>Enviar</button></div>
           </form>
         </div>
       )}

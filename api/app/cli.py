@@ -31,7 +31,11 @@ def notificar() -> None:
     engine = create_engine(get_settings().owner_database_url)
     with Session(engine) as db, db.begin():
         r = processar(db)
-    print(f"avisos liberados: {r['avisos']} · e-mails enviados: {r['emails']} · notificações apagadas: {r['apagadas']}")
+    print(
+        f"avisos liberados: {r['avisos']} · e-mails enviados: {r['emails']} · notificações apagadas: {r['apagadas']}"
+        f" · pedidos eliminados: {r['eliminados_pedidos']} · anexos: {r['eliminados_anexos']}"
+        f" · arquivos órfãos: {r['eliminados_orfaos']}"
+    )
 
 
 def main() -> None:

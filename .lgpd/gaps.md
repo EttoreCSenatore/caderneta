@@ -17,9 +17,11 @@ de advogado(a) ou do encarregado.
 | T8 | P2 | Backups cifrados e teste de restauração; backup também precisa respeitar eliminação | M9 |
 | T9 | P3 | Trilha de auditoria com encadeamento de hash (hoje é só append-only por permissão) | M8 |
 | T11 | P2 | Link iCal é credencial sem validade: definir expiração (ex.: 1 ano) e aviso para renovar; revisar cabeçalho `Referrer` e log de acesso ao feed | M8 |
-| T12 | P1 | **Antivírus nos uploads** (S1): a validação de conteúdo é uma barreira, não um antivírus. Avaliar ClamAV antes do piloto | M8 |
-| T13 | P2 | **Eliminação de arquivos** (S3): definir prazo e rotina para `arquivo` e `pedido_impressao` (hoje só rascunhos podem ser excluídos) | M8 |
+| T12 | P1 | ~~Antivírus nos uploads~~ **feito** (ClamAV, falha fechada, obrigatório em produção). Falta testar contra um `clamd` real no ambiente de produção e manter a base de vírus atualizada | M9 |
+| T13 | P2 | ~~Eliminação de arquivos~~ **feita** (365/90/365 dias, global). Falta definir prazos por escola com o jurídico e estender a retenção às demais tabelas (T2) | M8 |
 | T14 | P2 | **Chave de dados e backup**: o diretório de arquivos é cifrado com a chave de dados. Documentar a guarda da chave, a rotação e o teste de restauração | M9 |
+| T16 | P1 | **Anexos de mensagens podem trazer dado de saúde** (atestado, laudo). Definir a base legal (consentimento do responsável, art. 11, I) e avisar na tela; considerar prazo menor para esses anexos | M8 |
+| T17 | P2 | Conversor LibreOffice: rodar em contêiner sem rede e sem privilégios no servidor de produção | M8 |
 | T15 | P3 | Orientar professores a **não escrever nomes de alunos** em provas adaptadas e no campo de observações | M8 |
 | T10 | P3 | Registro de consentimento versionado (ledger), se alguma atividade usar consentimento | M8 |
 

@@ -191,7 +191,7 @@ Veja [Provas e impressão](./funcionalidades/provas-e-impressao.md) e a [ADR 000
 - [x] Fila de impressão com cópias calculadas (alunos ativos + reserva) e versão adaptada
 - [x] Sigilo até a publicação; prova só publicada a partir da aplicação; trabalhos no calendário
 - [x] Download por link assinado de 5 minutos, auditado
-- [ ] Conversão DOCX para PDF, antivírus, anexos nas mensagens e prazo de eliminação (pendentes)
+- [x] Antivírus (ClamAV, falha fechada), conversão de DOCX para PDF, anexos nas mensagens sem EXIF e retenção dos arquivos
 
 ## Depois do piloto (ideias)
 
