@@ -151,3 +151,16 @@ export type PainelAviso = {
   aviso: Aviso; total: number; lidos: number; cientes: number;
   destinatarios: {usuario_id: string; nome: string; lido_em: string | null; ciente_em: string | null}[];
 };
+
+export type Autorizacao = {
+  id: string; titulo: string; descricao: string; turma: string | null; autor: string | null;
+  data_evento: string | null; prazo: string | null; encerrada: boolean;
+};
+export type AutorizacaoEquipe = Autorizacao & {total: number; autorizados: number; negados: number; pendentes: number};
+export type AutorizacaoFamilia = Autorizacao & {
+  aluno_id: string; aluno: string; resposta: 'autorizo' | 'nao_autorizo' | null; observacao: string | null; respondido_em: string | null;
+};
+export type PainelAutorizacao = {
+  autorizacao: Autorizacao; total: number; autorizado: number; negado: number; pendente: number;
+  alunos: {aluno_id: string; aluno: string; situacao: 'autorizado' | 'negado' | 'pendente'; observacao: string | null; respondido_em: string | null}[];
+};

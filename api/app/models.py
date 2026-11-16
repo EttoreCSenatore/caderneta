@@ -432,3 +432,36 @@ class AvisoLeitura(Base):
     usuario_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("usuario.id", ondelete="CASCADE"), index=True)
     lido_em: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=agora)
     ciente_em: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class Autorizacao(Base):
+    """Pedido de autorização às famílias (passeio, saída antecipada). Uma resposta por aluno."""
+
+    __tablename__ = "autorizacao"
+    id: Mapped[uuid.UUID] = _id()
+    escola_id: Mapped[uuid.UUID] = _escola()
+    autor_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("usuario.id", ondelete="SET NULL"))
+    turma_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("turma.id", ondelete="CASCADE"), index=True)
+    titulo: Mapped[str] = mapped_column(String(200))
+    descricao: Mapped[str] = mapped_column(String(5000))
+    data_evento: Mapped[date | None] = mapped_column(Date)
+    prazo: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    arquivado: Mapped[bool] = mapped_column(Boolean, default=False)
+    criado_em: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=agora)
+
+    autor: Mapped[Usuario | None] = relationship(lazy="joined")
+
+
+class AutorizacaoResposta(Base):
+    """Resposta do responsável por um aluno; pode ser alterada até o prazo (cada troca é auditada)."""
+
+    __tablename__ = "autorizacao_resposta"
+    __table_args__ = (UniqueConstraint("autorizacao_id", "aluno_id"),)
+    id: Mapped[uuid.UUID] = _id()
+    escola_id: Mapped[uuid.UUID] = _escola()
+    autorizacao_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("autorizacao.id", ondelete="CASCADE"), index=True)
+    aluno_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("aluno.id", ondelete="CASCADE"), index=True)
+    usuario_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("usuario.id", ondelete="SET NULL"))
+    autoriza: Mapped[bool] = mapped_column(Boolean)
+    observacao: Mapped[str | None] = mapped_column(String(300))
+    respondido_em: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=agora)

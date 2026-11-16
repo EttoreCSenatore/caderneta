@@ -16,6 +16,7 @@ const Equipe = lazy(() => import('./pages/Equipe'));
 const Importar = lazy(() => import('./pages/Importar'));
 const EscolaPage = lazy(() => import('./pages/Escola'));
 const Avisos = lazy(() => import('./pages/Avisos'));
+const Autorizacoes = lazy(() => import('./pages/Autorizacoes'));
 const Diario = lazy(() => import('./pages/Diario'));
 
 /** Guarda: leva o usuário à etapa pendente (entrar, código, 2FA, perfil) antes do app. */
@@ -50,6 +51,7 @@ export function App() {
           <Route path="importar" element={<Importar />} />
           <Route path="escola" element={<EscolaPage />} />
           <Route path="avisos" element={<Avisos />} />
+          <Route path="autorizacoes" element={<Autorizacoes />} />
           <Route path="diario/:id" element={<Diario />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>

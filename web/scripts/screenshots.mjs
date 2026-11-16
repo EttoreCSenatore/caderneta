@@ -220,6 +220,33 @@ if (roda('m3')) {
   await foto(adm, 'aviso-painel');
 }
 
+if (roda('m3-aut')) {
+  console.log('M3 autorizações');
+  const adm = await sessao('direcao');
+  await adm.goto(BASE + '/autorizacoes');
+  await adm.click('button:has-text("+ Nova autorização")');
+  await adm.fill('.modal input >> nth=0', 'Passeio ao Museu de Ciências');
+  await adm.fill('.modal textarea', 'Saída às 8h, retorno às 12h. Custo de R$ 25,00. Levar lanche e garrafa de água.');
+  await adm.fill('.modal input[type=date]', '2026-12-05');
+  await foto(adm, 'autorizacao-nova');
+  await adm.click('.modal button:has-text("Pedir autorização")');
+  await adm.waitForSelector('text=Passeio ao Museu de Ciências');
+
+  const fam = await sessao('familia', {mobile: true});
+  await fam.goto(BASE + '/autorizacoes');
+  await fam.waitForSelector('text=Passeio ao Museu de Ciências');
+  await foto(fam, 'autorizacao-familia-celular', true);
+  await fam.click('button:has-text("Autorizo") >> nth=0');
+  await fam.waitForSelector('text=Você autorizou');
+
+  await adm.reload();
+  await adm.waitForSelector('text=Passeio ao Museu de Ciências');
+  await foto(adm, 'autorizacoes-equipe');
+  await adm.click('button:has-text("Ver respostas") >> nth=0');
+  await adm.waitForSelector('text=autorizaram');
+  await foto(adm, 'autorizacao-painel');
+}
+
 await b.close();
 if (erros.length) {
   console.error('Erros no navegador:\n' + erros.join('\n'));

@@ -49,12 +49,27 @@ Tela **Avisos** no menu de todos os perfis.
 
 ![Aviso no celular da família](/img/screenshots/avisos-familia-celular.png)
 
-Ainda falta no M3: mensagens individuais, anexos, lembrete aos pendentes, autorizações, push/e-mail e alertas.
+## O que já funciona (M3.2: autorizações)
+
+Tela **Autorizações** para equipe, professores e responsáveis.
+
+- **Quem pede:** mesmas regras dos avisos. Direção e coordenação pedem para a escola toda ou uma turma; professores só para as suas turmas.
+- **Quem responde:** apenas responsáveis, **por aluno** ("Autorizo" ou "Não autorizo"). Quem tem mais de um filho na escola responde uma vez por filho.
+  Vínculos restritos não veem o pedido; a conta do aluno também não responde.
+- **Prazo:** definido pelo autor; depois dele a resposta fica travada e o pedido aparece como encerrado. Até lá a família pode mudar de ideia.
+- **Registro:** cada resposta (e cada troca) é auditada com quem respondeu e quando.
+- **Painel:** o autor vê quem autorizou, quem negou e quem ainda não respondeu, aluno por aluno.
+
+![Pedido de autorização no celular](/img/screenshots/autorizacao-familia-celular.png)
+
+![Painel de respostas](/img/screenshots/autorizacao-painel.png)
+
+Ainda falta no M3: mensagens individuais, anexos, lembrete aos pendentes, push/e-mail e alertas.
 
 ## Critérios de pronto (M3)
 
 - [x] Avisos da escola toda e de turma, com agendamento (M3.1)
 - [ ] Mensagens individuais em conversa, com anexos
 - [x] Confirmação "ciente" e painel de leitura para o remetente (M3.1)
-- [ ] Autorizações digitais com resposta registrada
+- [x] Autorizações digitais com resposta registrada (M3.2)
 - [ ] Notificações push e e-mail com horário silencioso
