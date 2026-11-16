@@ -31,7 +31,7 @@ A página **Pedidos LGPD** (menu da direção e da coordenação) mostra a fila 
 - **Pedido de cancelamento ou eliminação:** o sistema **não apaga nada sozinho**. O pedido fica **aberto** até um funcionário da direção analisar e responder por conta própria, com texto livre (não há respostas prontas). Assim cada caso considera o que a escola precisa guardar.
 - **Responder:** a resposta é obrigatória e explicada. Se não for possível atender (por exemplo, **o histórico escolar precisa ser guardado por lei**, art. 16, I), a resposta diz o porquê. O titular é avisado no app.
 - **Eliminação:** a direção executa pelas ferramentas existentes: [Desligados](./desligados.md) (apagar agora, com confirmação) para alunos desligados, e a anonimização de contas para usuários. Enquanto o aluno está matriculado, o histórico fica e o restante pode ser apagado por pedido, conforme o parecer.
-- Os pedidos e as respostas são **guardados como prova de atendimento** (prestação de contas, art. 6º, X) por **365 dias depois da resposta**, o mesmo prazo dos demais registros, e depois são apagados pelo worker. Pedido ainda aberto nunca é apagado. A escola pode alterar o prazo na configuração do servidor (`CADERNETA_RETENCAO_PEDIDOS_TITULAR_DIAS`).
+- Os pedidos e as respostas são **guardados como prova de atendimento** (prestação de contas, art. 6º, X) por **5 anos depois da resposta** e depois são apagados pelo worker. É o prazo que cobre as ações de reparação e a janela de 5 anos de aferição de reincidência da ANPD, para a escola poder provar que atendeu. A LGPD não fixa um prazo para esse registro. Pedido ainda aberto nunca é apagado. A escola pode alterar o prazo na configuração do servidor (`CADERNETA_RETENCAO_PEDIDOS_TITULAR_DIAS`).
 
 ## Segurança e privacidade do fluxo
 
