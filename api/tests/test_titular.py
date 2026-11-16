@@ -215,3 +215,36 @@ def test_isolamento_entre_escolas_nos_pedidos(mundo, entrar):
         "/api/meus-dados/pedidos", json={"tipo": "acesso", "descricao": "Quero meus dados, por favor."}
     )
     assert entrar("admin.b@teste.com").get("/api/pedidos-titulares").json() == []
+
+
+def test_retencao_apaga_pedido_respondido_antigo_e_nunca_o_aberto(mundo, entrar, owner_engine):
+    from sqlalchemy.orm import Session
+
+    from app.retencao import elimina_vencidos
+
+    mae, admin = entrar("mae.a@teste.com"), entrar("admin.a@teste.com")
+    ids = [
+        mae.post(
+            "/api/meus-dados/pedidos", json={"tipo": "acesso", "descricao": f"Pedido numero {i} de teste."}
+        ).json()["id"]
+        for i in range(3)
+    ]
+    for pid in ids[:2]:
+        assert (
+            admin.post(
+                f"/api/pedidos-titulares/{pid}/responder",
+                json={"status": "atendido", "resposta": "Atendido por e-mail."},
+            ).status_code
+            == 200
+        )
+    with owner_engine.begin() as db:
+        db.execute(
+            text("UPDATE pedido_titular SET respondido_em = now() - interval '400 days' WHERE id = :i"), {"i": ids[0]}
+        )
+        db.execute(
+            text("UPDATE pedido_titular SET recebido_em = now() - interval '900 days' WHERE id = :i"), {"i": ids[2]}
+        )
+    with Session(owner_engine) as db, db.begin():
+        assert elimina_vencidos(db)["pedidos_titular"] == 1
+    restantes = {p["id"] for p in admin.get("/api/pedidos-titulares").json()}
+    assert restantes == {ids[1], ids[2]}  # o respondido há pouco e o ainda aberto (mesmo antigo) continuam

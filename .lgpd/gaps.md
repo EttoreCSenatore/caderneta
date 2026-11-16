@@ -7,7 +7,7 @@ de advogado(a) ou do encarregado.
 
 | # | Pri | Lacuna | Marco sugerido |
 |---|---|---|---|
-| T1 | P1 | ~~Direitos dos titulares (art. 18)~~ **feito no M8.2**: baixar os próprios dados (confirmação e acesso na hora, portabilidade em JSON), pedidos com protocolo e prazo de 15 dias, fila da direção, registro de pedidos de outros canais. Falta: parecer sobre os textos de resposta e revogação de consentimento (não há consentimento no fluxo hoje) | M8 |
+| T1 | P1 | ~~Direitos dos titulares (art. 18)~~ **feito no M8.2**: baixar os próprios dados (acesso na hora, portabilidade em JSON), pedidos com protocolo e prazo de 15 dias, fila da direção, registro de pedidos de outros canais. **Decisão do responsável:** pedido de cancelamento fica aberto para a direção analisar e responder em texto livre, sem respostas prontas. Falta o advogado confirmar que a base legal (contrato com a escola) vale para todas as atividades, o que dispensa o fluxo de revogação de consentimento | M8 |
 | T2 | P1 | **Retenção e eliminação**: feita para notificações, arquivos, anotações removidas, push e **desligados** (alunos e contas). Faltam sessões, auditoria e IP, avisos e mensagens de alunos ativos | M8 |
 | T3 | P1 | Texto livre sem proteção específica: justificativa de falta (`frequencia`) e mensagens podem conter dado de saúde. Avaliar aviso na tela, campo estruturado ou cifragem | M8 |
 | T4 | P2 | **CPF do aluno** guardado sem cifragem (`aluno.cpf`). Tornar opcional por escola e/ou cifrar | M8 |
@@ -24,12 +24,12 @@ de advogado(a) ou do encarregado.
 | T17 | P2 | Conversor LibreOffice: rodar em contêiner sem rede e sem privilégios no servidor de produção | M8 |
 | T15 | P3 | Orientar professores a **não escrever nomes de alunos** em provas adaptadas e no campo de observações | M8 |
 | T18 | P1 | **Retenção das anotações mantidas**: a anotação some 30 dias após remover e **com o apagamento do aluno desligado** (T23). Falta definir prazo para o aluno que continua matriculado | M8 |
-| T19 | P1 | [jurídico] **Direito de acesso (art. 18, II)**: o responsável tem direito aos dados do filho, o que inclui anotações pedagógicas e reservadas, hoje invisíveis a ele. Definir o procedimento (pedido ao encarregado) e eventuais limites legítimos | M8 |
+| T19 | P1 | [jurídico] **Acesso às anotações (art. 18, II)**: o responsável tem direito aos dados do filho, o que inclui anotações pedagógicas e reservadas, hoje invisíveis a ele. **Decisão do responsável (2026-11-17): entregar só mediante pedido analisado pela direção, caso a caso.** O advogado confirma o procedimento (tarjar terceiros, casos de proteção ao menor) | M8 |
 | T24 | P2 | O **apagamento de aluno** não alcança backups. Documentar que o backup expira no próprio ciclo e que uma restauração precisa reaplicar o apagamento | M9 |
 | T25 | P3 | **Anonimização manual de usuário** não está na API (a conta é de outro titular e o RLS impede). Hoje só o worker faz, com aviso. O fluxo do pedido existe (M8.2); falta o botão de anonimização manual para a direção | M8 |
 | T27 | P2 | **2FA para professores**: só a equipe é obrigada. **Decisão do responsável (2026-11-17): manter assim.** Professores veem nomes, notas, anotações e mensagens (de saúde, só o alerta resumido). Reavaliar no parecer e no RIPD | M8 |
 | T28 | P3 | Lista de **senhas fracas/vazadas** e **códigos de reserva** do 2FA (recuperação sem depender da direção) | M8 |
-| T29 | P2 | **Retenção dos pedidos de titulares**: ficam guardados como prova de atendimento. Definir o prazo (3 a 5 anos, segundo a skill `lgpd-dsar`) com o jurídico e apagar depois | M8 |
+| T29 | P2 | ~~Retenção dos pedidos de titulares~~ **feito**: 365 dias depois da resposta (igual aos demais registros, por decisão do responsável), apagados pelo worker; aberto nunca é apagado. A skill `lgpd-dsar` sugere 3 a 5 anos para provar atendimento: o advogado pode pedir prazo maior (`CADERNETA_RETENCAO_PEDIDOS_TITULAR_DIAS`) | M8 |
 | T20 | P2 | **Correção e eliminação x versões**: pedido de correção/eliminação precisa apagar também as versões antigas (hoje só a remoção pela autora/equipe). Hoje o pedido é tratado pela direção caso a caso (a eliminação de versões antigas das anotações ainda é manual) | M8 |
 | T26 | P2 | **Dados no aparelho do professor (offline, M7.1)**: celular perdido, roubado ou compartilhado. Hoje há cifra + apagamento (sair, troca, 7 dias), mas a cifra não vale com o navegador desbloqueado. Definir com a escola: bloqueio de tela obrigatório, uso de aparelho pessoal (BYOD) x da escola, e procedimento de perda (revogar sessões). Incluir no RIPD (O6) | M8 |
 | T21 | P2 | ~~Rota pública de conferência do histórico sem limite~~ **feito** (M8.1): 20 por minuto por IP, e limite de taxa nas demais rotas públicas | M8 |

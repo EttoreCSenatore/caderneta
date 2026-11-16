@@ -19,7 +19,7 @@ Toda pessoa tem direito de saber o que a escola guarda sobre ela, de baixar uma 
 
 - **Vai:** conta, perfis, vínculos, avisos lidos, autorizações respondidas, mensagens escritas pela própria pessoa, notificações; para o aluno: cadastro (inclusive CPF), matrículas, **notas já publicadas**, frequência, elogios e ocorrências visíveis às famílias, autorizações, históricos emitidos e, **só para o responsável**, a ficha de saúde.
 - **Fica de fora, para proteger outras pessoas:** contato de outros responsáveis (só nome e tipo), nome de professores, mensagens de outras pessoas.
-- **Fica de fora até o parecer jurídico:** anotações **pedagógicas e reservadas**. Se o titular tem direito a elas é decisão do advogado (gap T19); enquanto isso o pedido é analisado pela direção caso a caso.
+- **Fica de fora do arquivo automático:** anotações **pedagógicas e reservadas**. **Decisão do responsável:** elas só são entregues **mediante pedido analisado pela direção**, caso a caso, com resposta fundamentada. O advogado confirma esse procedimento no parecer (gap T19).
 - A **conta do próprio aluno** não recebe a ficha de saúde (ela também não a vê no app): o aluno pede à escola.
 
 ## Para a direção
@@ -28,9 +28,10 @@ A página **Pedidos LGPD** (menu da direção e da coordenação) mostra a fila 
 
 - **Pedido recebido fora do app** (balcão, e-mail, telefone): a direção usa *Registrar pedido recebido fora do app* e informa a **data em que a escola recebeu**; o prazo conta dela. Quem pede não precisa saber chamar de "direito do titular": pedido de "apagar meu cadastro" feito em qualquer canal é protocolado.
 - **Gerar arquivo de dados:** a direção baixa o arquivo do titular para entregar a quem pediu. A geração fica registrada.
+- **Pedido de cancelamento ou eliminação:** o sistema **não apaga nada sozinho**. O pedido fica **aberto** até um funcionário da direção analisar e responder por conta própria, com texto livre (não há respostas prontas). Assim cada caso considera o que a escola precisa guardar.
 - **Responder:** a resposta é obrigatória e explicada. Se não for possível atender (por exemplo, **o histórico escolar precisa ser guardado por lei**, art. 16, I), a resposta diz o porquê. O titular é avisado no app.
 - **Eliminação:** a direção executa pelas ferramentas existentes: [Desligados](./desligados.md) (apagar agora, com confirmação) para alunos desligados, e a anonimização de contas para usuários. Enquanto o aluno está matriculado, o histórico fica e o restante pode ser apagado por pedido, conforme o parecer.
-- Os pedidos e as respostas são **guardados como prova de atendimento** (prestação de contas, art. 6º, X).
+- Os pedidos e as respostas são **guardados como prova de atendimento** (prestação de contas, art. 6º, X) por **365 dias depois da resposta**, o mesmo prazo dos demais registros, e depois são apagados pelo worker. Pedido ainda aberto nunca é apagado. A escola pode alterar o prazo na configuração do servidor (`CADERNETA_RETENCAO_PEDIDOS_TITULAR_DIAS`).
 
 ## Segurança e privacidade do fluxo
 
@@ -40,5 +41,5 @@ A página **Pedidos LGPD** (menu da direção e da coordenação) mostra a fila 
 - Cada escola só vê os próprios pedidos (isolamento por escola no banco).
 
 :::note Limites
-Esta página descreve o fluxo técnico. Prazos e o que pode ser negado são **decisão jurídica**: o parecer do M8 valida o texto das respostas padrão e o tratamento de anotações internas.
+Esta página descreve o fluxo técnico. Prazos e o que pode ser negado são **decisão jurídica**: o parecer do M8 valida o procedimento para anotações internas e confirma que a base legal (contrato com a escola, sem consentimento) vale para todas as atividades, o que dispensa um fluxo de revogação de consentimento.
 :::
