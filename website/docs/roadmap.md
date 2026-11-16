@@ -209,8 +209,8 @@ Veja [Modo offline](./funcionalidades/offline.md).
 
 - [x] M7.1: notas e chamada offline para professores, com cofre cifrado no aparelho, fila de envio, apagamento ao sair e após 7 dias sem conexão
 - [x] Correção: sair da conta travava quando o navegador não tinha service worker
-- [ ] Testar o modo offline com a PWA instalada em aparelhos reais (abrir o app sem internet)
-- [ ] Polimento da PWA no celular (instalação, ícones, telas pequenas)
+- [x] M7.2 PWA: o app abre sem internet (identidade, turmas e diários vêm do cofre cifrado), convite de instalação (Android/desktop e dica para iPhone), atalhos, tema escuro na barra, teste de ponta a ponta com Chromium e internet cortada (`npm run e2e:offline`)
+- [ ] Testar em aparelhos reais (Android e iPhone) com a PWA instalada, incluindo o push
 - [ ] Capacitor: empacotar para as lojas (decidir se vale a pena antes do piloto)
 
 ## Retenção de desligados (feito antes do M8)

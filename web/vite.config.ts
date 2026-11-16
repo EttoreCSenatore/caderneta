@@ -16,7 +16,16 @@ export default defineConfig({
         theme_color: '#1d4ed8',
         background_color: '#f7f9fe',
         display: 'standalone',
+        id: '/',
         start_url: '/',
+        scope: '/',
+        orientation: 'any',
+        categories: ['education'],
+        shortcuts: [
+          {name: 'Avisos', url: '/avisos', icons: [{src: 'icon-192.png', sizes: '192x192'}]},
+          {name: 'Calendário', url: '/calendario', icons: [{src: 'icon-192.png', sizes: '192x192'}]},
+          {name: 'Notificações', url: '/notificacoes', icons: [{src: 'icon-192.png', sizes: '192x192'}]},
+        ],
         icons: [
           {src: 'icon-192.png', sizes: '192x192', type: 'image/png'},
           {src: 'icon-512.png', sizes: '512x512', type: 'image/png'},
@@ -32,6 +41,7 @@ export default defineConfig({
       },
     }),
   ],
+  preview: {port: 4173, proxy: {'/api': 'http://127.0.0.1:8000'}},
   server: {
     port: 5173,
     proxy: {'/api': 'http://127.0.0.1:8000'},

@@ -3,7 +3,7 @@ import type {QueryClient} from '@tanstack/react-query';
 import {useSyncExternalStore} from 'react';
 import {api, ApiError} from './api';
 import {armazemIndexedDB, Cofre, type ItemFila, sincronizar} from './offline';
-import type {Aula, Diario, TurmaResumo} from './tipos';
+import type {Aula, Diario, Me, TurmaResumo} from './tipos';
 
 export const cofre = new Cofre(typeof indexedDB === 'undefined' ? ({} as never) : armazemIndexedDB());
 const suportado = typeof indexedDB !== 'undefined' && typeof crypto !== 'undefined' && !!crypto.subtle;
@@ -122,6 +122,8 @@ export async function descartar(id: string): Promise<void> {
 /** Guarda no aparelho o diário das turmas do professor, para funcionar mesmo se a internet cair. */
 async function preCarregar(): Promise<void> {
   const turmas = await api<TurmaResumo[]>('/turmas');
+  await cofre.guardar('turmas', turmas);
+  await cofre.guardar('escola', await api('/escola'));
   for (const a of turmas.flatMap((t) => t.atribuicoes).slice(0, 15)) {
     const d = await api<Diario>(`/atribuicoes/${a.id}/diario`);
     await guardaDiario(d, '');
@@ -133,8 +135,9 @@ let ligado: string | null = null;
 let timer: ReturnType<typeof setInterval> | undefined;
 
 /** Liga (professor) ou desliga e apaga (qualquer outro perfil) o modo offline. Chamado pelo Layout. */
-export async function iniciarOffline(usuarioId: string, professor: boolean, qc: QueryClient): Promise<void> {
+export async function iniciarOffline(me: Me, professor: boolean, qc: QueryClient): Promise<void> {
   if (!suportado) return;
+  const usuarioId = me.usuario.id;
   const chave = `${usuarioId}:${professor}`;
   if (ligado === chave) return;
   ligado = chave;
@@ -144,6 +147,7 @@ export async function iniciarOffline(usuarioId: string, professor: boolean, qc: 
     return;
   }
   await cofre.abrir(usuarioId);
+  await cofre.guardar('me', me); // para abrir o app sem internet
   publica({ativo: true});
   await atualizaEstado();
   const muda = () => {
@@ -159,5 +163,26 @@ export async function iniciarOffline(usuarioId: string, professor: boolean, qc: 
     await preCarregar().catch(() => undefined);
     await cofre.registrarSync();
     await atualizaEstado();
+  }
+}
+
+/** App aberto sem internet: quem é a pessoa e quais turmas, a partir do cofre (só professor, só se não venceu). */
+export async function lerMeOffline(): Promise<Me | null> {
+  if (!suportado || !(await cofre.reabrir().catch(() => false))) return null;
+  return cofre.ler<Me>('me');
+}
+
+/** Busca na API; com o modo offline ativo, guarda o resultado e, sem internet, devolve o último guardado. */
+export async function comCache<T>(chave: string, buscar: () => Promise<T>): Promise<T> {
+  try {
+    const v = await buscar();
+    if (estado.ativo) void cofre.guardar(chave, v).catch(() => undefined);
+    return v;
+  } catch (e) {
+    if (semConexao(e) && (estado.ativo || cofre.aberto)) {
+      const guardado = await cofre.ler<T>(chave);
+      if (guardado) return guardado;
+    }
+    throw e;
   }
 }

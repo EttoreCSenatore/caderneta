@@ -106,6 +106,20 @@ export class Cofre {
     this.chave = k;
   }
 
+  /** Reabre o cofre existente sem saber quem é o usuário (app aberto sem internet). false se não há ou venceu. */
+  async reabrir(): Promise<boolean> {
+    const m = await this.meta();
+    if (!m) return false;
+    if (this.agora() - m.ultimaSync > VALIDADE_DIAS * DIA) {
+      await this.limpar();
+      return false;
+    }
+    const k = (await this.a.get('chave')) as CryptoKey | undefined;
+    if (!k) return false;
+    this.chave = k;
+    return true;
+  }
+
   get aberto(): boolean {
     return this.chave !== null;
   }

@@ -2,6 +2,7 @@ import {useQuery} from '@tanstack/react-query';
 import {Link} from 'react-router';
 import {Carregando, Erro, Vazio, Avatar} from '../components/ui';
 import {api} from '../lib/api';
+import {comCache} from '../lib/offlineApp';
 import {useMe, usePapel} from '../lib/auth';
 import {dataBR, idade, nomeExibicao, periodoAtual} from '../lib/formato';
 import type {Aluno, Escola, TurmaResumo} from '../lib/tipos';
@@ -52,7 +53,7 @@ function InicioEquipe({escola}: {escola: Escola}) {
 }
 
 function InicioProfessor() {
-  const turmas = useQuery({queryKey: ['turmas'], queryFn: () => api<TurmaResumo[]>('/turmas')});
+  const turmas = useQuery({queryKey: ['turmas'], queryFn: () => comCache('turmas', () => api<TurmaResumo[]>('/turmas'))});
   if (turmas.isLoading) return <Carregando />;
   if (!turmas.data?.length) return <Vazio>Você ainda não tem turmas atribuídas. A escola faz isso em Turmas → Professores.</Vazio>;
   return (
@@ -116,7 +117,7 @@ function InicioFamilia({proprio}: {proprio: boolean}) {
 export function Inicio() {
   const {data: me} = useMe();
   const papel = usePapel();
-  const escola = useQuery({queryKey: ['escola'], queryFn: () => api<Escola>('/escola')});
+  const escola = useQuery({queryKey: ['escola'], queryFn: () => comCache('escola', () => api<Escola>('/escola'))});
   if (escola.isLoading) return <Carregando />;
   if (escola.error) return <Erro erro={escola.error} />;
   const e = escola.data!;

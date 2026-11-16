@@ -1,5 +1,5 @@
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
-import {limparOffline} from './offlineApp';
+import {lerMeOffline, limparOffline} from './offlineApp';
 import {desativarPush} from './push';
 import {api, ApiError} from './api';
 import type {Me, Papel} from './tipos';
@@ -12,6 +12,10 @@ export function useMe() {
         return await api<Me>('/auth/me');
       } catch (e) {
         if (e instanceof ApiError && e.status === 401) return null;
+        if (e instanceof ApiError && e.status === 0) {
+          const guardado = await lerMeOffline(); // app aberto sem internet (professor com dados no aparelho)
+          if (guardado) return guardado;
+        }
         throw e;
       }
     },
