@@ -3,6 +3,7 @@ import {useState} from 'react';
 import {Navigate, useNavigate} from 'react-router';
 import {Carregando, Erro} from '../components/ui';
 import {api} from '../lib/api';
+import {useSair} from '../lib/auth';
 import {Markdown} from '../lib/markdown';
 import type {LegalPendente, TextoLegal} from '../lib/tipos';
 import {TelaEntrada} from './Entrar';
@@ -11,6 +12,7 @@ import {TelaEntrada} from './Entrar';
 export default function Aceitar({pendentes}: {pendentes: LegalPendente[]}) {
   const nav = useNavigate();
   const qc = useQueryClient();
+  const sair = useSair();
   const [ciente, setCiente] = useState(false);
   const textos = useQueries({queries: pendentes.map((p) => ({queryKey: ['legal', p.doc], queryFn: () => api<TextoLegal>(`/legal/${p.doc}`)}))});
   const aceita = useMutation({
@@ -38,6 +40,7 @@ export default function Aceitar({pendentes}: {pendentes: LegalPendente[]}) {
       </label>
       <Erro erro={aceita.error} />
       <button className="botao largo" disabled={!ciente || aceita.isPending} onClick={() => aceita.mutate()}>Continuar</button>
+      <button className="botao secundario largo" onClick={() => sair.mutate()} disabled={sair.isPending}>Sair</button>
     </TelaEntrada>
   );
 }
