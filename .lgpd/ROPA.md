@@ -36,7 +36,7 @@
 | A018 | Pedidos de titulares | Atender o art. 18 e provar o atendimento | 7º, II e VI; 6º, X | Quem pede (e menores, via responsável) | Hospedagem | A definir | Só a direção responde; auditoria; exportação com senha | Não |
 | A019 | Ciência da política e termos | Provar que a informação foi dada | 7º, VI; 6º, X | Quem acessa | Hospedagem | A definir | Registro por versão | Não |
 
-**Operações em legítimo interesse (art. 7º, IX) que exigem LIA (teste de legítimo interesse):** A001, A003, A007, A012 e A017. As LIAs ainda **não foram escritas** (T32).
+**Operações em legítimo interesse (art. 7º, IX) que exigem LIA (teste de legítimo interesse):** A001, A003, A007, A012 e A017. As LIAs estão em rascunho, aguardando o parecer: [A001](./lia/a001-autenticacao.md), [A003](./lia/a003-responsaveis.md), [A007](./lia/a007-auditoria.md), [A012](./lia/a012-anotacoes.md) (aprovável **com condições**) e [A017](./lia/a017-seguranca-da-conta.md).
 
 ## II. Operações como operadora
 
