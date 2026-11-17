@@ -85,3 +85,16 @@ def test_encarregado_so_a_direcao_define_e_todos_veem(mundo, entrar):
             "nome": "Dra. Helena Dias",
             "email": "privacidade@escola-a.com.br",
         }
+
+
+def test_operadora_da_instalacao_aparece_nos_textos(monkeypatch):
+    from app.config import get_settings
+
+    assert "{{operadora}}" not in legal.carrega("privacidade")["texto"]
+    assert "INFORMAR NA CONFIGURAÇÃO" in legal.carrega("privacidade")["texto"]  # sem configuração: lembrete visível
+    monkeypatch.setattr(get_settings(), "operadora_nome", "Tecnologia Exemplo Ltda.")
+    monkeypatch.setattr(get_settings(), "operadora_contato", "contato@exemplo.com.br")
+    for doc in ("privacidade", "termos"):
+        t = Cliente().get(f"/api/legal/{doc}").json()["texto"]
+        assert "**Tecnologia Exemplo Ltda.** (contato@exemplo.com.br)" in t
+        assert "{{" not in t

@@ -1,5 +1,5 @@
 ---
-versao: 2026-11-17.1
+versao: 2026-11-17.2
 titulo: Política de privacidade
 status: rascunho
 ---
@@ -11,7 +11,8 @@ Este texto explica, em linguagem simples, como os dados pessoais são tratados n
 ## 1. Quem cuida dos seus dados
 
 - **A escola é a controladora**: ela decide para que os dados são usados e é a responsável por eles perante você.
-- **A Caderneta é a operadora**: guarda e processa os dados em nome da escola, seguindo as instruções dela, e não os usa para outros fins.
+- **A operadora** é quem hospeda e mantém esta instalação da Caderneta em nome da escola: {{operadora}}. Ela guarda e processa os dados seguindo as instruções da escola e não os usa para outros fins. Se a própria escola hospeda a Caderneta, ela exerce os dois papéis.
+- A Caderneta é **software livre**: o nome se refere ao programa, não a uma empresa.
 - O **encarregado de proteção de dados (DPO)** da sua escola é o canal para dúvidas e pedidos. O nome e o contato aparecem nesta página quando você está logado e na página **Meus dados**. Se a escola ainda não informou, procure a secretaria.
 
 ## 2. Quais dados são usados
@@ -36,14 +37,14 @@ Não vendemos dados, não fazemos propaganda e não usamos os dados para perfis 
 
 ## 4. Crianças e adolescentes
 
-Tratamos dados de crianças e adolescentes sempre no **melhor interesse deles** (LGPD, art. 14, e Lei 15.211/2025, ECA Digital). Para isso:
+A escola pode criar contas para alunos de **qualquer idade**. Tratamos dados de crianças e adolescentes sempre no **melhor interesse deles** (LGPD, art. 14, e Lei 15.211/2025, ECA Digital). Para isso:
 
 - contas de alunos **não recebem e-mail nem notificação do aparelho**;
 - o responsável pode ver os dados do filho e fazer pedidos por ele;
 - a ficha de saúde não aparece para a conta do próprio aluno nem para os professores (eles veem só um alerta resumido definido pela escola);
 - só pedimos os dados necessários: o CPF do aluno, por exemplo, é opcional.
 
-[PONTOS A CONFIRMAR NO PARECER JURÍDICO: forma de ciência e consentimento de responsáveis para contas de alunos menores; enquadramento da escola como agente de pequeno porte.]
+[PONTOS A CONFIRMAR NO PARECER JURÍDICO: para contas de crianças, a ciência e o consentimento específico de um dos pais ou responsáveis (art. 14, § 1º); enquadramento da escola como agente de pequeno porte.]
 
 ## 5. Com quem os dados são compartilhados
 
