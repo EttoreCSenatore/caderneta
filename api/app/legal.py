@@ -2,6 +2,9 @@
 
 Cada arquivo começa com `versao`, `titulo` e `status` (`rascunho` até o parecer jurídico). Mudou o texto de forma
 relevante? Troque a `versao`: todo mundo passa a ver a tela de confirmação de novo no próximo acesso.
+
+Cada instalação pode usar **textos próprios**, revisados pelo seu advogado: aponte `CADERNETA_LEGAL_DIR` para uma pasta
+com `privacidade.md` e/ou `termos.md` no mesmo formato. O que faltar na pasta usa o texto padrão do projeto.
 """
 
 from functools import lru_cache
@@ -32,10 +35,21 @@ def carrega(doc: str) -> dict:
 def _le(doc: str) -> dict:
     if doc not in DOCS:
         raise KeyError(doc)
-    bruto = (PASTA / f"{doc}.md").read_text(encoding="utf-8")
-    _, cab, corpo = bruto.split("---", 2)
-    meta = dict(linha.split(":", 1) for linha in cab.strip().splitlines())
-    meta = {k.strip(): v.strip() for k, v in meta.items()}
+    propria = Path(get_settings().legal_dir) / f"{doc}.md" if get_settings().legal_dir else None
+    arquivo = propria if propria and propria.is_file() else PASTA / f"{doc}.md"
+    bruto = arquivo.read_text(encoding="utf-8")
+    try:
+        _, cab, corpo = bruto.split("---", 2)
+        meta = dict(linha.split(":", 1) for linha in cab.strip().splitlines())
+        meta = {k.strip(): v.strip() for k, v in meta.items()}
+        faltam = {"versao", "titulo", "status"} - set(meta)
+    except ValueError:
+        faltam = {"versao", "titulo", "status"}
+        meta, corpo = {}, ""
+    if faltam:
+        raise RuntimeError(
+            f"{arquivo}: o cabeçalho precisa ter versao, titulo e status (faltam: {', '.join(sorted(faltam))})"
+        )
     return {
         "doc": doc,
         "versao": meta["versao"],

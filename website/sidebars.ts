@@ -40,6 +40,7 @@ const sidebars: SidebarsConfig = {
         'tecnico/revisao-de-seguranca',
         'tecnico/backups-chaves-e-logs',
         'tecnico/documentos-de-conformidade',
+        'tecnico/pacote-juridico',
         'tecnico/desenvolvimento',
       ],
     },

@@ -98,3 +98,28 @@ def test_operadora_da_instalacao_aparece_nos_textos(monkeypatch):
         t = Cliente().get(f"/api/legal/{doc}").json()["texto"]
         assert "**Tecnologia Exemplo Ltda.** (contato@exemplo.com.br)" in t
         assert "{{" not in t
+
+
+def test_instalacao_pode_usar_textos_proprios_do_seu_advogado(tmp_path, monkeypatch):
+    import pytest
+
+    from app.config import get_settings
+
+    (tmp_path / "termos.md").write_text(
+        "---\nversao: escola-x-2027-01\ntitulo: Termos da Escola X\nstatus: vigente\n---\n\n# Termos da Escola X\n\nTexto aprovado.\n",
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(get_settings(), "legal_dir", str(tmp_path))
+    legal._le.cache_clear()
+    try:
+        t = Cliente().get("/api/legal/termos").json()
+        assert (t["versao"], t["status"]) == ("escola-x-2027-01", "vigente") and "Texto aprovado" in t["texto"]
+        # o que a pasta não traz continua com o texto padrão do projeto
+        assert Cliente().get("/api/legal/privacidade").json()["titulo"] == "Política de privacidade"
+        (tmp_path / "privacidade.md").write_text("sem cabeçalho", encoding="utf-8")
+        legal._le.cache_clear()
+        with pytest.raises(RuntimeError, match="cabeçalho"):
+            legal.carrega("privacidade")
+    finally:
+        monkeypatch.setattr(get_settings(), "legal_dir", "")
+        legal._le.cache_clear()

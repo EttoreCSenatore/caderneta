@@ -17,3 +17,7 @@ dev-dist/
 
 # Arquivos de provas (cifrados) do ambiente de desenvolvimento
 api/storage/
+
+# pacote jurídico gerado por instalação (contém dados da escola)
+pacote-juridico/
+instalacao.json
