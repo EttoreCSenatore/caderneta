@@ -15,6 +15,9 @@ class Settings(BaseSettings):
 
     # Chave AES-256 (base64 urlsafe, 32 bytes) para dados sensíveis. Em produção é obrigatória.
     data_key: str = ""
+    # Chaves ANTIGAS (base64 urlsafe, separadas por vírgula), só para ler dados ainda não regravados na rotação.
+    # Rotação: ponha a chave nova em CADERNETA_DATA_KEY, a antiga aqui e rode `python -m app.cli rotacionar-chave`.
+    data_keys_antigas: str = ""
     env: str = "dev"  # dev | test | prod
 
     # Quem opera ESTA instalação (hospeda e mantém), citado na política de privacidade e nos termos.

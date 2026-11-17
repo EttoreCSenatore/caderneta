@@ -14,6 +14,8 @@
 
 O plantão da escola é o **Responsável de TI da escola** (decisão do responsável do projeto). Antes do piloto, a escola e a operadora preenchem **nomes e telefones** (item aberto T33).
 
+> **Quando se aplica:** a instalações com **dados pessoais reais**. A demonstração e o ambiente de desenvolvimento usam só dados fictícios e ficam fora (um problema de segurança ali é só um defeito a corrigir). Se alguém digitar um dado real nelas, passam a contar.
+
 ## O que conta como incidente
 
 Qualquer evento que comprometa a **confidencialidade, integridade ou disponibilidade** de dados pessoais, confirmado ou suspeito. Exemplos nesta plataforma: acesso a dados de outra escola; conta de equipe invadida; banco, backup ou diretório de arquivos copiado; anexo ou prova exposta; chave de dados vazada; link secreto (iCal, assinado) divulgado; aparelho de professor perdido com o modo offline; e-mail enviado à pessoa errada; erro que mostra o aluno de um responsável para outro.
@@ -47,7 +49,7 @@ Antes de reiniciar ou limpar qualquer coisa, **guardar cópia** dos logs (aplica
 - **Notificações do aparelho:** apagar as inscrições (`push_inscricao`) ou remover as chaves VAPID da configuração.
 - **Conta de equipe invadida:** redefinir a senha, refazer o 2FA e revisar a `auditoria` (`login`, `saude_lida`, `titular.exportou`, `notas_corrigidas`).
 - **Link secreto exposto:** revogar o link do calendário na tela de calendário; links assinados expiram em 5 minutos.
-- **Chave de dados (`CADERNETA_DATA_KEY`) vazada:** a rotação de chave ainda não existe (T14, M8.5). Tratar como incidente grave e acionar o jurídico.
+- **Chave de dados (`CADERNETA_DATA_KEY`) vazada:** tratar como incidente grave e acionar o jurídico. Gerar chave nova e fazer a **rotação** (`python -m app.cli rotacionar-chave`, veja *Backups, chaves e logs*); **backups antigos continuam abríveis pela chave vazada**, então avaliar a exposição deles e a senha do backup.
 - **Falha no código:** corrigir, publicar e adicionar teste de regressão.
 - Se o incidente foi em **provedor** (hospedagem, e-mail), exigir relatório técnico por escrito.
 

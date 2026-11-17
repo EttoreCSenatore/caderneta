@@ -2,6 +2,7 @@
 
 python -m app.cli criar-escola "Escola Exemplo" admin@escola.com "Nome do Admin"
 python -m app.cli notificar     # worker: avisos agendados, e-mails devidos e retenção (rodar a cada minuto)
+python -m app.cli rotacionar-chave [--simular]   # regrava os dados cifrados com a chave atual (rotação de chave)
 python -m app.cli revogar-sessoes [escola_id]   # incidente: encerra todas as sessões (ou só as de uma escola)
 """
 
@@ -59,6 +60,18 @@ def revogar_sessoes(escola_id: str | None = None) -> int:
     return n
 
 
+def rotacionar_chave(simular: bool, exigir_arquivos: bool = False) -> dict[str, int]:
+    from app.chaves import rotaciona
+
+    engine = create_engine(get_settings().owner_database_url)
+    with Session(engine) as db, db.begin():
+        r = rotaciona(db, simular)
+    print(("[simulação, nada foi gravado] " if simular else "") + " · ".join(f"{k}: {v}" for k, v in r.items()))
+    if exigir_arquivos and r["ausentes"]:
+        raise SystemExit(f"FALHA: {r['ausentes']} arquivo(s) do banco não estão no armazenamento restaurado")
+    return r
+
+
 def gerar_vapid() -> None:
     from app.push import gerar_chaves
 
@@ -78,6 +91,11 @@ def main() -> None:
     c.add_argument("nome_admin")
     r = sub.add_parser("revogar-sessoes", help="encerra todas as sessões (resposta a incidente)")
     r.add_argument("escola_id", nargs="?", default=None)
+    k = sub.add_parser("rotacionar-chave", help="regrava os dados cifrados com a chave atual")
+    k.add_argument("--simular", action="store_true", help="só conta o que seria regravado")
+    k.add_argument(
+        "--exigir-arquivos", action="store_true", help="falha se faltar arquivo no armazenamento (teste de restauração)"
+    )
     sub.add_parser("gerar-vapid", help="gera as chaves do push (VAPID)")
     sub.add_parser("notificar", help="worker de notificações (agendados, e-mails, retenção)")
     a = p.parse_args()
@@ -87,6 +105,8 @@ def main() -> None:
         notificar()
     elif a.cmd == "revogar-sessoes":
         revogar_sessoes(a.escola_id)
+    elif a.cmd == "rotacionar-chave":
+        rotacionar_chave(a.simular, a.exigir_arquivos)
     elif a.cmd == "gerar-vapid":
         gerar_vapid()
 
