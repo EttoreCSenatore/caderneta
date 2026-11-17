@@ -113,7 +113,7 @@ Só a direção reabre um período.
 - [x] Fechamento de período e correção pela direção com justificativa auditada
 - [x] Boletim para impressão e PDF (pelo navegador; o PDF gerado no servidor fica para o histórico escolar, no M6)
 
-:::note Fica para depois
-- Lançar notas sem internet: no M7, junto com o app de celular.
-- Avisar a família quando sai uma nota nova: no M3, com as notificações.
+:::note Entregue depois
+- Lançar notas **sem internet**: feito no M7, veja [Modo offline](./offline.md).
+- **Avisar a família** quando sai uma nota nova: feito no M3, veja [Comunicação](./comunicacao.md).
 :::

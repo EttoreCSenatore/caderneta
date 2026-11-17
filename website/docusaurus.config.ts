@@ -29,9 +29,10 @@ const config: Config = {
 
   i18n: {
     defaultLocale: 'pt-BR',
-    locales: ['pt-BR'],
+    locales: ['pt-BR', 'en'],
     localeConfigs: {
       'pt-BR': {label: 'Português (BR)', htmlLang: 'pt-BR'},
+      en: {label: 'English', htmlLang: 'en'},
     },
   },
 
@@ -73,6 +74,7 @@ const config: Config = {
           label: 'Documentação',
         },
         {to: '/docs/roadmap', label: 'Roadmap', position: 'left'},
+        {type: 'localeDropdown', position: 'right'},
         {
           href: 'https://github.com/EttoreCSenatore/caderneta',
           label: 'GitHub',

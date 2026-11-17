@@ -40,9 +40,9 @@ Scripts em `infra/backup/` (precisam de `pg_dump`, `pg_restore`, `psql` e `gpg`)
 - Se um proxy reverso ficar na frente, aplique a mesma regra nele: **não registrar query string nem esses caminhos**.
 - Rode a API com `--proxy-headers --forwarded-allow-ips=<IP do proxy>` para o limite de tentativas ver o IP real.
 
-## Monitoramento e alertas (para a implantação, M9)
+## Monitoramento e alertas
 
-Ainda não há monitoramento embutido. Antes do piloto, configure ao menos: disponibilidade de `/api/saude`; alerta de erros 5xx; alerta de **muitas falhas de login** (ações `login_falhou` na auditoria); alerta de **backup que não rodou** (`ultimo-backup.txt` velho) e de **disco cheio**. Quem recebe o alerta é o plantão técnico (veja o plano de incidentes).
+O script `deploy/verificar.sh` (para o cron, a cada 10 minutos) confere: `/api/saude` no ar, **backup atrasado** (`ultimo-backup.txt` velho), **disco cheio**, banco respondendo e **serviço parado**; se algo falhar, avisa o plantão por uma URL de alerta (ntfy, healthchecks.io etc.). Veja [Implantação](./implantacao.md). Ficam por configurar: alerta de erros 5xx e de **muitas falhas de login** (ações `login_falhou` na auditoria). Quem recebe o alerta é o plantão técnico (veja o plano de incidentes).
 
 :::note Limites
 Ainda **não verificado em produção**: a hospedagem não foi escolhida. Os scripts foram testados com o banco de desenvolvimento em contêiner.

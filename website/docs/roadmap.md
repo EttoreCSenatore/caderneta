@@ -18,7 +18,7 @@ adicionados às páginas de funcionalidade.
 | **M5: Provas e impressão** | Upload, aprovação, fila de impressão com cópias calculadas, trabalhos | ✅ Concluído |
 | **M6: Histórico e anotações** | Rematrícula em lote, linha do tempo, anotações versionadas, histórico escolar em PDF | ✅ Concluído |
 | **M7: App de celular** | PWA refinada, offline para notas e chamada (lojas ficam para depois do piloto) | ✅ Concluído |
-| **M8: Conformidade e segurança** | Revisão geral de segurança, licenças e adequação à LGPD e à legislação aplicável, com validação jurídica | Planejado |
+| **M8: Conformidade e segurança** | Revisão geral de segurança, licenças e adequação à LGPD e à legislação aplicável, com validação jurídica | Código e documentação prontos; falta o parecer jurídico e o teste de intrusão |
 | **M9: Piloto** | Deploy de produção, backups, piloto com uma escola (só começa com o M8 aprovado) | Em preparação |
 
 ```mermaid
@@ -42,6 +42,8 @@ gantt
 ```
 
 As datas são estimativas para orientar a ordem; o ritmo real ajusta o gráfico a cada marco.
+
+Esta documentação está disponível em **português e em inglês** (seletor de idioma no topo). Os textos legais e os artefatos de conformidade ficam em português, porque aplicam a lei brasileira.
 
 ## M1: Fundação (concluído)
 
@@ -117,7 +119,7 @@ junto com o texto da Lei nº 13.709/2018 e as orientações da ANPD.
 
 O M8 é grande, então corre em etapas, cada uma com seu PR:
 
-1. **M8.1 Segurança do código:** auditoria de dependências (`pip-audit`, `npm audit`, SBOM), revisão de autenticação, autorização e RLS, limites de taxa (T21), cabeçalhos, checklist OWASP Top 10/ASVS e corrigir o que aparecer
+1. **M8.1 Segurança do código ✅:** auditoria de dependências (`pip-audit`, `npm audit`, SBOM), revisão de autenticação, autorização e RLS, limites de taxa (T21), cabeçalhos, checklist OWASP Top 10/ASVS e corrigir o que aparecer
 2. **M8.2 Direitos dos titulares (art. 18) ✅:** fluxo de pedido de acesso, correção, eliminação e portabilidade, com prazo e registro (T1, T19, T20, T25)
 3. **M8.3 Transparência ✅ (rascunho):** política de privacidade e termos em linguagem simples, aceite registrado e versionado, canal do encarregado
 4. **M8.4 Documentos de conformidade ✅ (rascunhos):** ROPA e RIPD (rascunhos com a skill `lgpd-audit`, **revisão humana e jurídica obrigatória**), plano de resposta a incidentes

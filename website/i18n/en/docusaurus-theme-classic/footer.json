@@ -1,0 +1,54 @@
+{
+  "link.title.Produto": {
+    "message": "Product",
+    "description": "The title of the footer links column with title=Produto in the footer"
+  },
+  "link.title.Funcionalidades": {
+    "message": "Features",
+    "description": "The title of the footer links column with title=Funcionalidades in the footer"
+  },
+  "link.title.Técnico": {
+    "message": "Technical",
+    "description": "The title of the footer links column with title=Técnico in the footer"
+  },
+  "link.item.label.Visão geral": {
+    "message": "Overview",
+    "description": "The label of footer link with label=Visão geral linking to /docs/intro"
+  },
+  "link.item.label.Perfis e permissões": {
+    "message": "Roles and permissions",
+    "description": "The label of footer link with label=Perfis e permissões linking to /docs/produto/perfis"
+  },
+  "link.item.label.Notas e médias": {
+    "message": "Grades and averages",
+    "description": "The label of footer link with label=Notas e médias linking to /docs/funcionalidades/notas-e-medias"
+  },
+  "link.item.label.Comunicação": {
+    "message": "Communication",
+    "description": "The label of footer link with label=Comunicação linking to /docs/funcionalidades/comunicacao"
+  },
+  "link.item.label.Calendário": {
+    "message": "Calendar",
+    "description": "The label of footer link with label=Calendário linking to /docs/funcionalidades/calendario"
+  },
+  "link.item.label.Provas e impressão": {
+    "message": "Exams and printing",
+    "description": "The label of footer link with label=Provas e impressão linking to /docs/funcionalidades/provas-e-impressao"
+  },
+  "link.item.label.Arquitetura": {
+    "message": "Architecture",
+    "description": "The label of footer link with label=Arquitetura linking to /docs/tecnico/arquitetura"
+  },
+  "link.item.label.Segurança e LGPD": {
+    "message": "Security and LGPD",
+    "description": "The label of footer link with label=Segurança e LGPD linking to /docs/tecnico/seguranca-e-lgpd"
+  },
+  "link.item.label.Roadmap": {
+    "message": "Roadmap",
+    "description": "The label of footer link with label=Roadmap linking to /docs/roadmap"
+  },
+  "copyright": {
+    "message": "Caderneta © 2026 Ettore Senatore. Built with Docusaurus.",
+    "description": "The footer copyright"
+  }
+}
