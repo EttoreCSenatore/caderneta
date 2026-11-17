@@ -9,7 +9,7 @@ média é calculada automaticamente; alunos e famílias acompanham notas, faltas
 pelo celular. A escola organiza turmas, calendário, comunicação e a fila de impressão de provas, e o histórico do aluno
 passa de um ano para o outro.
 
-**Status:** marcos M1 a M6 concluídos (fundação, notas e frequência, comunicação, calendário, provas e impressão, histórico e anotações).
+**Status:** marcos M1 a M7 concluídos (fundação, notas e frequência, comunicação, calendário, provas e impressão, histórico e anotações, modo offline e PWA). M8 (segurança e conformidade): código e documentação prontos, faltam o parecer jurídico e o teste de intrusão. M9 (piloto): em preparação.
 Próximos: o app de celular (M7), a revisão de conformidade e segurança (M8) e o piloto (M9). Ainda **não** use com dados reais de alunos
 antes do M8.
 **[Ler a documentação](https://ettorecsenatore.github.io/caderneta/)** · [Roadmap](https://ettorecsenatore.github.io/caderneta/docs/roadmap)
@@ -58,6 +58,8 @@ caderneta/
 
 A plataforma lida com dados de menores e de saúde. Veja
 [Segurança e LGPD](https://ettorecsenatore.github.io/caderneta/docs/tecnico/seguranca-e-lgpd).
+
+English: [README.en.md](README.en.md). A documentação do site também está em inglês.
 
 ## Licença
 

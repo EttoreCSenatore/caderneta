@@ -26,28 +26,31 @@ Revisão interna, feita por leitura do código, ferramentas automáticas e teste
 - **Conta do usuário** (nova página *Minha conta*): trocar a senha (pede a atual, derruba as outras sessões), ver os **aparelhos conectados** e **sair em todos os aparelhos**, que também cancela o push de todos. É o procedimento para celular perdido ou emprestado
 - Novos cabeçalhos de segurança na API e HSTS em produção
 
-## Fica para a implantação (M9) e para o fechamento do M8
+## Resolvido depois (M8.5 e M9)
 
-- **Proxy reverso e IP real:** rodar a API com `--proxy-headers --forwarded-allow-ips=<IP do proxy>`; sem isso o limite de taxa enxerga o IP do proxy
-- **Cabeçalhos do site (app web):** o servidor que entrega o app precisa enviar `Content-Security-Policy` (por exemplo `default-src 'self'; connect-src 'self'; img-src 'self' data:; frame-ancestors 'none'`), `Strict-Transport-Security`, `X-Content-Type-Options: nosniff` e `Referrer-Policy: no-referrer`. O Vite entrega estes arquivos sem esses cabeçalhos
-- **Logs do proxy:** o link do calendário (iCal) leva um token na URL; configurar o proxy para **não registrar** esse caminho
-- **Rotação da chave de dados** (hoje há uma única chave, sem versão) e guarda segura da chave: T14, no M8.5
-- **Teste de intrusão por terceiro**, antes do piloto
-- **2FA para professores:** hoje é obrigatório só para a equipe. Professores veem nomes, notas, anotações e mensagens (mas só o **alerta resumido** de saúde). Decidir com o parecer jurídico e o RIPD se o 2FA passa a valer para eles
-- **Senhas:** não há lista de senhas vazadas ou comuns (só tamanho mínimo e mistura de tipos)
-- **Recuperação do 2FA** (celular perdido pela equipe): hoje depende de a direção refazer o acesso; falta um fluxo com códigos de reserva
+- **Cabeçalhos do site:** o Caddy da [implantação](./implantacao.md) envia CSP, HSTS, `nosniff`, `Referrer-Policy` e `Permissions-Policy`, e o log dele não guarda caminho nem query string (verificado no navegador, sem violação de CSP).
+- **Proxy reverso e IP real:** a imagem da API roda com `--proxy-headers`, e só o proxy alcança a API.
+- **Rotação da chave de dados:** feita (`rotacionar-chave`); veja [Backups, chaves e logs](./backups-chaves-e-logs.md).
+
+## Fica para o fechamento do M8 e para a implantação real
+
+- **Teste de intrusão por terceiro**, antes do piloto.
+- **2FA para professores:** hoje é obrigatório só para a equipe (decisão do responsável). Professores veem nomes, notas, anotações e mensagens (mas só o **alerta resumido** de saúde). Reavaliar no parecer e no RIPD.
+- **Senhas:** não há lista de senhas vazadas ou comuns (só tamanho mínimo e mistura de tipos).
+- **Recuperação do 2FA** (celular perdido pela equipe): hoje depende de a direção refazer o acesso; falta um fluxo com códigos de reserva.
+- **Monitoramento e alertas:** a ferramenta existe (`deploy/verificar.sh`), falta configurá-la na hospedagem real.
 
 ## Checklist OWASP Top 10 (2021)
 
 | Item | Situação |
 |---|---|
 | A01 Controle de acesso quebrado | Coberto (papel + vínculo + RLS + teste de todas as rotas). Pen test confirma |
-| A02 Falhas criptográficas | Argon2id, AES-256-GCM para saúde e arquivos, TLS na implantação. Falta rotação de chaves (M8.5) |
+| A02 Falhas criptográficas | Argon2id, AES-256-GCM para saúde e arquivos, TLS na implantação, rotação de chaves feita |
 | A03 Injeção | ORM e parâmetros; sem achados do `ruff S` |
 | A04 Design inseguro | Privacidade desde a concepção; limites de taxa adicionados |
-| A05 Configuração incorreta | Produção exige chave, ClamAV, cookie seguro e caminho absoluto; documentação da API desligada. Falta o servidor do app (M9) |
+| A05 Configuração incorreta | Produção exige chave, ClamAV, cookie seguro e caminho absoluto; documentação da API desligada; o Caddy do app envia os cabeçalhos |
 | A06 Componentes vulneráveis | `pip-audit` e `npm audit` no CI, SBOM e auditoria de licenças |
 | A07 Falhas de autenticação | Bloqueio, 2FA, limite por IP, sem reuso de código. Falta lista de senhas fracas e códigos de reserva |
 | A08 Integridade de software e dados | Dependências travadas por lock; histórico emitido com código de conferência |
-| A09 Falhas de log e monitoramento | Auditoria de ações sensíveis e de login. Falta monitoramento e alertas (M8.5/M9) |
+| A09 Falhas de log e monitoramento | Auditoria de ações sensíveis e de login. Script de verificação pronto; falta configurar na hospedagem (M9) |
 | A10 SSRF | O único acesso a endereço externo vindo de dado do usuário é o push, com lista de hosts permitidos |

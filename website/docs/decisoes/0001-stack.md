@@ -25,3 +25,7 @@ sidebar_label: "ADR 0001: Stack"
 - Um só banco e poucos serviços: barato e fácil de fazer backup.
 - Reaproveita o conhecimento e os padrões de segurança do Sentinela do Fogo.
 - Precisamos manter o bundle do React enxuto (code splitting, sem bibliotecas de UI pesadas).
+
+## Atualização (2026-11-17)
+
+A **fila Procrastinate não foi adotada**: as tarefas em segundo plano (avisos agendados, e-mails, push, retenção) rodam em um **worker simples** (`python -m app.cli notificar`, a cada minuto), sem serviço extra. O deploy ficou em Docker Compose + Caddy (veja [Implantação](../tecnico/implantacao.md)). A escolha de hospedagem e de região ainda está aberta.

@@ -47,10 +47,18 @@ Com a API e o web app rodando e o seed aplicado:
 ```bash
 cd web
 npm run screenshots          # todos
-npm run screenshots -- m2    # só um grupo (m1, m2)
+npm run screenshots -- m2    # só um grupo (m1, m2, m3, m4, m5, m6, desligados...)
 ```
 
 As imagens vão para `website/static/img/screenshots/`. O script falha se aparecer qualquer erro no console do navegador.
+
+## Testes de ponta a ponta do modo offline
+
+Com a API e o seed rodando e o build servido (`npm run build && npx vite preview`, porta 4173):
+
+```bash
+cd web && npm run e2e:offline    # Chromium real, service worker, internet cortada
+```
 
 ## Contas de demonstração
 
@@ -69,6 +77,14 @@ senha de demonstração estão documentadas no topo de `api/app/seed.py`. A dire
 
 Cria a escola e envia o convite do primeiro administrador.
 
+Outros comandos úteis (`python -m app.cli ...`): `revogar-sessoes [escola_id]` (resposta a incidente), `rotacionar-chave [--simular]` (rotação da chave de dados), `gerar-vapid` (chaves do push).
+
+## Produção, backups e pacote jurídico
+
+- Implantação: [Implantação](./implantacao.md) (`deploy/`).
+- Backups e chaves: [Backups, chaves e logs](./backups-chaves-e-logs.md) (`infra/backup/`).
+- Pacote para o advogado: [Pacote para o advogado](./pacote-juridico.md) (`scripts/gerar-pacote-juridico.py`).
+
 ## Variáveis de ambiente
 
 | Variável | Para quê |
@@ -80,6 +96,10 @@ Cria a escola e envia o convite do primeiro administrador.
 | `CADERNETA_PUBLIC_URL` | Endereço do web app, usado nos links dos e-mails |
 | `CADERNETA_COOKIE_SECURE` | `true` em produção (obrigatório) |
 | `CADERNETA_SMTP_*`, `CADERNETA_MAIL_FROM` | Envio de e-mail |
+| `CADERNETA_OPERADORA_NOME`, `CADERNETA_OPERADORA_CONTATO` | Quem opera esta instalação (aparece na política e nos termos) |
+| `CADERNETA_LEGAL_DIR` | Pasta com textos legais próprios (`privacidade.md`, `termos.md`) |
+| `CADERNETA_DATA_KEYS_ANTIGAS` | Chaves antigas, só para ler durante a rotação |
+| `CADERNETA_RATE_LIMIT`, `CADERNETA_TOTP_ANTI_REUSO` | Ligados por padrão; desligados só nos testes que não os exercitam |
 
 Gerar uma chave: `python -c "import base64,os;print(base64.urlsafe_b64encode(os.urandom(32)).decode())"`.
 Guarde-a fora do banco e do repositório: sem ela, as fichas de saúde não podem ser lidas.
@@ -97,3 +117,7 @@ Opcionais em desenvolvimento (em produção o antivírus é obrigatório):
 | `CADERNETA_ANTIVIRUS=clamav` | verifica cada upload no `clamd` (`docker compose --profile antivirus up -d clamav`, porta 3310) |
 | `CADERNETA_CONVERSOR=libreoffice` | converte DOCX em PDF no envio (precisa do `soffice` instalado) |
 | `CADERNETA_RETENCAO_PEDIDOS_DIAS`, `..._RASCUNHO_DIAS`, `..._ANEXOS_DIAS` | prazos de eliminação (365, 90, 365) |
+
+## Documentação em dois idiomas
+
+O site de documentação é **bilíngue**: o português fica em `website/docs/` e o **inglês** em `website/i18n/en/docusaurus-plugin-content-docs/current/` (mesmos nomes de arquivo). **Toda mudança de documentação atualiza as duas versões.** O CI roda `python3 scripts/checar-traducao.py`, que reprova se faltar uma página em inglês ou se a estrutura (títulos, blocos de código, imagens) divergir. Para ver o inglês localmente: `cd website && npm run build && npm run serve` (o seletor de idioma fica no topo). Os textos legais do app e os artefatos de `.lgpd/` ficam **só em português**, porque aplicam a lei brasileira.

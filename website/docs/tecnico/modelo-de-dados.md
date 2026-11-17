@@ -4,7 +4,7 @@ title: Modelo de dados
 
 # Modelo de dados
 
-Modelo inicial, que evolui a cada marco. Todas as tabelas de dados escolares têm `escola_id` e são protegidas por
+Modelo que evolui a cada marco (o mapa de dados completo, com base legal e retenção, está em `.lgpd/data-map.md`). Todas as tabelas de dados escolares têm `escola_id` e são protegidas por
 Row-Level Security (ver [ADR 0002](../decisoes/0002-multiescola.md)).
 
 ```mermaid
@@ -59,6 +59,13 @@ erDiagram
 | `pedido_impressao` | arquivo, turmas, cópias, opções, status, prazo | |
 | `anotacao` | tipo, visibilidade, versão, autor | Nunca apagada, só versionada |
 | `auditoria` | quem, o quê, quando, IP, antes/depois | Só inserção; sem update/delete |
+| `aviso` / `autorizacao` / `conversa` / `mensagem` | público, agendamento, ciente; resposta por aluno; texto e anexos | Leitura e respostas registradas; retenção de anexos |
+| `notificacao` / `push_inscricao` | texto curto sem conteúdo sensível; endereço do aparelho | Apagadas por prazo; push só de adultos |
+| `arquivo` | metadados; o conteúdo fica cifrado em disco | Link assinado; antivírus no envio |
+| `historico_emitido` | aluno, quem emitiu, código, hash | Conferência pública devolve só as iniciais |
+| `pedido_titular` | tipo, canal, prazo de 15 dias, resposta | Prova de atendimento, guardada 5 anos |
+| `aceite_legal` | usuário, texto, versão, data | Ciência da política e dos termos |
+| `limite_taxa` | hash do IP ou e-mail, contagem, janela | Apagado em 2 dias |
 
 Médias **não são armazenadas**: são calculadas a partir das notas e da regra a cada consulta (`api/app/medias.py`).
 No M2 isso é rápido o bastante; um cache só entra se o piloto mostrar necessidade.

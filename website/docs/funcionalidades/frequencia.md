@@ -41,5 +41,5 @@ A lista de aulas do período mostra quantas faltas houve em cada uma; clicar num
 - [x] Chamada por aula em poucos toques para uma turma inteira presente
 - [x] Percentual de frequência por disciplina e geral no boletim
 - [x] Falta justificada com motivo registrado
-- [ ] Alertas automáticos para a família e a coordenação ao atingir 15% e 20% de faltas: no M3, com as notificações
-- [ ] Dias sem aula do calendário bloqueando a chamada: no M4, com o calendário
+- [x] Alertas automáticos para a família e a coordenação ao atingir 15% e 20% de faltas (M3, [Comunicação](./comunicacao.md))
+- [x] Dias sem aula e feriados do calendário bloqueiam a chamada (M4, [Calendário](./calendario.md))

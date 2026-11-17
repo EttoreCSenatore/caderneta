@@ -46,7 +46,7 @@ A cifra protege contra quem copia os arquivos do navegador, não contra quem usa
 `npm run e2e:offline` (em `web/`) abre um Chromium de verdade, entra como a professora da demonstração, **corta a internet** e confere que o app abre e mostra o diário guardado.
 Precisa da API com o seed e do build servido (`npx vite preview`).
 
-## O que ainda falta no M7
+## O que ainda falta
 
-- Testar em aparelhos reais (Android e iPhone) com a PWA instalada, incluindo o push.
-- Capacitor: empacotar para as lojas, se valer a pena antes do piloto.
+- Testar em **aparelhos reais** (Android e iPhone) com a PWA instalada, incluindo o push: faz parte do [plano do piloto](../piloto.md).
+- **Capacitor e lojas:** fora do piloto (decisão do responsável); reavaliar depois, se a escola pedir.
