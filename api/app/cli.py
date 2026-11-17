@@ -2,6 +2,7 @@
 
 python -m app.cli criar-escola "Escola Exemplo" admin@escola.com "Nome do Admin"
 python -m app.cli notificar     # worker: avisos agendados, e-mails devidos e retenção (rodar a cada minuto)
+python -m app.cli revogar-sessoes [escola_id]   # incidente: encerra todas as sessões (ou só as de uma escola)
 """
 
 import argparse
@@ -38,6 +39,26 @@ def notificar() -> None:
     )
 
 
+def revogar_sessoes(escola_id: str | None = None) -> int:
+    """Resposta a incidente: encerra sessões abertas (todas, ou só de quem tem perfil na escola indicada)."""
+    from sqlalchemy import delete, select
+
+    from app.models import Sessao, UsuarioPerfil
+
+    engine = create_engine(get_settings().owner_database_url)
+    with Session(engine) as db, db.begin():
+        q = delete(Sessao)
+        if escola_id:
+            q = q.where(
+                Sessao.usuario_id.in_(
+                    select(UsuarioPerfil.usuario_id).where(UsuarioPerfil.escola_id == uuid.UUID(escola_id))
+                )
+            )
+        n = db.execute(q).rowcount or 0
+    print(f"sessões encerradas: {n}")
+    return n
+
+
 def gerar_vapid() -> None:
     from app.push import gerar_chaves
 
@@ -55,6 +76,8 @@ def main() -> None:
     c.add_argument("nome")
     c.add_argument("email")
     c.add_argument("nome_admin")
+    r = sub.add_parser("revogar-sessoes", help="encerra todas as sessões (resposta a incidente)")
+    r.add_argument("escola_id", nargs="?", default=None)
     sub.add_parser("gerar-vapid", help="gera as chaves do push (VAPID)")
     sub.add_parser("notificar", help="worker de notificações (agendados, e-mails, retenção)")
     a = p.parse_args()
@@ -62,6 +85,8 @@ def main() -> None:
         criar_escola(a.nome, a.email, a.nome_admin)
     elif a.cmd == "notificar":
         notificar()
+    elif a.cmd == "revogar-sessoes":
+        revogar_sessoes(a.escola_id)
     elif a.cmd == "gerar-vapid":
         gerar_vapid()
 
