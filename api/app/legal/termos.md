@@ -1,5 +1,5 @@
 ---
-versao: 2026-11-17.2
+versao: 2026-11-17.3
 titulo: Termos de uso
 status: rascunho
 ---

@@ -12,6 +12,7 @@ from functools import lru_cache
 import pyotp
 from argon2 import PasswordHasher
 from argon2.exceptions import InvalidHashError, VerifyMismatchError
+from cryptography.exceptions import InvalidTag
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
 from app.config import get_settings
@@ -50,16 +51,46 @@ def hash_token(token: str) -> str:
     return hashlib.sha256(token.encode()).hexdigest()
 
 
-@lru_cache
-def _aes() -> AESGCM:
-    key_b64 = get_settings().data_key
-    if key_b64:
-        key = base64.urlsafe_b64decode(key_b64)
-    else:  # dev/test: chave derivada fixa, nunca usada em produção (config.py bloqueia)
-        key = hashlib.sha256(b"caderneta-dev-key").digest()
+def _decodifica(chave_b64: str) -> bytes:
+    key = base64.urlsafe_b64decode(chave_b64)
     if len(key) != 32:
-        raise RuntimeError("CADERNETA_DATA_KEY precisa ter 32 bytes em base64")
-    return AESGCM(key)
+        raise RuntimeError("As chaves de dados precisam ter 32 bytes em base64")
+    return key
+
+
+@lru_cache
+def _chaves() -> tuple[AESGCM, ...]:
+    """Chave atual primeiro, depois as antigas (só para ler).
+
+    Dev/test sem chave: chave derivada fixa (config.py bloqueia em produção).
+    """
+    s = get_settings()
+    atual = _decodifica(s.data_key) if s.data_key else hashlib.sha256(b"caderneta-dev-key").digest()
+    antigas = [_decodifica(k.strip()) for k in s.data_keys_antigas.split(",") if k.strip()]
+    return tuple(AESGCM(k) for k in [atual, *antigas])
+
+
+def _aes() -> AESGCM:
+    return _chaves()[0]
+
+
+def _abre(dado: bytes, contexto: str) -> bytes:
+    """Decifra com a chave atual e, se falhar a autenticação, com as antigas (rotação em andamento)."""
+    for k in _chaves():
+        try:
+            return k.decrypt(dado[:12], dado[12:], contexto.encode())
+        except InvalidTag:
+            continue
+    raise InvalidTag("nenhuma chave de dados abriu o conteúdo")
+
+
+def na_chave_atual(dado: bytes, contexto: str) -> bool:
+    """True se o conteúdo já está cifrado com a chave atual (usado pela rotação)."""
+    try:
+        _aes().decrypt(dado[:12], dado[12:], contexto.encode())
+        return True
+    except InvalidTag:
+        return False
 
 
 def cifra(valor: str, contexto: str) -> bytes:
@@ -69,7 +100,7 @@ def cifra(valor: str, contexto: str) -> bytes:
 
 
 def decifra(dado: bytes, contexto: str) -> str:
-    return _aes().decrypt(dado[:12], dado[12:], contexto.encode()).decode()
+    return _abre(dado, contexto).decode()
 
 
 def cifra_json(valor: dict, contexto: str) -> bytes:
@@ -121,7 +152,7 @@ def cifra_bytes(dado: bytes, contexto: str) -> bytes:
 
 
 def decifra_bytes(dado: bytes, contexto: str) -> bytes:
-    return _aes().decrypt(dado[:12], dado[12:], contexto.encode())
+    return _abre(dado, contexto)
 
 
 def _chave_links() -> bytes:

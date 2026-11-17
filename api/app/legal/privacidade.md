@@ -1,5 +1,5 @@
 ---
-versao: 2026-11-17.2
+versao: 2026-11-17.3
 titulo: Política de privacidade
 status: rascunho
 ---
@@ -59,7 +59,7 @@ A escola pode criar contas para alunos de **qualquer idade**. Tratamos dados de 
 - **Depois do desligamento:** o **histórico** (nome, nascimento, RA, matrículas, notas, frequência, documentos emitidos) é mantido para a escola poder emitir documentos. O restante (saúde, anotações, mensagens e anexos, vínculos, CPF, justificativas) é **apagado depois de um prazo definido pela escola** (padrão: 365 dias para alunos e 180 dias para contas de adultos), **com aviso antes** e possibilidade de adiar. Contas de adultos viram "Ex-usuário".
 - **Outros prazos:** notificações lidas, 90 dias (todas, 180); aparelhos de notificação sem uso, 90 dias; anexos e pedidos de impressão, 365 dias; anotações removidas, 30 dias; sessões, até 30 dias; pedidos de titulares e respostas, 5 anos depois da resposta, como prova de atendimento.
 - **Registros de segurança e auditoria:** [PRAZO A DEFINIR NO PARECER JURÍDICO.]
-- Cópias de segurança expiram no ciclo próprio delas. [PRAZO A DEFINIR NA IMPLANTAÇÃO.]
+- **Cópias de segurança** são cifradas e expiram em até **35 dias**. Se for preciso restaurar uma cópia, o que foi apagado depois dela é apagado de novo.
 
 ## 7. Seus direitos
 

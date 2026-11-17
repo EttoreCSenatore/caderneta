@@ -38,6 +38,7 @@ const sidebars: SidebarsConfig = {
         'tecnico/modelo-de-dados',
         'tecnico/seguranca-e-lgpd',
         'tecnico/revisao-de-seguranca',
+        'tecnico/backups-chaves-e-logs',
         'tecnico/documentos-de-conformidade',
         'tecnico/desenvolvimento',
       ],

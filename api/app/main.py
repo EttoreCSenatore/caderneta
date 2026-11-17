@@ -4,6 +4,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
 from app.config import get_settings
+from app.logs import configura_logs
 from app.routers import (
     alunos,
     anotacoes,
@@ -59,6 +60,7 @@ CSRF_HEADER = "x-caderneta"
 
 def create_app() -> FastAPI:
     s = get_settings()
+    configura_logs()
     docs = "/api/docs" if s.env != "prod" else None
     app = FastAPI(
         title="Caderneta API",

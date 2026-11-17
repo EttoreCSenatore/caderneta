@@ -121,7 +121,7 @@ O M8 é grande, então corre em etapas, cada uma com seu PR:
 2. **M8.2 Direitos dos titulares (art. 18) ✅:** fluxo de pedido de acesso, correção, eliminação e portabilidade, com prazo e registro (T1, T19, T20, T25)
 3. **M8.3 Transparência ✅ (rascunho):** política de privacidade e termos em linguagem simples, aceite registrado e versionado, canal do encarregado
 4. **M8.4 Documentos de conformidade ✅ (rascunhos):** ROPA e RIPD (rascunhos com a skill `lgpd-audit`, **revisão humana e jurídica obrigatória**), plano de resposta a incidentes
-5. **M8.5 Operação segura:** backups cifrados e teste de restauração, gestão de chaves, logs sem dado pessoal (T14, T24; parte já prevista para o M9)
+5. **M8.5 Operação segura ✅:** backups cifrados e teste de restauração, gestão de chaves, logs sem dado pessoal (T14, T24; parte já prevista para o M9)
 6. **Fechamento:** parecer jurídico anexado, pen test por terceiro, critério de aprovação abaixo
 
 ### Como a conformidade é conduzida
@@ -157,9 +157,9 @@ O M8 é grande, então corre em etapas, cada uma com seu PR:
 - [x] **M8.1** revisão de segurança do código (autenticação, autorização, RLS, uploads, injeção, CSRF, cabeçalhos): veja a [revisão](./tecnico/revisao-de-seguranca.md)
 - [ ] **Teste de intrusão** por terceiro
 - [x] Dependências: `pip-audit` e `npm audit` no CI e SBOM CycloneDX gerado a cada alteração. Falta a política de atualização (cadência de revisão)
-- [ ] Gestão de segredos e chaves (rotação, separação por ambiente), cifragem em repouso e em trânsito (TLS)
-- [ ] Backups cifrados, teste de restauração, retenção alinhada à política de eliminação
-- [ ] Logs sem dados pessoais desnecessários; monitoramento e alertas
+- [x] Chaves: **rotação** da chave de dados (`rotacionar-chave`, lê com a antiga e grava com a nova), uma chave por ambiente, cifra em repouso (AES-GCM) e em trânsito (TLS na implantação). Veja [Backups, chaves e logs](./tecnico/backups-chaves-e-logs.md)
+- [x] **Backups cifrados** (AES-256), **teste de restauração** que confere as chaves, expiração em 35 dias e procedimento de restauração que reaplica a retenção. Falta rodar na hospedagem real (M9)
+- [x] Logs sem dado pessoal: sem query string e sem segredos de URL no log de acesso. [ ] Monitoramento e alertas ficam para a implantação (M9)
 - [ ] Revisão de permissões por perfil (princípio do menor privilégio) e dos acessos de suporte
 - [x] Limite de taxa (login, recuperação de senha, convites, conferência do histórico), código 2FA de uso único, trocar senha e sair em todos os aparelhos
 - [ ] Decidir 2FA para professores, lista de senhas fracas e códigos de reserva do 2FA

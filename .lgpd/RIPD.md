@@ -64,7 +64,7 @@ Escala: probabilidade (P) e impacto (I) de 1 a 5; nível = P×I (até 4 baixo, 5
 | ID | Risco | Categoria | P | I | Nível | Controles | Residual |
 |---|---|---|---|---|---|---|---|
 | R01 | Pessoa de dentro (professor, equipe) vê dado além do necessário | Disclosure | 3 | 4 | 12 | Papéis e vínculos, RLS, só ano letivo aberto, professor só vê alerta de saúde, leitura de saúde e anotação reservada auditadas | 6 médio |
-| R02 | Banco, backup ou arquivos copiados (dados de menores) | Disclosure | 2 | 5 | 10 | TLS, saúde e arquivos cifrados (AES-GCM), RLS, papel do app sem posse das tabelas. **Backups cifrados e rotação de chave ainda não existem (M8.5)** | 6 médio |
+| R02 | Banco, backup ou arquivos copiados (dados de menores) | Disclosure | 2 | 5 | 10 | TLS, saúde e arquivos cifrados (AES-GCM), RLS, papel do app sem posse das tabelas. Backups cifrados com teste de restauração e rotação de chave (M8.5); **falta rodar na hospedagem real** | 4 baixo |
 | R03 | Atestado ou laudo anexado em mensagem expõe saúde | Disclosure | 3 | 4 | 12 | Anexos cifrados e com antivírus, sem EXIF, retenção 365 dias, e-mail sem conteúdo. **Base legal pendente** | 6 médio |
 | R04 | Texto livre (anotações, mensagens, justificativas) com dado sensível ou conflito entre alunos | Non-compliance | 3 | 4 | 12 | Visibilidade por tipo, reservada só da equipe e auditada, versões, orientação aos professores nos termos | 6 médio |
 | R05 | Conta invadida (senha fraca, phishing) | Identifying | 3 | 4 | 12 | Argon2id, 2FA da equipe, limite de taxa, bloqueio, código TOTP de uso único, sair de todos os aparelhos. **Professores sem 2FA (decisão T27)** | 6 médio |
@@ -79,7 +79,7 @@ Escala: probabilidade (P) e impacto (I) de 1 a 5; nível = P×I (até 4 baixo, 5
 | R14 | **Conta de criança sem consentimento parental registrado** | Non-compliance | 3 | 4 | 12 | Contas de alunos sem e-mail nem push, responsável vê tudo. **Consentimento a definir (T30)** | **9 médio, depende do parecer** |
 | R15 | **Provedores e transferência internacional indefinidos** | Non-compliance | 3 | 3 | 9 | Push sem conteúdo; hospedagem ainda não escolhida (O8) | **9 médio, depende da implantação** |
 | R16 | Erro nos dados do histórico emitido | Unawareness | 2 | 3 | 6 | Código de conferência, correção auditada, período fechado | 3 baixo |
-| R17 | Incidente sem detecção ou resposta a tempo | Non-compliance | 3 | 4 | 12 | Auditoria; plano de resposta e ferramenta de contenção (M8.4). **Monitoramento e simulação ainda não existem (M8.5, T33)** | 6 médio |
+| R17 | Incidente sem detecção ou resposta a tempo | Non-compliance | 3 | 4 | 12 | Auditoria; plano de resposta e ferramenta de contenção (M8.4). **Monitoramento e simulação ainda não existem (T33, T35)** | 6 médio |
 
 **Conclusão provisória:** nenhum risco residual **alto**. Os riscos **médios** vêm de pessoas e processos (R01, R04, R05, R10, R17), do que depende de implantação (R02, R15) e de decisão jurídica (R03, R14). O risco só se aceita **depois** do parecer do encarregado e da aprovação da escola.
 
@@ -87,8 +87,8 @@ Escala: probabilidade (P) e impacto (I) de 1 a 5; nível = P×I (até 4 baixo, 5
 
 - [x] TLS na implantação (cookie `Secure` e HSTS obrigatórios em produção)
 - [x] Cifra em nível de aplicação para saúde e arquivos (AES-GCM com contexto por registro)
-- [ ] Cifra de volume e **backups cifrados com teste de restauração** (M8.5)
-- [ ] **Rotação de chave** de dados (M8.5, T14)
+- [x] **Backups cifrados com teste de restauração** (M8.5); cifra de volume é da hospedagem (M9)
+- [x] **Rotação de chave** de dados (M8.5)
 - [x] Menor privilégio por papel e vínculo; RLS por escola; papel do app sem posse das tabelas
 - [x] 2FA obrigatório para a equipe; limite de taxa; código TOTP de uso único; troca de senha e *sair de todos*
 - [x] Auditoria só de inserção; leitura de saúde e anotação reservada registradas
