@@ -5,6 +5,7 @@ import json
 import threading
 from datetime import UTC, datetime, timedelta
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from zoneinfo import ZoneInfo
 
 import pytest
 from cryptography.hazmat.primitives import hashes, serialization
@@ -67,7 +68,14 @@ def servico(monkeypatch):
 
 
 def _depois(h=48):
-    return datetime.now(UTC) + timedelta(hours=h)
+    """Instante `h` horas 'depois', sempre em horário comercial (12h a 20h) de São Paulo.
+
+    Antes era `agora + h`: o teste passava de dia e falhava à noite, quando o instante caía no horário silencioso
+    (21h às 7h) e o push era adiado por regra.
+    """
+    base = datetime.now(ZoneInfo("America/Sao_Paulo")).replace(hour=12, minute=0, second=0, microsecond=0)
+    dias, resto = divmod(h, 24)
+    return (base + timedelta(days=1 + dias, hours=min(resto, 8))).astimezone(UTC)
 
 
 def test_endpoints_permitidos():
