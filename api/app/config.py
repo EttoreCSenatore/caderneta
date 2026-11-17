@@ -17,6 +17,10 @@ class Settings(BaseSettings):
     data_key: str = ""
     env: str = "dev"  # dev | test | prod
 
+    # Quem opera ESTA instalação (hospeda e mantém), citado na política de privacidade e nos termos.
+    # Cada instalação informa o seu: a Caderneta é software livre e não é uma empresa.
+    operadora_nome: str = ""
+    operadora_contato: str = ""
     public_url: str = "http://localhost:5173"
     cookie_secure: bool = False
     session_idle_hours: int = 12

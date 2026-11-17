@@ -15,6 +15,15 @@ A Caderneta tem uma **política de privacidade** e **termos de uso** em linguage
 - **Encarregado (DPO):** a direção informa o nome e o e-mail em **Escola**. O contato aparece na política (para quem está logado) e em **Meus dados**.
 - **Cookies:** só há o cookie de sessão, essencial. Por isso **não há aviso de cookies**, e a política explica isso, junto com o armazenamento cifrado do modo offline.
 
+## Quem é a operadora nesta instalação
+
+A Caderneta é software livre: o nome é do programa, não de uma empresa. Por isso os textos dizem "a operadora desta instalação" e **cada instalação informa a sua** na configuração do servidor:
+
+- `CADERNETA_OPERADORA_NOME`: quem hospeda e mantém esta instalação (empresa, pessoa ou a própria escola).
+- `CADERNETA_OPERADORA_CONTATO`: e-mail ou telefone de contato (opcional).
+
+Sem isso, o texto mostra um lembrete em maiúsculas para completar. Se a própria escola hospeda, ela é controladora e operadora ao mesmo tempo, e a política diz isso.
+
 ## Para quem mantém os textos
 
 Os textos ficam em `api/app/legal/privacidade.md` e `termos.md`, com `versao`, `titulo` e `status` no topo.

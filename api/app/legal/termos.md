@@ -1,5 +1,5 @@
 ---
-versao: 2026-11-17.1
+versao: 2026-11-17.2
 titulo: Termos de uso
 status: rascunho
 ---
@@ -10,7 +10,7 @@ Estes termos explicam as regras para usar a Caderneta. Ao continuar, você confi
 
 ## 1. O que é a Caderneta
 
-Uma plataforma que a **escola** contrata para organizar notas, frequência, avisos, calendário, provas, mensagens, histórico escolar e a ficha do aluno. A escola é quem decide como usá-la; a Caderneta oferece a ferramenta.
+Uma plataforma que a **escola** contrata para organizar notas, frequência, avisos, calendário, provas, mensagens, histórico escolar e a ficha do aluno. A escola é quem decide como usá-la; a operadora desta instalação ({{operadora}}) mantém a ferramenta no ar. A Caderneta é software livre, e o nome se refere ao programa, não a uma empresa.
 
 ## 2. Sua conta
 
@@ -28,7 +28,7 @@ Uma plataforma que a **escola** contrata para organizar notas, frequência, avis
 
 ## 3.1. Contas de alunos
 
-Contas de alunos têm regras de proteção reforçadas: não recebem e-mail nem notificação do aparelho, e o responsável acompanha o uso pelo filho. [FORMA DE CIÊNCIA DOS RESPONSÁVEIS A CONFIRMAR NO PARECER JURÍDICO.]
+Contas de alunos podem existir para **qualquer idade** e têm regras de proteção reforçadas: não recebem e-mail nem notificação do aparelho, e o responsável acompanha o uso pelo filho. [CIÊNCIA E CONSENTIMENTO DOS RESPONSÁVEIS PARA CONTAS DE CRIANÇAS A CONFIRMAR NO PARECER JURÍDICO.]
 
 ## 4. Conteúdo
 

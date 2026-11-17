@@ -7,12 +7,29 @@ relevante? Troque a `versao`: todo mundo passa a ver a tela de confirmação de 
 from functools import lru_cache
 from pathlib import Path
 
+from app.config import get_settings
+
 DOCS = ("privacidade", "termos")
 PASTA = Path(__file__).parent / "legal"
 
 
-@lru_cache
+def operadora() -> str:
+    """Quem opera esta instalação, como aparece nos textos (configurado por CADERNETA_OPERADORA_*)."""
+    s = get_settings()
+    if not s.operadora_nome:
+        return "[OPERADORA DESTA INSTALAÇÃO: INFORMAR NA CONFIGURAÇÃO]"
+    return f"**{s.operadora_nome}**" + (f" ({s.operadora_contato})" if s.operadora_contato else "")
+
+
 def carrega(doc: str) -> dict:
+    """Texto com as variáveis desta instalação preenchidas."""
+    c = dict(_le(doc))
+    c["texto"] = c["texto"].replace("{{operadora}}", operadora())
+    return c
+
+
+@lru_cache
+def _le(doc: str) -> dict:
     if doc not in DOCS:
         raise KeyError(doc)
     bruto = (PASTA / f"{doc}.md").read_text(encoding="utf-8")
