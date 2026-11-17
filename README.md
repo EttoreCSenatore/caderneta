@@ -68,6 +68,7 @@ A Caderneta é software livre sob a **[GNU Affero General Public License v3.0 ou
   modificada a quem usa o serviço (seção 13 da licença). Isso mantém o software aberto para as escolas que dependem dele.
 - Os componentes de terceiros e suas licenças estão em [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 - A documentação e os screenshots (dados fictícios) estão sob [CC BY-SA 4.0](LICENSE-DOCS.md).
+- **Vai usar com uma escola real?** Gere o [pacote para o advogado](https://ettorecsenatore.github.io/caderneta/docs/tecnico/pacote-juridico) (`python3 scripts/gerar-pacote-juridico.py`) e faça a revisão com o advogado da escola.
 - Mais detalhes, em português, na [página de licença](https://ettorecsenatore.github.io/caderneta/docs/licenca).
 
 Copyright (C) 2026 @EttoreCSenatore e colaboradores da Caderneta.

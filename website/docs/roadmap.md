@@ -150,7 +150,8 @@ O M8 é grande, então corre em etapas, cada uma com seu PR:
 - [x] **Política de privacidade e termos de uso** em linguagem simples, com ciência registrada por versão: veja [Privacidade e termos](./funcionalidades/privacidade-e-termos.md). **Rascunho**: publicar só depois do parecer jurídico
 - [x] **Aviso de cookies**: não é necessário (só o cookie de sessão, essencial); a política explica isso e o armazenamento do modo offline
 - [ ] **Acessibilidade e consumo**: revisar o que a lei exige conforme o modelo de oferta da plataforma (contrato com escolas)
-- [ ] **Revisão jurídica**: advogado(a) especializado(a) em proteção de dados valida os documentos acima. A documentação técnica orienta, mas **não substitui parecer jurídico**
+- [x] **Pacote para o advogado**: gerador de documento único por instalação (`scripts/gerar-pacote-juridico.py`), com 14 perguntas, ficha da instalação, modelo de parecer e todos os anexos. Veja [Pacote para o advogado](./tecnico/pacote-juridico.md). Textos legais próprios por instalação (`CADERNETA_LEGAL_DIR`)
+- [ ] **Revisão jurídica**: advogado(a) especializado(a) em proteção de dados valida os documentos acima, **em cada instalação**. A documentação técnica orienta, mas **não substitui parecer jurídico**
 
 ### Segurança
 

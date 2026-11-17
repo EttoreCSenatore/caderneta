@@ -22,6 +22,9 @@ class Settings(BaseSettings):
 
     # Quem opera ESTA instalação (hospeda e mantém), citado na política de privacidade e nos termos.
     # Cada instalação informa o seu: a Caderneta é software livre e não é uma empresa.
+    # Pasta com textos legais PRÓPRIOS desta instalação (privacidade.md e termos.md, mesmo formato dos de app/legal/),
+    # revisados pelo advogado da escola ou da operadora. O que faltar na pasta cai no texto padrão do projeto.
+    legal_dir: str = ""
     operadora_nome: str = ""
     operadora_contato: str = ""
     public_url: str = "http://localhost:5173"
