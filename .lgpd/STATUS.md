@@ -36,8 +36,8 @@ Elas são citadas como a skill as descreve e **precisam ser conferidas no texto 
 - [ ] L7 ECA Digital (aferição de idade, supervisão parental) e consentimento
 - [ ] L8 Criptografia e chaves, trilha de auditoria (parte já implementada)
 - [x] L9 Direitos dos titulares (DSAR): M8.2, regime padrão (acesso imediato, resposta completa em 15 dias). Falta validar os textos no parecer
-- [ ] L10 Resposta a incidentes
-- [ ] L11 ROPA ⏸ · L12 RIPD ⏸ · L13 Política de privacidade ⏸ **rascunho pronto** (`api/app/legal/`), aguardando revisão humana e jurídica (T30, T31)
+- [x] L10 Resposta a incidentes: plano e modelos em [incidentes/](./incidentes/runbook.md); falta a simulação (T33)
+- [ ] L11 ROPA ⏸ **rascunho** ([ROPA.md](./ROPA.md)) · L12 RIPD ⏸ **rascunho** ([RIPD.md](./RIPD.md)) · L13 Política de privacidade ⏸ **rascunho pronto** (`api/app/legal/`), aguardando revisão humana e jurídica (T30, T31)
 
 Pendências priorizadas: [gaps.md](./gaps.md).
 

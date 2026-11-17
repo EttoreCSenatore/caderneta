@@ -136,3 +136,14 @@ def test_cabecalhos_de_seguranca(mundo, monkeypatch):
     monkeypatch.setattr(get_settings(), "cookie_secure", True)
     r = Cliente().get("/api/saude")
     assert "max-age=" in r.headers["strict-transport-security"]
+
+
+def test_cli_revoga_sessoes_de_todos_ou_de_uma_escola(mundo, entrar):
+    from app.cli import revogar_sessoes
+
+    a, b = mundo
+    ca, cb = entrar("prof.a@teste.com"), entrar("prof.b@teste.com")
+    assert revogar_sessoes(str(b.escola.id)) == 1
+    assert cb.get("/api/auth/me").status_code == 401 and ca.get("/api/auth/me").status_code == 200
+    assert revogar_sessoes() == 1
+    assert ca.get("/api/auth/me").status_code == 401
