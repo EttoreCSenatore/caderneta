@@ -1,0 +1,15 @@
+# Imagem da API e do worker (a mesma): python -m app.cli notificar roda aqui também.
+FROM python:3.13-slim
+ENV PYTHONUNBUFFERED=1 PIP_NO_CACHE_DIR=1 PIP_DISABLE_PIP_VERSION_CHECK=1
+RUN useradd --create-home --uid 10001 caderneta \
+ && mkdir -p /data/storage && chown -R caderneta /data
+WORKDIR /app
+COPY api/pyproject.toml ./
+COPY api/app ./app
+COPY api/migrations ./migrations
+COPY api/alembic.ini ./
+RUN pip install .
+USER caderneta
+EXPOSE 8000
+# O proxy (Caddy) é o único que alcança a API; --forwarded-allow-ips=* vale só porque a porta não é publicada.
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--proxy-headers", "--forwarded-allow-ips=*"]

@@ -4,6 +4,7 @@ const sidebars: SidebarsConfig = {
   docsSidebar: [
     'intro',
     'licenca',
+    'piloto',
     {
       type: 'category',
       label: 'Produto',
@@ -41,6 +42,7 @@ const sidebars: SidebarsConfig = {
         'tecnico/backups-chaves-e-logs',
         'tecnico/documentos-de-conformidade',
         'tecnico/pacote-juridico',
+        'tecnico/implantacao',
         'tecnico/desenvolvimento',
       ],
     },

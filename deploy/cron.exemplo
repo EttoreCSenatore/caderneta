@@ -1,0 +1,11 @@
+# Exemplo de agenda no servidor (crontab -e). Ajuste caminhos e variáveis.
+# O worker de notificações e retenção já roda dentro do Docker (serviço "worker").
+
+# Backup cifrado todo dia às 3h (veja infra/backup/backup.sh)
+0 3 * * * cd /opt/caderneta && BACKUP_DIR=/var/backups/caderneta BACKUP_PASSPHRASE_FILE=/etc/caderneta/backup.pass STORAGE_DIR=/var/lib/docker/volumes/caderneta_storage/_data PG_PREFIX="docker compose -f deploy/docker-compose.prod.yml exec -T db" PGUSER=caderneta_owner PGDATABASE=caderneta sh infra/backup/backup.sh >> /var/log/caderneta-backup.log 2>&1
+
+# Teste de restauração todo dia 1, às 4h (veja infra/backup/restore-test.sh)
+# 0 4 1 * * ... sh infra/backup/restore-test.sh
+
+# Verificação de saúde a cada 10 minutos (veja deploy/verificar.sh)
+*/10 * * * * BASE_URL=https://caderneta.suaescola.com.br BACKUP_DIR=/var/backups/caderneta ALERTA_URL=https://ntfy.sh/SEU-TOPICO-PRIVADO sh /opt/caderneta/deploy/verificar.sh

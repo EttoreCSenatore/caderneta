@@ -118,6 +118,25 @@ jobs:
         run: python3 ../scripts/auditar-licencas.py --npm web
       - run: npm run build
 
+  imagens:
+    name: Imagens de produção (build)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - name: Imagem da API e do worker
+        run: docker build -f deploy/Dockerfile.api -t caderneta-api:ci .
+      - name: Imagem do site (build do app + Caddy)
+        run: docker build -f deploy/Dockerfile.web -t caderneta-web:ci .
+      - name: Valida o compose de produção
+        working-directory: deploy
+        run: |
+          cp .env.example .env
+          OWNER_DB_PASSWORD=x APP_DB_PASSWORD=x docker compose -f docker-compose.prod.yml config --quiet
+          docker run --rm -e CADERNETA_DOMAIN=ci.example.com -e CADERNETA_ACME_EMAIL=ci@example.com \
+            -v "$PWD/Caddyfile:/etc/caddy/Caddyfile:ro" caddy:2-alpine caddy validate --config /etc/caddy/Caddyfile
+
   deploy:
     name: Deploy to GitHub Pages
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
