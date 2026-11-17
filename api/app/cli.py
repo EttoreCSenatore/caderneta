@@ -17,14 +17,18 @@ from app.models import Escola, Papel
 from app.routers.convites import cria_convite
 
 
-def criar_escola(nome: str, email: str, nome_admin: str) -> None:
+def criar_escola(nome: str, email: str, nome_admin: str) -> tuple[uuid.UUID, str]:
     engine = create_engine(get_settings().owner_database_url)
+    escola_id = uuid.uuid4()  # fora da sessão: depois do commit o objeto fica desanexado
     with Session(engine) as db, db.begin():
-        escola = Escola(id=uuid.uuid4(), nome=nome)
-        db.add(escola)
+        db.add(Escola(id=escola_id, nome=nome))
         db.flush()
-        link = cria_convite(db, escola_id=escola.id, email=email, nome=nome_admin, papel=Papel.admin, criado_por=None)
-    print(f"Escola criada: {escola.id}\nConvite do administrador enviado para {email}.\nLink: {link}")
+        link = cria_convite(db, escola_id=escola_id, email=email, nome=nome_admin, papel=Papel.admin, criado_por=None)
+    print(
+        f"Escola criada: {escola_id}\nConvite do administrador criado para {email} (o e-mail só sai se o SMTP estiver "
+        f"configurado).\nLink do convite: {link}"
+    )
+    return escola_id, link
 
 
 def notificar() -> None:

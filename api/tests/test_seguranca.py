@@ -147,3 +147,16 @@ def test_cli_revoga_sessoes_de_todos_ou_de_uma_escola(mundo, entrar):
     assert cb.get("/api/auth/me").status_code == 401 and ca.get("/api/auth/me").status_code == 200
     assert revogar_sessoes() == 1
     assert ca.get("/api/auth/me").status_code == 401
+
+
+def test_cli_criar_escola_imprime_o_convite_do_administrador(owner_engine, capsys):
+    """Regressão: o comando quebrava ao imprimir (objeto desanexado depois do commit) e a implantação depende dele."""
+    from sqlalchemy import text
+
+    from app.cli import criar_escola
+
+    escola_id, link = criar_escola("Escola Nova", "direcao@escola-nova.com", "Direção Nova")
+    saida = capsys.readouterr().out
+    assert str(escola_id) in saida and link in saida and "/convite/" in link
+    with owner_engine.begin() as db:
+        assert db.execute(text("SELECT count(*) FROM convite WHERE email = 'direcao@escola-nova.com'")).scalar() == 1

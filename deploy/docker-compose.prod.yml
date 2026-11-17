@@ -1,0 +1,104 @@
+# Pilha de produção em UMA máquina (qualquer provedor): banco, antivírus, API, worker e o site com HTTPS.
+# Uso: cd deploy && cp .env.example .env && sh gerar-segredos.sh   (cole os valores no .env e edite o resto)
+#      docker compose -f docker-compose.prod.yml up -d --build
+name: caderneta
+
+x-api: &api
+  build:
+    context: ..
+    dockerfile: deploy/Dockerfile.api
+  env_file: .env
+  restart: unless-stopped
+  volumes:
+    - storage:/data/storage
+    # textos legais próprios revisados pelo advogado (opcional): coloque privacidade.md e termos.md em ./legal
+    - ./legal:/legal:ro
+
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: caderneta_owner
+      POSTGRES_PASSWORD: ${OWNER_DB_PASSWORD:?defina OWNER_DB_PASSWORD no .env}
+      POSTGRES_DB: caderneta
+      APP_DB_PASSWORD: ${APP_DB_PASSWORD:?defina APP_DB_PASSWORD no .env}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ../infra/postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U caderneta_owner -d caderneta"]
+      interval: 5s
+      retries: 20
+
+  clamav:
+    image: clamav/clamav:1.4
+    restart: unless-stopped
+    volumes:
+      - clamav-db:/var/lib/clamav
+    healthcheck:
+      test: ["CMD", "clamdcheck.sh"]
+      interval: 30s
+      retries: 40
+      start_period: 120s
+
+  migrate:
+    <<: *api
+    restart: "no"
+    command: ["alembic", "upgrade", "head"]
+    environment:
+      CADERNETA_OWNER_DATABASE_URL: postgresql+psycopg://caderneta_owner:${OWNER_DB_PASSWORD}@db:5432/caderneta
+    depends_on:
+      db:
+        condition: service_healthy
+
+  api:
+    <<: *api
+    environment:
+      CADERNETA_DATABASE_URL: postgresql+psycopg://caderneta_app:${APP_DB_PASSWORD}@db:5432/caderneta
+      CADERNETA_CLAMAV_HOST: clamav
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      clamav:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/api/saude', timeout=3).status == 200 else 1)"]
+      interval: 15s
+      retries: 5
+      start_period: 20s
+
+  worker:
+    <<: *api
+    command: ["sh", "-c", "while true; do python -m app.cli notificar; sleep 60; done"]
+    environment:
+      CADERNETA_OWNER_DATABASE_URL: postgresql+psycopg://caderneta_owner:${OWNER_DB_PASSWORD}@db:5432/caderneta
+      CADERNETA_CLAMAV_HOST: clamav
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+  web:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.web
+    restart: unless-stopped
+    ports:
+      - "${HTTP_PORT:-80}:80"
+      - "${HTTPS_PORT:-443}:443"
+    environment:
+      CADERNETA_DOMAIN: ${CADERNETA_DOMAIN:-localhost}
+      CADERNETA_ACME_EMAIL: ${CADERNETA_ACME_EMAIL:?defina CADERNETA_ACME_EMAIL no .env (e-mail do certificado HTTPS)}
+    volumes:
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      api:
+        condition: service_healthy
+
+volumes:
+  db-data:
+  clamav-db:
+  storage:
+  caddy-data:
+  caddy-config:

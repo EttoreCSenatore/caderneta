@@ -19,7 +19,7 @@ adicionados às páginas de funcionalidade.
 | **M6: Histórico e anotações** | Rematrícula em lote, linha do tempo, anotações versionadas, histórico escolar em PDF | ✅ Concluído |
 | **M7: App de celular** | PWA refinada, offline para notas e chamada (lojas ficam para depois do piloto) | ✅ Concluído |
 | **M8: Conformidade e segurança** | Revisão geral de segurança, licenças e adequação à LGPD e à legislação aplicável, com validação jurídica | Planejado |
-| **M9: Piloto** | Deploy de produção, backups, piloto com uma escola (só começa com o M8 aprovado) | Planejado |
+| **M9: Piloto** | Deploy de produção, backups, piloto com uma escola (só começa com o M8 aprovado) | Em preparação |
 
 ```mermaid
 gantt
@@ -227,6 +227,20 @@ Veja [Modo offline](./funcionalidades/offline.md).
 - [x] M7.2 PWA: o app abre sem internet (identidade, turmas e diários vêm do cofre cifrado), convite de instalação (Android/desktop e dica para iPhone), atalhos, tema escuro na barra, teste de ponta a ponta com Chromium e internet cortada (`npm run e2e:offline`)
 - [ ] Testar em aparelhos reais (Android e iPhone) com a PWA instalada, incluindo o push: **passa para o M9** (checklist do piloto)
 - [x] Capacitor/lojas: **decisão do responsável (2026-11-17): fora do piloto.** A PWA instalada basta; lojas custam conta paga, revisão e reabrem a análise de privacidade. Reavaliar depois do piloto se a escola pedir
+
+## M9: Piloto (em preparação)
+
+Veja [Implantação](./tecnico/implantacao.md) e o [Plano do piloto](./piloto.md). Só começa com **dados reais** depois do M8 aprovado.
+
+- [x] Receita de implantação em uma máquina: `deploy/` com imagens (API e site), Docker Compose de produção, Caddy com HTTPS automático e cabeçalhos de segurança, `.env` de exemplo, gerador de segredos
+- [x] Teste de fumaça (`deploy/smoke.sh`), verificação periódica (`verificar.sh`: site, backup atrasado, disco, banco, serviço parado, com aviso ao plantão) e agenda de exemplo (backup e restauração)
+- [x] Plano do piloto: porta de entrada (go/no-go), fases, importação, suporte por gravidade, métricas sem dado pessoal, plano de recuo e encerramento
+- [x] Pilha completa **testada localmente** com HTTPS de teste
+- [ ] **Escolher a hospedagem** e o provedor de e-mail (O8) e preencher a ficha da instalação
+- [ ] Rodar a implantação, os backups e o teste de restauração **na hospedagem real**
+- [ ] Teste em **aparelhos reais** (Android e iPhone): instalar, abrir sem internet, lançar offline, push (precisa de HTTPS e chaves VAPID)
+- [ ] Parecer do advogado, teste de intrusão, plantão e simulação (porta de entrada do M8)
+- [ ] Escolher a escola do piloto e executar as fases do plano
 
 ## Retenção de desligados (feito antes do M8)
 
