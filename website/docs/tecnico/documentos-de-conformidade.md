@@ -11,6 +11,7 @@ Estes documentos ficam no repositório, em [`.lgpd/`](https://github.com/EttoreC
 | **Mapa de dados** | Que dado, por quê, base legal, quanto tempo (A001 a A019) | [data-map.md](https://github.com/EttoreCSenatore/caderneta/blob/main/.lgpd/data-map.md) |
 | **ROPA** (art. 37) | Registro das operações de tratamento, como controladora (a escola) e operadora | [ROPA.md](https://github.com/EttoreCSenatore/caderneta/blob/main/.lgpd/ROPA.md) |
 | **RIPD** (art. 38) | Riscos para os titulares e medidas, com matriz de probabilidade e impacto e avaliação preliminar do ECA Digital | [RIPD.md](https://github.com/EttoreCSenatore/caderneta/blob/main/.lgpd/RIPD.md) |
+| **Testes de legítimo interesse (LIA)** | Por que o legítimo interesse vale em 5 operações e com que salvaguardas | [lia/](https://github.com/EttoreCSenatore/caderneta/tree/main/.lgpd/lia) |
 | **Plano de resposta a incidentes** (art. 48) | O que fazer nas primeiras horas, prazos, quem decide e modelos de comunicação | [runbook.md](https://github.com/EttoreCSenatore/caderneta/blob/main/.lgpd/incidentes/runbook.md) |
 | **Registro de incidentes** | Modelo do registro de 5 anos, obrigatório mesmo sem comunicação | [log.md](https://github.com/EttoreCSenatore/caderneta/blob/main/.lgpd/incidentes/log.md) |
 | **Lacunas** | Pendências priorizadas (jurídico e técnicas) | [gaps.md](https://github.com/EttoreCSenatore/caderneta/blob/main/.lgpd/gaps.md) |
@@ -29,7 +30,7 @@ Estes documentos ficam no repositório, em [`.lgpd/`](https://github.com/EttoreC
 
 ## O que ainda falta
 
-Veja `T32` a `T34` em [gaps.md](https://github.com/EttoreCSenatore/caderneta/blob/main/.lgpd/gaps.md): testes de legítimo interesse (LIA) das operações A001, A003, A007, A012 e A017; nomes e telefones de plantão e uma **simulação** de incidente; contrato de operação com cada escola e devolução dos dados no fim dele.
+Os testes de legítimo interesse estão em rascunho e esperam o parecer. Veja `T32` a `T34` em [gaps.md](https://github.com/EttoreCSenatore/caderneta/blob/main/.lgpd/gaps.md): nomes e telefones de plantão (o plantão da escola é o Responsável de TI) e uma **simulação** de incidente; contrato de operação com cada escola e devolução dos dados no fim dele.
 
 :::note Conferir no texto oficial
 As resoluções da ANPD (2/2022, 15/2024 e outras) ainda não estão no repositório `ctresb/leis`. Prazos e itens vêm da descrição da skill e **precisam ser conferidos no texto oficial** na revisão jurídica.

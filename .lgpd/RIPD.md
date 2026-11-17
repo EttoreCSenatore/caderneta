@@ -112,6 +112,7 @@ A skill indica que plataformas sujeitas ao ECA Digital devem avaliar também os 
 
 ## 8. Pareceres e aprovação ⏸
 
+- **Decisões do responsável (2026-11-17):** confirmou (a) os papéis de controladora e operadora, (b) o regime padrão, (c) a **aceitação provisória dos riscos médios** R05 (professores sem 2FA), R10 (responsável sem direito, depende do cadastro da escola) e R14 (conta de criança sem consentimento parental registrado) até o parecer, e (d) o compromisso de **não** haver IA, perfilamento, publicidade, venda de dados, ranking nem conversa entre alunos (se isso mudar, refazer este RIPD).
 - **Parecer do encarregado:** `{pendente}`
 - **Revisão jurídica:** `{pendente}`
 - **Aprovação da escola (controladora):** `{pendente}`

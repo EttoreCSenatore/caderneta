@@ -9,9 +9,10 @@
 | **Controladora** | A escola | Decide comunicar à ANPD e aos titulares; assina as comunicações |
 | **Encarregado (DPO)** | Informado em *Escola* no app | Coordena a resposta, conversa com a ANPD e com os titulares |
 | **Operadora** | `CADERNETA_OPERADORA_NOME` (quem hospeda esta instalação) | Detecta, contém, preserva evidências, investiga, informa a escola **sem demora** |
+| **Plantão técnico da escola** | **Responsável de TI da escola** (nome e telefone a preencher) | É o primeiro contato da operadora; aciona o encarregado e a direção; executa as contenções que dependem da escola |
 | **Jurídico** | Advogado(a) de proteção de dados | Decide se o incidente é notificável (art. 5º) |
 
-Antes do piloto, a escola e a operadora preenchem **nomes e telefones de plantão** (item aberto T33).
+O plantão da escola é o **Responsável de TI da escola** (decisão do responsável do projeto). Antes do piloto, a escola e a operadora preenchem **nomes e telefones** (item aberto T33).
 
 ## O que conta como incidente
 
