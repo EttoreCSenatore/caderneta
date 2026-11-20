@@ -16,7 +16,7 @@ x-api: &api
 
 services:
   db:
-    image: postgres:17-alpine
+    image: postgres:17-alpine@sha256:526f86d93c6ea08fd3f1fe5605650cacc781b2c6013169a0ad8f42c7d3d84f32
     restart: unless-stopped
     environment:
       POSTGRES_USER: caderneta_owner
@@ -32,7 +32,7 @@ services:
       retries: 20
 
   clamav:
-    image: clamav/clamav:1.4
+    image: clamav/clamav:1.4@sha256:b7357e2c1c59480628839df301b0d27923561389b36cf341911e1dd9e02cdd05
     restart: unless-stopped
     volumes:
       - clamav-db:/var/lib/clamav

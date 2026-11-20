@@ -1,0 +1,96 @@
+# Dependabot (MO.1): PRs que atualizam as dependências. A CI testa cada PR; nada vai para a main sem ela verde.
+#
+# Espera de 7 dias (cooldown): uma atualização de versão só propõe uma versão publicada há pelo menos
+# uma semana, porque um pacote comprometido costuma ser retirado em horas ou dias. Correções de segurança
+# (alertas do GitHub) ignoram a espera e chegam na hora.
+#
+# Atualizações pequenas (minor e patch) vêm agrupadas: um PR por ecossistema, não um por biblioteca.
+# Majors vêm em PRs separados, porque podem quebrar.
+version: 2
+updates:
+  - package-ecosystem: pip
+    directory: /api
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: America/Sao_Paulo
+    cooldown:
+      default-days: 7
+    open-pull-requests-limit: 5
+    groups:
+      python-menores:
+        update-types: [minor, patch]
+
+  - package-ecosystem: npm
+    directory: /web
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: America/Sao_Paulo
+    cooldown:
+      default-days: 7
+    open-pull-requests-limit: 5
+    groups:
+      web-menores:
+        update-types: [minor, patch]
+
+  - package-ecosystem: npm
+    directory: /website
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: America/Sao_Paulo
+    cooldown:
+      default-days: 7
+    open-pull-requests-limit: 5
+    groups:
+      documentacao-menores:
+        update-types: [minor, patch]
+
+  # As Actions ficam fixadas pelo commit, com a versão em comentário; o Dependabot atualiza os dois.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    cooldown:
+      default-days: 7
+    groups:
+      actions:
+        patterns: ["*"]
+
+  # Imagens das Dockerfiles (python, node, caddy). O caddy da CI (validação do Caddyfile) fica num comando,
+  # fora do alcance do Dependabot: scripts/checar-fixacao.py reprova o PR até ele ser igualado à mão.
+  - package-ecosystem: docker
+    directory: /deploy
+    schedule:
+      interval: monthly
+    cooldown:
+      default-days: 7
+    groups:
+      imagens:
+        patterns: ["*"]
+    ignore:
+      # Python novo na imagem é mudança planejada: CI, venv e documentação mudam juntos.
+      - dependency-name: python
+        update-types: [version-update:semver-minor, version-update:semver-major]
+      - dependency-name: node
+        update-types: [version-update:semver-major]
+
+  # Compose de desenvolvimento e de produção num PR só: o Postgres precisa ser o mesmo nos dois
+  # (scripts/checar-fixacao.py também confere o da CI, que o Dependabot não alcança).
+  - package-ecosystem: docker-compose
+    directories: [/infra, /deploy]
+    schedule:
+      interval: monthly
+    cooldown:
+      default-days: 7
+    groups:
+      imagens-compose:
+        patterns: ["*"]
+    ignore:
+      # Postgres de versão major nova exige migrar os dados (pg_upgrade ou dump e restore): feito à mão.
+      - dependency-name: postgres
+        update-types: [version-update:semver-major]

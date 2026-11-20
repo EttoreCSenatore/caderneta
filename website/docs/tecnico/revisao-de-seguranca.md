@@ -11,6 +11,7 @@ Revisão interna, feita por leitura do código, ferramentas automáticas e teste
 | Tema | Resultado |
 |---|---|
 | **Dependências** | `pip-audit` e `npm audit` sem vulnerabilidades conhecidas; rodam no CI a cada alteração. O CI gera o **SBOM** (CycloneDX) da API e do app web como artefato |
+| **Cadeia de suprimentos** | O **Dependabot** propõe atualizações em PRs agrupados, com espera de 7 dias para versões novas (correções de segurança chegam na hora). As **Actions** ficam fixadas pelo commit e as **imagens Docker** pelo digest; `scripts/checar-fixacao.py` reprova a CI se algo entrar sem fixação ou se a mesma imagem divergir entre CI, desenvolvimento e produção |
 | **Análise estática** | `ruff` com regras de segurança (`S`, estilo Bandit) sem achados; sem SQL montado por texto com dado do usuário (tudo via ORM ou parâmetros) |
 | **Segredos no repositório** | Nenhum arquivo `.env`, chave ou token versionado. Os valores de demonstração (senha e segredo 2FA do seed) são fictícios e só existem no ambiente local |
 | **Autenticação** | Senhas com Argon2id; tempo constante mesmo para e-mail inexistente; bloqueio progressivo por conta; sessão com token opaco (só o hash no banco), cookie `HttpOnly`, `SameSite=Lax` e `Secure` obrigatório em produção; 2FA obrigatório para a equipe |
@@ -49,7 +50,7 @@ Revisão interna, feita por leitura do código, ferramentas automáticas e teste
 | A03 Injeção | ORM e parâmetros; sem achados do `ruff S` |
 | A04 Design inseguro | Privacidade desde a concepção; limites de taxa adicionados |
 | A05 Configuração incorreta | Produção exige chave, ClamAV, cookie seguro e caminho absoluto; documentação da API desligada; o Caddy do app envia os cabeçalhos |
-| A06 Componentes vulneráveis | `pip-audit` e `npm audit` no CI, SBOM e auditoria de licenças |
+| A06 Componentes vulneráveis | `pip-audit` e `npm audit` no CI, Dependabot, SBOM e auditoria de licenças |
 | A07 Falhas de autenticação | Bloqueio, 2FA, limite por IP, sem reuso de código. Falta lista de senhas fracas e códigos de reserva |
 | A08 Integridade de software e dados | Dependências travadas por lock; histórico emitido com código de conferência |
 | A09 Falhas de log e monitoramento | Auditoria de ações sensíveis e de login. Script de verificação pronto; falta configurar na hospedagem (M9) |

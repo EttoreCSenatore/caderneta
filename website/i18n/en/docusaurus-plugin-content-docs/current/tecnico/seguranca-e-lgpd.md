@@ -68,6 +68,6 @@ Login details in [Access, invitations and 2FA](../funcionalidades/acesso-e-convi
 
 ### Development
 
-- Dependencies audited in CI (`pip-audit`, `npm audit`), license audit, SBOM and production-image build.
+- Dependencies audited in CI (`pip-audit`, `npm audit`), license audit, SBOM and production-image build. Dependabot with a 7-day wait; Actions pinned to a commit and images by digest.
 - Automated permission tests: for each role, what it **cannot** see.
 - Fictitious data in every non-production environment; never copy production to dev.
