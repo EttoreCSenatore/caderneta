@@ -71,3 +71,4 @@ Login details in [Access, invitations and 2FA](../funcionalidades/acesso-e-convi
 - Dependencies audited in CI (`pip-audit`, `npm audit`), license audit, SBOM and production-image build. Dependabot with a 7-day wait; Actions pinned to a commit and images by digest.
 - Automated permission tests: for each role, what it **cannot** see.
 - Fictitious data in every non-production environment; never copy production to dev.
+- **Security flaw:** report it through GitHub's private channel (Security tab, *Report a vulnerability*), never in a public issue. Response times, scope and good-faith testing rules in [SECURITY.md](https://github.com/EttoreCSenatore/caderneta/blob/main/SECURITY.md). How to contribute: [CONTRIBUTING.md](https://github.com/EttoreCSenatore/caderneta/blob/main/CONTRIBUTING.md).

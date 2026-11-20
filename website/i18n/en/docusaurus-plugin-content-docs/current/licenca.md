@@ -42,7 +42,7 @@ for text and images, of the spirit of the AGPL. The notice is in [`LICENSE-DOCS.
 
 ## What is still open
 
-- **Name and logo "Caderneta":** the license covers the code and the documentation, **not** the trademark. Registering it with INPI (the Brazilian trademark office) is optional and will not be done for now; before the
+- **Name and logo "Caderneta":** the license covers the code and the documentation, **not** the trademark. The [NOTICE](https://github.com/EttoreCSenatore/caderneta/blob/main/NOTICE) file puts this in writing: a modified version offered to others must make clear it is not the official Caderneta. Registering it with INPI (the Brazilian trademark office) is optional and will not be done for now; before the
   pilot a quick, free look at the INPI database is enough, because the installation service is commercial. If there is a conflict, the name can be changed.
 - **Copyright:** the notice uses the maintainer's GitHub handle. Change it to the legal name of the person or owning organization before the pilot.
 

@@ -59,6 +59,12 @@ caderneta/
 A plataforma lida com dados de menores e de saúde. Veja
 [Segurança e LGPD](https://ettorecsenatore.github.io/caderneta/docs/tecnico/seguranca-e-lgpd).
 
+**Achou uma falha de segurança?** Não abra issue: siga o [SECURITY.md](SECURITY.md).
+
+## Contribuir
+
+Veja o [CONTRIBUTING.md](CONTRIBUTING.md) e o [Código de Conduta](CODE_OF_CONDUCT.md). O nome e o logotipo não fazem parte da licença: veja o [NOTICE](NOTICE).
+
 English: [README.en.md](README.en.md). A documentação do site também está em inglês.
 
 ## Licença
