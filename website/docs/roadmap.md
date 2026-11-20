@@ -236,14 +236,14 @@ Veja [Modo offline](./funcionalidades/offline.md).
 
 Ideias adaptadas de outro sistema open source de gestão, o [Kaladrius](https://github.com/facchini-miguel/kaladrius) (clínicas, Apache 2.0). O foco é manter a Caderneta segura e fácil de atualizar depois que ela estiver em uso. Cada passo é um PR, na ordem abaixo.
 
-- [ ] **MO.1 Cadeia de suprimentos:** Dependabot para Python, os dois projetos npm, GitHub Actions e imagens Docker, com espera de 7 dias para versões novas (correções de segurança vêm na hora) e PRs agrupados; Actions fixadas pelo commit; imagens fixadas pelo digest, com teste que exige o mesmo Postgres no desenvolvimento e na produção
-- [ ] **MO.2 Arquivos do repositório:** `SECURITY.md` (como reportar uma falha), `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `CODEOWNERS` e `NOTICE` (o nome e o logo não fazem parte da licença)
-- [ ] **MO.3 Versões e Novidades:** um `releases.yaml` como fonte única; versão no rodapé e em `/api/saude`; página Novidades no app e aviso "versão nova, veja o que mudou"; tag e release no GitHub geradas do mesmo arquivo; página de versionamento na documentação
-- [ ] **MO.4 Avisos de operação:** cada backup fica registrado no banco; a direção e o responsável de TI veem uma faixa quando o último backup tem mais de 26 horas ou quando disco ou memória do servidor chegam ao limite (cobre parte da lacuna T35)
-- [ ] **MO.5 Migrations:** teste de aplicar, desfazer e aplicar de novo na CI; relatório no PR com o SQL de cada migration nova e as operações que apagam dados
-- [ ] **MO.6 Dados de teste:** comando que apaga só os dados de demonstração (nunca uma escola real) e comando que simula a atividade da semana atual (aulas, chamadas, notas), para a demonstração não parecer parada
-- [ ] **MO.7 Cobertura de testes:** medir a cobertura da API e do web e reprovar a CI abaixo de uma meta fixada a partir do número atual
-- [ ] **MO.8 Demonstração pública:** página com as contas de cada papel e os dados fictícios recriados todo dia; **depende da hospedagem** (feito junto com o M9)
+- [ ] **MO.1 Cadeia de suprimentos** ([#37](https://github.com/EttoreCSenatore/caderneta/issues/37)): Dependabot para Python, os dois projetos npm, GitHub Actions e imagens Docker, com espera de 7 dias para versões novas (correções de segurança vêm na hora) e PRs agrupados; Actions fixadas pelo commit; imagens fixadas pelo digest, com teste que exige o mesmo Postgres no desenvolvimento e na produção
+- [ ] **MO.2 Arquivos do repositório** ([#38](https://github.com/EttoreCSenatore/caderneta/issues/38)): `SECURITY.md` (como reportar uma falha), `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `CODEOWNERS` e `NOTICE` (o nome e o logo não fazem parte da licença)
+- [ ] **MO.3 Versões e Novidades** ([#39](https://github.com/EttoreCSenatore/caderneta/issues/39)): um `releases.yaml` como fonte única; versão no rodapé e em `/api/saude`; página Novidades no app e aviso "versão nova, veja o que mudou"; tag e release no GitHub geradas do mesmo arquivo; página de versionamento na documentação
+- [ ] **MO.4 Avisos de operação** ([#40](https://github.com/EttoreCSenatore/caderneta/issues/40)): cada backup fica registrado no banco; a direção e o responsável de TI veem uma faixa quando o último backup tem mais de 26 horas ou quando disco ou memória do servidor chegam ao limite (cobre parte da lacuna T35)
+- [ ] **MO.5 Migrations** ([#41](https://github.com/EttoreCSenatore/caderneta/issues/41)): teste de aplicar, desfazer e aplicar de novo na CI; relatório no PR com o SQL de cada migration nova e as operações que apagam dados
+- [ ] **MO.6 Dados de teste** ([#42](https://github.com/EttoreCSenatore/caderneta/issues/42)): comando que apaga só os dados de demonstração (nunca uma escola real) e comando que simula a atividade da semana atual (aulas, chamadas, notas), para a demonstração não parecer parada
+- [ ] **MO.7 Cobertura de testes** ([#43](https://github.com/EttoreCSenatore/caderneta/issues/43)): medir a cobertura da API e do web e reprovar a CI abaixo de uma meta fixada a partir do número atual
+- [ ] **MO.8 Demonstração pública** ([#44](https://github.com/EttoreCSenatore/caderneta/issues/44)): página com as contas de cada papel e os dados fictícios recriados todo dia; **depende da hospedagem** (feito junto com o M9)
 
 ## M9: Piloto (em preparação)
 
