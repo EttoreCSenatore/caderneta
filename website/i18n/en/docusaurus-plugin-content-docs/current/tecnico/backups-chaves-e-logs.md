@@ -44,6 +44,23 @@ Scripts in `infra/backup/` (they need `pg_dump`, `pg_restore`, `psql` and `gpg`)
 
 The script `deploy/verificar.sh` (for cron, every 10 minutes) checks: `/api/saude` is up, **late backup** (stale `ultimo-backup.txt`), **full disk**, database responding and **stopped service**; if anything fails, it alerts the on-call person through an alert URL (ntfy, healthchecks.io etc.). See [Deployment](./implantacao.md). Still to configure: an alert for 5xx errors and for **many login failures** (`login_falhou` actions in the audit log). Whoever receives the alert is the technical on-call person (see the incident plan).
 
+
+### Warnings inside the app (MO.4)
+
+The school management (administrator role) sees a yellow banner at the top of every screen when something in the installation needs attention, to pass on to whoever looks after the server:
+
+| Warning | When | Setting |
+|---|---|---|
+| **Backup** | no backup recorded, or the last one is older than 26 hours | `CADERNETA_BACKUP_MAX_HORAS` |
+| **Restore test** | no test recorded, or the last one is older than 40 days | `CADERNETA_RESTAURACAO_MAX_DIAS` |
+| **Disk** | the disk holding the files reached 85% | `CADERNETA_DISCO_MAX_PCT` |
+| **Memory** | the server's memory in use reached 90% | `CADERNETA_MEMORIA_MAX_PCT` |
+
+- **Recording backups:** `backup.sh` and `restore-test.sh` record each successful run in the database when given `REGISTRAR` (the CLI command inside the `worker` container, see `deploy/cron.exemplo`). The record keeps only the date, the file name and the size; there is no personal or school data. The app only reads it; the CLI writes it, with the database owner role.
+- **On only in production:** the backup and restore warnings apply when `CADERNETA_ENV=prod` (or `CADERNETA_BACKUP_MONITORADO=true`). Disk and memory always apply.
+- **How it measures:** disk from the files folder (`CADERNETA_STORAGE_DIR`) and memory from `/proc/meminfo`, at the moment the page asks (`GET /api/operacao`, management only). There is no background collection and no Docker access.
+- **It does not replace the on-call alert:** `verificar.sh` alerts even with the app down; the banner is a second layer for people who use the app every day.
+
 :::note Limits
 **Not yet verified in production**: the hosting was not chosen. The scripts were tested with the development database in a container.
 :::

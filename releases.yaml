@@ -7,6 +7,17 @@
 # tipo:    novo | melhoria | correcao | seguranca
 # publico: equipe (direção, coordenação, professores) e/ou familia (responsáveis e alunos)
 
+- versao: 0.10.0
+  data: 2026-11-20
+  titulo: Avisos da instalação para a direção
+  itens:
+    - tipo: novo
+      publico: [equipe]
+      texto: >
+        A direção passa a ver um aviso no topo da tela quando o servidor precisa de atenção: cópia de
+        segurança atrasada, teste de restauração vencido, disco ou memória quase cheios. É só repassar
+        o aviso para quem cuida do servidor.
+
 - versao: 0.9.0
   data: 2026-11-20
   titulo: Primeira versão numerada

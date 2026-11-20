@@ -6,7 +6,9 @@
 #   sh infra/backup/backup.sh
 #
 # Variáveis: BACKUP_DIR, BACKUP_PASSPHRASE_FILE, STORAGE_DIR (obrigatórias); PG* (conexão); PG_PREFIX (opcional,
-# comando que antecede pg_dump, ex.: "docker exec -i caderneta-dev-db-1"); RETENCAO_DIAS (padrão 35).
+# comando que antecede pg_dump, ex.: "docker exec -i caderneta-dev-db-1"); RETENCAO_DIAS (padrão 35);
+# REGISTRAR (opcional, comando do CLI da Caderneta, ex.: "docker compose -f deploy/docker-compose.prod.yml exec -T worker
+# python -m app.cli"): registra o backup no app, para a direção ver o aviso de backup atrasado (MO.4).
 #
 # A senha do backup é DIFERENTE da chave de dados e deve ficar guardada fora do servidor de backup.
 # Os arquivos de provas e anexos já estão cifrados com a chave de dados; a cifra do backup é uma segunda camada.
@@ -36,3 +38,8 @@ echo "$AGORA" > "$BACKUP_DIR/ultimo-backup.txt"
 # se este backup for restaurado: por isso o prazo é curto e a restauração reaplica a retenção (ver restore-test.sh).
 find "$BACKUP_DIR" -name 'caderneta-*.tar.gpg' -mtime "+$RETENCAO_DIAS" -delete
 echo "backup cifrado: $SAIDA"
+if [ -n "${REGISTRAR:-}" ]; then
+  # shellcheck disable=SC2086
+  $REGISTRAR registrar-backup "$(basename "$SAIDA")" --tamanho "$(wc -c < "$SAIDA")" \
+    || echo "aviso: o backup foi feito, mas não consegui registrá-lo no app (REGISTRAR)" >&2
+fi

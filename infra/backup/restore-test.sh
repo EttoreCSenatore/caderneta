@@ -8,7 +8,8 @@
 #   sh infra/backup/restore-test.sh
 #
 # Variáveis: BACKUP_FILE, BACKUP_PASSPHRASE_FILE, OWNER_URL_BASE (sem o nome do banco), PG* ; PG_PREFIX (opcional,
-# como no backup.sh); PYTHON (padrão python3, com a API instalada); SCRATCH_DB (padrão caderneta_restore_test).
+# como no backup.sh); PYTHON (padrão python3, com a API instalada); SCRATCH_DB (padrão caderneta_restore_test);
+# REGISTRAR (opcional, como no backup.sh): registra o teste bem-sucedido no app (aviso de restauração vencida, MO.4).
 # NUNCA aponte para o banco de produção: o script cria e APAGA o banco temporário SCRATCH_DB.
 set -eu
 umask 077
@@ -42,4 +43,9 @@ echo "ok: banco restaurado: $LINHAS"
 CADERNETA_OWNER_DATABASE_URL="$OWNER_URL_BASE/$SCRATCH_DB" CADERNETA_STORAGE_DIR="$TMP/storage" \
   "$PYTHON" -m app.cli rotacionar-chave --simular --exigir-arquivos
 echo "ok: as chaves de dados abrem o conteúdo cifrado do backup"
+if [ -n "${REGISTRAR:-}" ]; then
+  # shellcheck disable=SC2086
+  $REGISTRAR registrar-backup --restauracao "$(basename "$BACKUP_FILE"): $LINHAS" \
+    || echo "aviso: o teste passou, mas não consegui registrá-lo no app (REGISTRAR)" >&2
+fi
 echo "Lembrete: ao restaurar de verdade, rode 'python -m app.cli notificar' para reaplicar a retenção e revise os pedidos de eliminação posteriores ao backup."

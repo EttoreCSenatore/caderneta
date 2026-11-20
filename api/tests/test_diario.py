@@ -192,7 +192,7 @@ def test_toda_tabela_escolar_tem_rls(owner_engine):
             db.execute(
                 text(
                     "SELECT tablename FROM pg_tables WHERE schemaname = 'public' AND NOT rowsecurity "
-                    "AND tablename NOT IN ('alembic_version', 'sessao', 'token_senha', 'limite_taxa')"
+                    "AND tablename NOT IN ('alembic_version', 'sessao', 'token_senha', 'limite_taxa', 'registro_operacao')"
                 )
             )
             .scalars()

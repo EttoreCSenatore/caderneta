@@ -66,6 +66,7 @@ erDiagram
 | `pedido_titular` | tipo, canal, prazo de 15 dias, resposta | Prova de atendimento, guardada 5 anos |
 | `aceite_legal` | usuário, texto, versão, data | Ciência da política e dos termos |
 | `limite_taxa` | hash do IP ou e-mail, contagem, janela | Apagado em 2 dias |
+| `registro_operacao` | backups e testes de restauração: data, nome do arquivo, tamanho (da instalação, sem escola e sem dado pessoal) | Sem dado pessoal; uma linha por execução |
 
 Médias **não são armazenadas**: são calculadas a partir das notas e da regra a cada consulta (`api/app/medias.py`).
 No M2 isso é rápido o bastante; um cache só entra se o piloto mostrar necessidade.

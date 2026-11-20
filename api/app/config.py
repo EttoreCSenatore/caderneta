@@ -49,6 +49,12 @@ class Settings(BaseSettings):
     max_upload_bytes: int = 2_000_000
     # Arquivos de provas e trabalhos: cifrados em repouso (AES-GCM) num diretório fora do código.
     storage_dir: str = "./storage"
+    # Avisos de operação para a direção (MO.4). backup_monitorado: None = ligado só em produção.
+    backup_monitorado: bool | None = None
+    backup_max_horas: int = 26
+    restauracao_max_dias: int = 40
+    disco_max_pct: int = 85
+    memoria_max_pct: int = 90
     max_arquivo_bytes: int = 15_000_000
     link_validade_s: int = 300
     max_anexo_bytes: int = 10_000_000  # anexos de mensagens (PDF e imagens)

@@ -1,6 +1,6 @@
 [project]
 name = "caderneta-api"
-version = "0.9.0"
+version = "0.10.0"
 description = "Caderneta: API da plataforma escolar"
 license = "AGPL-3.0-or-later"
 requires-python = ">=3.13"
