@@ -71,3 +71,4 @@ Detalhes do login em [Acesso, convites e 2FA](../funcionalidades/acesso-e-convit
 - Dependências auditadas no CI (`pip-audit`, `npm audit`), auditoria de licenças, SBOM e build das imagens de produção. Dependabot com espera de 7 dias; Actions fixadas pelo commit e imagens pelo digest.
 - Testes automatizados de permissão: para cada perfil, o que **não** pode ver.
 - Dados fictícios em todos os ambientes que não sejam produção; nunca copiar produção para dev.
+- **Falha de segurança:** reporte pelo canal privado do GitHub (aba Security, *Report a vulnerability*), nunca em issue pública. Prazos, escopo e regras de teste de boa-fé no [SECURITY.md](https://github.com/EttoreCSenatore/caderneta/blob/main/SECURITY.md). Como contribuir: [CONTRIBUTING.md](https://github.com/EttoreCSenatore/caderneta/blob/main/CONTRIBUTING.md).

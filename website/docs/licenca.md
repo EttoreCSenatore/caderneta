@@ -42,7 +42,7 @@ para textos e imagens, do espírito da AGPL. O aviso está em [`LICENSE-DOCS.md`
 
 ## O que ainda está em aberto
 
-- **Nome e logotipo "Caderneta":** a licença cobre o código e a documentação, **não** a marca. O registro no INPI é opcional e não será feito por enquanto; antes do
+- **Nome e logotipo "Caderneta":** a licença cobre o código e a documentação, **não** a marca. O arquivo [NOTICE](https://github.com/EttoreCSenatore/caderneta/blob/main/NOTICE) diz isso por escrito: uma versão modificada oferecida a terceiros precisa deixar claro que não é a Caderneta oficial. O registro no INPI é opcional e não será feito por enquanto; antes do
   piloto basta uma consulta rápida e gratuita à base do INPI, porque o serviço de instalação é comercial. Se houver conflito, o nome pode ser trocado.
 - **Copyright:** o aviso usa o usuário do GitHub do responsável. Ajuste para o nome legal da pessoa ou da organização titular antes do piloto.
 
