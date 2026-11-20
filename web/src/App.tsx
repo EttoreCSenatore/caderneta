@@ -29,6 +29,7 @@ const Virada = lazy(() => import('./pages/Virada'));
 const Verificar = lazy(() => import('./pages/Verificar'));
 const Desligados = lazy(() => import('./pages/Desligados'));
 const MeusDados = lazy(() => import('./pages/MeusDados'));
+const Novidades = lazy(() => import('./pages/Novidades'));
 const PedidosTitulares = lazy(() => import('./pages/PedidosTitulares'));
 const Legal = lazy(() => import('./pages/Legal'));
 const Conta = lazy(() => import('./pages/Conta'));
@@ -101,6 +102,7 @@ export function App() {
           <Route path="aceitar" element={null} />
           <Route path="conta" element={<Conta />} />
           <Route path="meus-dados" element={<MeusDados />} />
+          <Route path="novidades" element={<Novidades />} />
           <Route path="pedidos-titulares" element={<PedidosTitulares />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>

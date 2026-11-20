@@ -8,6 +8,8 @@ COPY api/pyproject.toml ./
 COPY api/app ./app
 COPY api/migrations ./migrations
 COPY api/alembic.ini ./
+# Versão e notas de versão (página Novidades e /api/saude)
+COPY releases.yaml ./
 RUN pip install .
 USER caderneta
 EXPOSE 8000

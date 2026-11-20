@@ -1,5 +1,6 @@
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import {Link} from 'react-router';
+import {useNovidades} from '../lib/novidades';
 import {type FormEvent, useState} from 'react';
 import {Carregando, Erro} from '../components/ui';
 import {api} from '../lib/api';
@@ -83,6 +84,21 @@ function Sessoes() {
   );
 }
 
+/** Versão do app e link para as Novidades (no celular, o rodapé do menu lateral não aparece). */
+function SobreApp() {
+  const q = useNovidades();
+  return (
+    <div className="cartao">
+      <h2 style={{marginTop: 0}}>Sobre o app</h2>
+      <p className="suave" style={{margin: '0 0 0.75rem'}}>
+        Caderneta{q.data ? ` versão ${q.data.versao_atual}` : ''} · <a href="/privacidade" target="_blank" rel="noreferrer">Privacidade</a> ·{' '}
+        <a href="/termos" target="_blank" rel="noreferrer">Termos</a>
+      </p>
+      <Link className="botao secundario" to="/novidades">Ver as novidades</Link>
+    </div>
+  );
+}
+
 export default function Conta() {
   const {data: me} = useMe();
   if (!me) return <Carregando />;
@@ -106,6 +122,7 @@ export default function Conta() {
         </div>
         <TrocarSenha />
         <Sessoes />
+        <SobreApp />
       </div>
     </>
   );
