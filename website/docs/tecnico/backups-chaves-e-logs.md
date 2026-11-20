@@ -44,6 +44,22 @@ Scripts em `infra/backup/` (precisam de `pg_dump`, `pg_restore`, `psql` e `gpg`)
 
 O script `deploy/verificar.sh` (para o cron, a cada 10 minutos) confere: `/api/saude` no ar, **backup atrasado** (`ultimo-backup.txt` velho), **disco cheio**, banco respondendo e **serviço parado**; se algo falhar, avisa o plantão por uma URL de alerta (ntfy, healthchecks.io etc.). Veja [Implantação](./implantacao.md). Ficam por configurar: alerta de erros 5xx e de **muitas falhas de login** (ações `login_falhou` na auditoria). Quem recebe o alerta é o plantão técnico (veja o plano de incidentes).
 
+### Avisos dentro do app (MO.4)
+
+A direção (papel administrador) vê uma faixa amarela no topo de todas as telas quando algo da instalação precisa de atenção, para repassar a quem cuida do servidor:
+
+| Aviso | Quando | Configuração |
+|---|---|---|
+| **Backup** | nenhum backup registrado, ou o último tem mais de 26 horas | `CADERNETA_BACKUP_MAX_HORAS` |
+| **Teste de restauração** | nenhum teste registrado, ou o último tem mais de 40 dias | `CADERNETA_RESTAURACAO_MAX_DIAS` |
+| **Disco** | o disco onde ficam os arquivos chegou a 85% | `CADERNETA_DISCO_MAX_PCT` |
+| **Memória** | a memória em uso do servidor chegou a 90% | `CADERNETA_MEMORIA_MAX_PCT` |
+
+- **Registro dos backups:** o `backup.sh` e o `restore-test.sh` registram cada execução bem-sucedida no banco quando recebem `REGISTRAR` (o comando do CLI dentro do contêiner `worker`, veja `deploy/cron.exemplo`). O registro guarda só a data, o nome do arquivo e o tamanho; não há dado pessoal nem de escola. O app só lê; quem grava é o CLI, com o papel dono do banco.
+- **Ligado só em produção:** os avisos de backup e de restauração valem quando `CADERNETA_ENV=prod` (ou `CADERNETA_BACKUP_MONITORADO=true`). Disco e memória valem sempre.
+- **Como mede:** disco pela pasta de arquivos (`CADERNETA_STORAGE_DIR`) e memória pelo `/proc/meminfo`, na hora em que a página pede (`GET /api/operacao`, só para a direção). Não há coleta em segundo plano nem acesso ao Docker.
+- **Não substitui o alerta do plantão:** o `verificar.sh` avisa mesmo com o app fora do ar; a faixa é uma segunda camada para quem usa o app todo dia.
+
 :::note Limites
 Ainda **não verificado em produção**: a hospedagem não foi escolhida. Os scripts foram testados com o banco de desenvolvimento em contêiner.
 :::

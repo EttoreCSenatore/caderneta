@@ -66,6 +66,7 @@ erDiagram
 | `pedido_titular` | type, channel, 15-day deadline, answer | Proof of compliance, kept 5 years |
 | `aceite_legal` | user, text, version, date | Acknowledgement of the policy and terms |
 | `limite_taxa` | hash of IP or e-mail, count, window | Deleted in 2 days |
+| `registro_operacao` | backups and restore tests: date, file name, size (of the installation, no school and no personal data) | No personal data; one row per run |
 
 Averages **are not stored**: they are calculated from the grades and the rule on every query (`api/app/medias.py`).
 In M2 this is fast enough; a cache only comes in if the pilot shows a need.

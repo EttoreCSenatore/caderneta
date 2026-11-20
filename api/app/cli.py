@@ -4,6 +4,8 @@ python -m app.cli criar-escola "Escola Exemplo" admin@escola.com "Nome do Admin"
 python -m app.cli notificar     # worker: avisos agendados, e-mails devidos e retenção (rodar a cada minuto)
 python -m app.cli rotacionar-chave [--simular]   # regrava os dados cifrados com a chave atual (rotação de chave)
 python -m app.cli revogar-sessoes [escola_id]   # incidente: encerra todas as sessões (ou só as de uma escola)
+python -m app.cli registrar-backup caderneta-X.tar.gpg --tamanho N   # chamado pelo backup.sh (MO.4)
+python -m app.cli registrar-backup --restauracao "ok"                 # chamado pelo restore-test.sh
 """
 
 import argparse
@@ -13,7 +15,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
 from app.config import get_settings
-from app.models import Escola, Papel
+from app.models import Escola, Papel, RegistroOperacao
 from app.routers.convites import cria_convite
 
 
@@ -86,6 +88,15 @@ def gerar_vapid() -> None:
     print("CADERNETA_VAPID_SUBJECT=mailto:contato-de-privacidade@sua-escola.com.br")
 
 
+def registrar_backup(detalhe: str, tamanho: int | None, restauracao: bool = False) -> None:
+    """Registra um backup (ou um teste de restauração) para os avisos de operação da direção."""
+    engine = create_engine(get_settings().owner_database_url)
+    tipo = "restauracao" if restauracao else "backup"
+    with Session(engine) as db, db.begin():
+        db.add(RegistroOperacao(tipo=tipo, detalhe=detalhe[:200], tamanho_bytes=tamanho))
+    print(f"{tipo} registrado")
+
+
 def main() -> None:
     p = argparse.ArgumentParser(prog="caderneta")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -101,6 +112,10 @@ def main() -> None:
         "--exigir-arquivos", action="store_true", help="falha se faltar arquivo no armazenamento (teste de restauração)"
     )
     sub.add_parser("gerar-vapid", help="gera as chaves do push (VAPID)")
+    rb = sub.add_parser("registrar-backup", help="registra um backup feito (ou um teste de restauração)")
+    rb.add_argument("detalhe", nargs="?", default="", help="nome do arquivo ou resultado")
+    rb.add_argument("--tamanho", type=int, default=None, help="tamanho do arquivo em bytes")
+    rb.add_argument("--restauracao", action="store_true", help="registra um teste de restauração bem-sucedido")
     sub.add_parser("notificar", help="worker de notificações (agendados, e-mails, retenção)")
     a = p.parse_args()
     if a.cmd == "criar-escola":
@@ -113,6 +128,8 @@ def main() -> None:
         rotacionar_chave(a.simular, a.exigir_arquivos)
     elif a.cmd == "gerar-vapid":
         gerar_vapid()
+    elif a.cmd == "registrar-backup":
+        registrar_backup(a.detalhe, a.tamanho, a.restauracao)
 
 
 if __name__ == "__main__":

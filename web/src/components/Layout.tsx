@@ -115,6 +115,27 @@ function AvisoVersao() {
   );
 }
 
+type Operacao = {avisos: {codigo: string; texto: string}[]; ultimo_backup: string | null};
+
+/** Avisos da instalação para a direção (MO.4): backup atrasado, teste de restauração vencido, disco ou memória. */
+function AvisosOperacao() {
+  const q = useQuery({queryKey: ['operacao'], queryFn: () => api<Operacao>('/operacao'), refetchInterval: 10 * 60 * 1000, retry: false});
+  const avisos = q.data?.avisos ?? [];
+  if (!avisos.length) return null;
+  return (
+    <div className="aviso atencao" role="alert" aria-label="Avisos da instalação" style={{marginBottom: '1rem'}}>
+      <div>
+        <strong>Atenção com a instalação da Caderneta.</strong> Repasse para quem cuida do servidor:
+        <ul style={{margin: '0.35rem 0 0', paddingLeft: '1.1rem'}}>
+          {avisos.map((a) => (
+            <li key={a.codigo}>{a.texto}</li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+}
+
 function VersaoRodape() {
   const q = useNovidades();
   if (!q.data) return null;
@@ -304,6 +325,7 @@ export function Layout() {
             <TrocaPerfil />
             <NavLink to="/conta" className="botao secundario pequeno">Minha conta</NavLink>
           </div>
+          {papel === 'admin' && <AvisosOperacao />}
           <AvisoVersao />
           <InstalarApp />
           <FaixaOffline />

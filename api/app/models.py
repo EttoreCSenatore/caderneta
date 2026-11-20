@@ -17,6 +17,7 @@ from sqlalchemy import (
     DateTime,
     Enum,
     ForeignKey,
+    Identity,
     Integer,
     LargeBinary,
     Numeric,
@@ -158,6 +159,17 @@ class LimiteTaxa(Base):
     chave: Mapped[str] = mapped_column(String(100), primary_key=True)
     janela: Mapped[int] = mapped_column(BigInteger, primary_key=True)
     n: Mapped[int] = mapped_column(Integer, default=0)
+
+
+class RegistroOperacao(Base):
+    """Backup feito ou teste de restauração (MO.4). Da instalação, não de uma escola: sem RLS e sem dado pessoal."""
+
+    __tablename__ = "registro_operacao"
+    id: Mapped[int] = mapped_column(BigInteger, Identity(), primary_key=True)
+    tipo: Mapped[str] = mapped_column(String(20))  # backup | restauracao
+    feito_em: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=agora)
+    detalhe: Mapped[str] = mapped_column(String(200), default="")
+    tamanho_bytes: Mapped[int | None] = mapped_column(BigInteger)
 
 
 class TokenSenha(Base):
