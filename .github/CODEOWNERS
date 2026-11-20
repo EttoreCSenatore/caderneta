@@ -1,0 +1,19 @@
+# Quem revisa cada parte (GitHub pede a revisão automaticamente nos PRs).
+# As áreas sensíveis ficam listadas à parte para que, quando houver mais mantenedores, cada uma ganhe seu revisor.
+
+*                    @EttoreCSenatore
+
+# Segurança, isolamento entre escolas e migrations do banco
+/api/app/security.py @EttoreCSenatore
+/api/app/chaves.py   @EttoreCSenatore
+/api/migrations/     @EttoreCSenatore
+/infra/postgres/     @EttoreCSenatore
+
+# LGPD, textos legais e pacote jurídico
+/.lgpd/              @EttoreCSenatore
+/api/app/legal/      @EttoreCSenatore
+
+# Implantação, backups e cadeia de suprimentos
+/deploy/             @EttoreCSenatore
+/infra/backup/       @EttoreCSenatore
+/.github/            @EttoreCSenatore

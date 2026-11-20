@@ -15,8 +15,12 @@ See [Running locally](https://ettorecsenatore.github.io/caderneta/en/docs/tecnic
 - **Before using real data**, generate the [lawyer package](https://ettorecsenatore.github.io/caderneta/en/docs/tecnico/pacote-juridico) (`python3 scripts/gerar-pacote-juridico.py`) and review it with the school's lawyer. The package and the legal texts in the app are in **Portuguese** because they apply Brazilian law (LGPD, ECA Digital).
 - [Pilot plan](https://ettorecsenatore.github.io/caderneta/en/docs/piloto).
 
+## Security and contributing
+
+**Found a security flaw?** Do not open an issue: follow [SECURITY.md](SECURITY.md). To contribute, see [CONTRIBUTING.md](CONTRIBUTING.md) and the [Code of Conduct](CODE_OF_CONDUCT.md).
+
 ## License
 
-Code: **GNU AGPL-3.0-or-later** (see [LICENSE](LICENSE)). Documentation and screenshots (fictitious data): **CC BY-SA 4.0** (see [LICENSE-DOCS.md](LICENSE-DOCS.md)). Third-party notices: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). The name and logo "Caderneta" are not covered by those licenses.
+Code: **GNU AGPL-3.0-or-later** (see [LICENSE](LICENSE)). Documentation and screenshots (fictitious data): **CC BY-SA 4.0** (see [LICENSE-DOCS.md](LICENSE-DOCS.md)). Third-party notices: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). The name and logo "Caderneta" are not covered by those licenses (see [NOTICE](NOTICE)).
 
 Português: [README.md](README.md).
