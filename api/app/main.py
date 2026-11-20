@@ -3,6 +3,7 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
+from app import versoes
 from app.config import get_settings
 from app.logs import configura_logs
 from app.routers import (
@@ -25,6 +26,7 @@ from app.routers import (
     legal,
     mensagens,
     notificacoes,
+    novidades,
     push,
     titular,
     turmas,
@@ -53,6 +55,7 @@ ROTEADORES = (
     desligados,
     titular,
     legal,
+    novidades,
 )
 METODOS_SEGUROS = {"GET", "HEAD", "OPTIONS"}
 CSRF_HEADER = "x-caderneta"
@@ -64,7 +67,7 @@ def create_app() -> FastAPI:
     docs = "/api/docs" if s.env != "prod" else None
     app = FastAPI(
         title="Caderneta API",
-        version="0.1.0",
+        version=versoes.versao_atual(),
         docs_url=docs,
         redoc_url=None,
         openapi_url="/api/openapi.json" if docs else None,
@@ -90,7 +93,8 @@ def create_app() -> FastAPI:
 
     @app.get("/api/saude", tags=["infra"])
     def saude():
-        return {"ok": True}
+        # A versão ajuda o monitoramento e quem opera a instalação; o código é aberto, então não é segredo.
+        return {"ok": True, "versao": versoes.versao_atual()}
 
     for r in ROTEADORES:
         app.include_router(r.router, prefix="/api")

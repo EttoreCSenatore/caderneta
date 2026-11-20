@@ -61,7 +61,7 @@ docker compose -f docker-compose.prod.yml up -d --build
 sh smoke.sh https://seu-dominio
 ```
 
-As migrações rodam sozinhas (`migrate`). **Faça um backup antes** de atualizar. Para voltar atrás, restaure o backup e a versão anterior do código.
+O que mudou em cada versão está no [`releases.yaml`](https://github.com/EttoreCSenatore/caderneta/blob/main/releases.yaml) e nas [releases do GitHub](https://github.com/EttoreCSenatore/caderneta/releases); o teste de fumaça mostra a versão no ar (veja [Versões e Novidades](./versoes.md)). As migrações rodam sozinhas (`migrate`). **Faça um backup antes** de atualizar. Para voltar atrás, restaure o backup e a versão anterior do código.
 
 ## Segurança da máquina (responsabilidade de quem hospeda)
 

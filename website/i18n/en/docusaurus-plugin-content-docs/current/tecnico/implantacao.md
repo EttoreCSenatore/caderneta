@@ -61,7 +61,7 @@ docker compose -f docker-compose.prod.yml up -d --build
 sh smoke.sh https://your-domain
 ```
 
-Migrations run by themselves (`migrate`). **Take a backup before** updating. To go back, restore the backup and the previous version of the code.
+What changed in each version is in [`releases.yaml`](https://github.com/EttoreCSenatore/caderneta/blob/main/releases.yaml) and the [GitHub releases](https://github.com/EttoreCSenatore/caderneta/releases); the smoke test shows the version running (see [Versions and What's new](./versoes.md)). Migrations run by themselves (`migrate`). **Take a backup before** updating. To go back, restore the backup and the previous version of the code.
 
 ## Machine security (the host's responsibility)
 

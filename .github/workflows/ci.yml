@@ -155,3 +155,31 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346  # v5.0.1
+  # MO.3: a cada versão nova no topo do releases.yaml, cria a tag vX.Y.Z e a release do GitHub com as notas.
+  # Só na main, depois de tudo verde. Se a tag já existe, não faz nada (o job roda em todo push).
+  release:
+    name: Release da versão
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: [docs, api, web, imagens]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # criar a tag e a release
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
+        with:
+          python-version: "3.13"
+      - run: pip install "pyyaml>=6.0.2"
+      - name: Cria a release se a versão for nova
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          IFS=$'\t' read -r versao titulo < <(python3 scripts/notas-versao.py --texto notas.md)
+          if gh release view "v$versao" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "v$versao já publicada"
+          else
+            gh release create "v$versao" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
+              --title "v$versao: $titulo" --notes-file notas.md
+          fi

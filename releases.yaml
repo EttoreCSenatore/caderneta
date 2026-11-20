@@ -1,0 +1,43 @@
+# Histórico de versões da Caderneta: fonte única da página Novidades do app, da versão em /api/saude,
+# do rodapé e das releases do GitHub. Regras e formato: website/docs/tecnico/versoes.md
+#
+# A versão mais nova fica sempre no topo. Os textos aparecem para quem usa o app: linguagem simples,
+# do ponto de vista de quem usa ("Agora você pode..."), sem nomes de arquivos ou termos técnicos.
+#
+# tipo:    novo | melhoria | correcao | seguranca
+# publico: equipe (direção, coordenação, professores) e/ou familia (responsáveis e alunos)
+
+- versao: 0.9.0
+  data: 2026-11-20
+  titulo: Primeira versão numerada
+  itens:
+    - tipo: novo
+      publico: [equipe, familia]
+      texto: >
+        Página Novidades: cada atualização do app passa a ter um resumo do que mudou, e um aviso
+        aparece no topo da tela na primeira vez que você entra depois de uma versão nova.
+    - tipo: novo
+      publico: [equipe]
+      texto: >
+        Diário de classe com notas, médias configuráveis por escola, frequência, fechamento de período
+        e boletim; funciona sem internet para professores, com envio automático quando a conexão volta.
+    - tipo: novo
+      publico: [equipe, familia]
+      texto: >
+        Avisos da escola e da turma com confirmação de leitura, mensagens entre escola e famílias,
+        autorizações, calendário escolar com feriados e notificações por e-mail e no celular.
+    - tipo: novo
+      publico: [equipe]
+      texto: >
+        Envio e aprovação de provas com fila de impressão, linha do tempo do aluno, anotações com
+        histórico de alterações, rematrícula em lote e histórico escolar em PDF.
+    - tipo: novo
+      publico: [equipe, familia]
+      texto: >
+        Meus dados: veja e baixe os seus dados, peça correção ou exclusão e acompanhe o pedido.
+        A política de privacidade e os termos de uso ficam sempre no rodapé.
+    - tipo: seguranca
+      publico: [equipe]
+      texto: >
+        Verificação em duas etapas para direção e coordenação, limite de tentativas de entrada,
+        dados sensíveis cifrados e cópias de segurança cifradas com teste de restauração.

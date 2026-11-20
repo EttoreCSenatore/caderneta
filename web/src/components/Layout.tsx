@@ -1,4 +1,4 @@
-import {NavLink, Outlet} from 'react-router';
+import {NavLink, Outlet, useLocation} from 'react-router';
 import {useQuery, useQueryClient} from '@tanstack/react-query';
 import {useEffect, useState} from 'react';
 import {api} from '../lib/api';
@@ -7,6 +7,7 @@ import {NOME_PAPEL} from '../lib/formato';
 import {descartar, enviarFila, iniciarOffline, limparOffline, useOffline} from '../lib/offlineApp';
 import type {Papel} from '../lib/tipos';
 import {Icone} from './icones';
+import {useNovidades, useVersaoVista} from '../lib/novidades';
 import {Avatar} from './ui';
 
 type Item = {to: string; rotulo: string; icone: keyof typeof Icone};
@@ -95,6 +96,29 @@ function TrocaPerfil() {
       ))}
     </select>
   );
+}
+
+/** Aviso de versão nova: aparece até a pessoa abrir as Novidades ou dispensar. */
+function AvisoVersao() {
+  const q = useNovidades();
+  const {vista, marcar} = useVersaoVista();
+  const {pathname} = useLocation();
+  const atual = q.data?.versao_atual;
+  if (!atual || vista === atual || pathname === '/novidades') return null;
+  return (
+    <div className="aviso" role="region" aria-label="Versão nova" style={{marginBottom: '1rem', background: 'var(--azul-claro)', border: '1px solid var(--borda)'}}>
+      <div style={{flex: 1}}>
+        <strong>Versão {atual}:</strong> <NavLink to="/novidades">veja o que mudou</NavLink>.
+      </div>
+      <button className="botao secundario pequeno" onClick={() => marcar(atual)} aria-label="Dispensar aviso de versão nova">Dispensar</button>
+    </div>
+  );
+}
+
+function VersaoRodape() {
+  const q = useNovidades();
+  if (!q.data) return null;
+  return <NavLink to="/novidades" className="suave pequeno" style={{color: 'inherit'}}>Caderneta {q.data.versao_atual}</NavLink>;
 }
 
 type EventoInstalar = Event & {prompt: () => Promise<void>; userChoice: Promise<{outcome: string}>};
@@ -249,9 +273,11 @@ export function Layout() {
             </div>
           </div>
           <div className="suave pequeno">{perfil.escola}</div>
+          <VersaoRodape />
           <TrocaPerfil />
           <div className="rodape-legal suave">
             <NavLink to="/meus-dados">Meus dados</NavLink>
+            <NavLink to="/novidades">Novidades</NavLink>
             <a href="/privacidade" target="_blank" rel="noreferrer">Privacidade</a>
             <a href="/termos" target="_blank" rel="noreferrer">Termos</a>
           </div>
@@ -278,6 +304,7 @@ export function Layout() {
             <TrocaPerfil />
             <NavLink to="/conta" className="botao secundario pequeno">Minha conta</NavLink>
           </div>
+          <AvisoVersao />
           <InstalarApp />
           <FaixaOffline />
           <Outlet />

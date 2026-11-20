@@ -14,6 +14,8 @@ cabecalho() { $CURL -D - -o /dev/null "$1" | tr -d '\r' | grep -i "^$2:" | head 
 [ "$(codigo "$BASE/")" = "200" ] && ok "site responde" || ruim "site não responde 200"
 [ "$(codigo "$BASE/qualquer/rota")" = "200" ] && ok "rotas do app caem no index" || ruim "fallback do app web"
 $CURL "$BASE/api/saude" | grep -q '"ok":true' && ok "API saudável" || ruim "API não saudável"
+versao=$($CURL "$BASE/api/saude" | sed -n 's/.*"versao":"\([0-9.]*\)".*/\1/p')
+[ -n "$versao" ] && ok "versão $versao no ar" || ruim "API não informa a versão"
 [ "$(codigo "$BASE/api/docs")" = "404" ] && ok "documentação da API desligada" || ruim "documentação da API está acessível"
 [ "$(codigo -X POST -H 'Content-Type: application/json' -d '{}' "$BASE/api/auth/login")" = "403" ] && ok "CSRF: POST sem cabeçalho é recusado" || ruim "CSRF não recusou"
 cabecalho "$BASE/" "strict-transport-security" | grep -q "max-age" && ok "HSTS no site" || ruim "sem HSTS no site"

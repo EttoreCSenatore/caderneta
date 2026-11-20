@@ -43,6 +43,7 @@ const sidebars: SidebarsConfig = {
         'tecnico/documentos-de-conformidade',
         'tecnico/pacote-juridico',
         'tecnico/implantacao',
+        'tecnico/versoes',
         'tecnico/desenvolvimento',
       ],
     },
