@@ -19,7 +19,7 @@ adicionados às páginas de funcionalidade.
 | **M6: Histórico e anotações** | Rematrícula em lote, linha do tempo, anotações versionadas, histórico escolar em PDF | ✅ Concluído |
 | **M7: App de celular** | PWA refinada, offline para notas e chamada (lojas ficam para depois do piloto) | ✅ Concluído |
 | **M8: Conformidade e segurança** | Revisão geral de segurança, licenças e adequação à LGPD e à legislação aplicável, com validação jurídica | Código e documentação prontos; falta o parecer jurídico e o teste de intrusão |
-| **MO: Operação e manutenção** | Cadeia de suprimentos, arquivos do repositório, versões e Novidades no app, avisos de operação, testes de migrations e de cobertura, ferramentas de dados de teste (feito antes do piloto) | Planejado |
+| **MO: Operação e manutenção** | Cadeia de suprimentos, arquivos do repositório, versões e Novidades no app, avisos de operação, testes de migrations e de cobertura, ferramentas de dados de teste (feito antes do piloto) | Em andamento |
 | **M9: Piloto** | Deploy de produção, backups, piloto com uma escola (só começa com o M8 aprovado) | Em preparação |
 
 ```mermaid
@@ -236,7 +236,7 @@ Veja [Modo offline](./funcionalidades/offline.md).
 
 Ideias adaptadas de outro sistema open source de gestão, o [Kaladrius](https://github.com/facchini-miguel/kaladrius) (clínicas, Apache 2.0). O foco é manter a Caderneta segura e fácil de atualizar depois que ela estiver em uso. Cada passo é um PR, na ordem abaixo.
 
-- [ ] **MO.1 Cadeia de suprimentos** ([#37](https://github.com/EttoreCSenatore/caderneta/issues/37)): Dependabot para Python, os dois projetos npm, GitHub Actions e imagens Docker, com espera de 7 dias para versões novas (correções de segurança vêm na hora) e PRs agrupados; Actions fixadas pelo commit; imagens fixadas pelo digest, com teste que exige o mesmo Postgres no desenvolvimento e na produção
+- [x] **MO.1 Cadeia de suprimentos** ([#37](https://github.com/EttoreCSenatore/caderneta/issues/37)): Dependabot para Python, os dois projetos npm, GitHub Actions e imagens Docker, com espera de 7 dias para versões novas (correções de segurança vêm na hora) e PRs agrupados; Actions fixadas pelo commit; imagens fixadas pelo digest, com teste que exige o mesmo Postgres no desenvolvimento e na produção
 - [ ] **MO.2 Arquivos do repositório** ([#38](https://github.com/EttoreCSenatore/caderneta/issues/38)): `SECURITY.md` (como reportar uma falha), `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `CODEOWNERS` e `NOTICE` (o nome e o logo não fazem parte da licença)
 - [ ] **MO.3 Versões e Novidades** ([#39](https://github.com/EttoreCSenatore/caderneta/issues/39)): um `releases.yaml` como fonte única; versão no rodapé e em `/api/saude`; página Novidades no app e aviso "versão nova, veja o que mudou"; tag e release no GitHub geradas do mesmo arquivo; página de versionamento na documentação
 - [ ] **MO.4 Avisos de operação** ([#40](https://github.com/EttoreCSenatore/caderneta/issues/40)): cada backup fica registrado no banco; a direção e o responsável de TI veem uma faixa quando o último backup tem mais de 26 horas ou quando disco ou memória do servidor chegam ao limite (cobre parte da lacuna T35)

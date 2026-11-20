@@ -19,7 +19,7 @@ added to the feature pages.
 | **M6: History and notes** | Bulk re-enrollment, timeline, versioned notes, school history as PDF | ✅ Done |
 | **M7: Mobile app** | Refined PWA, offline for grades and roll call (app stores left for after the pilot) | ✅ Done |
 | **M8: Compliance and security** | General review of security, licenses and compliance with the LGPD and applicable law, with legal validation | Code and documentation ready; the legal opinion and the penetration test are missing |
-| **MO: Operations and maintenance** | Supply chain, repository files, versions and What's new in the app, operations warnings, migration and coverage tests, test-data tools (done before the pilot) | Planned |
+| **MO: Operations and maintenance** | Supply chain, repository files, versions and What's new in the app, operations warnings, migration and coverage tests, test-data tools (done before the pilot) | In progress |
 | **M9: Pilot** | Production deployment, backups, pilot with one school (only starts with M8 approved) | Being prepared |
 
 ```mermaid
@@ -236,7 +236,7 @@ See [Offline mode](./funcionalidades/offline.md).
 
 Ideas adapted from another open-source management system, [Kaladrius](https://github.com/facchini-miguel/kaladrius) (clinics, Apache 2.0). The focus is keeping Caderneta secure and easy to update once it is in use. Each step is one PR, in the order below.
 
-- [ ] **MO.1 Supply chain** ([#37](https://github.com/EttoreCSenatore/caderneta/issues/37)): Dependabot for Python, both npm projects, GitHub Actions and Docker images, with a 7-day wait for new versions (security fixes come right away) and grouped PRs; Actions pinned to a commit; images pinned by digest, with a test requiring the same Postgres in development and production
+- [x] **MO.1 Supply chain** ([#37](https://github.com/EttoreCSenatore/caderneta/issues/37)): Dependabot for Python, both npm projects, GitHub Actions and Docker images, with a 7-day wait for new versions (security fixes come right away) and grouped PRs; Actions pinned to a commit; images pinned by digest, with a test requiring the same Postgres in development and production
 - [ ] **MO.2 Repository files** ([#38](https://github.com/EttoreCSenatore/caderneta/issues/38)): `SECURITY.md` (how to report a flaw), `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `CODEOWNERS` and `NOTICE` (the name and logo are not part of the license)
 - [ ] **MO.3 Versions and What's new** ([#39](https://github.com/EttoreCSenatore/caderneta/issues/39)): one `releases.yaml` as the single source; version in the footer and in `/api/saude`; What's new page in the app and a "new version, see what changed" notice; GitHub tag and release generated from the same file; versioning page in the documentation
 - [ ] **MO.4 Operations warnings** ([#40](https://github.com/EttoreCSenatore/caderneta/issues/40)): every backup is recorded in the database; the school management and the IT person see a banner when the last backup is older than 26 hours or when the server's disk or memory reach the limit (covers part of gap T35)

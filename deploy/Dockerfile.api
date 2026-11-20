@@ -1,5 +1,5 @@
 # Imagem da API e do worker (a mesma): python -m app.cli notificar roda aqui também.
-FROM python:3.13-slim
+FROM python:3.13-slim@sha256:e48f59cdba69a3cbd9ed2cf0f348d90d45a8d350d98134cf1070bc106ee9ed90
 ENV PYTHONUNBUFFERED=1 PIP_NO_CACHE_DIR=1 PIP_DISABLE_PIP_VERSION_CHECK=1
 RUN useradd --create-home --uid 10001 caderneta \
  && mkdir -p /data/storage && chown -R caderneta /data

@@ -11,6 +11,7 @@ An internal review, done by reading the code, automatic tools and tests. It **do
 | Topic | Result |
 |---|---|
 | **Dependencies** | `pip-audit` and `npm audit` with no known vulnerabilities; they run in CI on every change. CI generates the **SBOM** (CycloneDX) of the API and the web app as an artifact |
+| **Supply chain** | **Dependabot** proposes updates in grouped PRs, with a 7-day wait for new versions (security fixes arrive right away). **Actions** are pinned to a commit and **Docker images** by digest; `scripts/checar-fixacao.py` fails CI if something comes in unpinned or if the same image differs between CI, development and production |
 | **Static analysis** | `ruff` with security rules (`S`, Bandit style) with no findings; no SQL built from text with user data (everything through the ORM or parameters) |
 | **Secrets in the repository** | No `.env` file, key or token versioned. The demo values (seed password and 2FA secret) are fictitious and exist only in the local environment |
 | **Authentication** | Argon2id passwords; constant time even for a non-existent e-mail; progressive lockout per account; session with an opaque token (only the hash in the database), `HttpOnly`, `SameSite=Lax` cookie and `Secure` mandatory in production; 2FA mandatory for staff |
@@ -49,7 +50,7 @@ An internal review, done by reading the code, automatic tools and tests. It **do
 | A03 Injection | ORM and parameters; no `ruff S` findings |
 | A04 Insecure design | Privacy by design; rate limits added |
 | A05 Security misconfiguration | Production requires key, ClamAV, secure cookie and absolute path; API documentation off; the app's Caddy sends the headers |
-| A06 Vulnerable components | `pip-audit` and `npm audit` in CI, SBOM and license audit |
+| A06 Vulnerable components | `pip-audit` and `npm audit` in CI, Dependabot, SBOM and license audit |
 | A07 Authentication failures | Lockout, 2FA, per-IP limit, no code reuse. Missing: weak-password list and backup codes |
 | A08 Software and data integrity | Dependencies pinned by lock; history issued with a verification code |
 | A09 Logging and monitoring failures | Audit of sensitive actions and login. Check script ready; to be configured on the hosting (M9) |

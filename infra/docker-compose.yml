@@ -4,7 +4,7 @@ name: caderneta-dev
 
 services:
   db:
-    image: postgres:17-alpine
+    image: postgres:17-alpine@sha256:526f86d93c6ea08fd3f1fe5605650cacc781b2c6013169a0ad8f42c7d3d84f32
     environment:
       POSTGRES_USER: caderneta_owner
       POSTGRES_PASSWORD: ${OWNER_DB_PASSWORD:-dev-owner}
@@ -21,7 +21,7 @@ services:
       retries: 20
 
   mail:
-    image: axllent/mailpit:v1.27
+    image: axllent/mailpit:v1.27@sha256:e22dce5b36f93c77082e204a3942fb6b283b7896e057458400a4c88344c3df68
     ports:
       - "127.0.0.1:8025:8025"
       - "127.0.0.1:1025:1025"
@@ -29,7 +29,7 @@ services:
   # Antivírus (opcional em desenvolvimento): docker compose --profile antivirus up -d clamav
   # e rode a API com CADERNETA_ANTIVIRUS=clamav. A primeira subida baixa a base de vírus (alguns minutos).
   clamav:
-    image: clamav/clamav:1.4
+    image: clamav/clamav:1.4@sha256:b7357e2c1c59480628839df301b0d27923561389b36cf341911e1dd9e02cdd05
     profiles: ["antivirus"]
     ports:
       - "127.0.0.1:3310:3310"
