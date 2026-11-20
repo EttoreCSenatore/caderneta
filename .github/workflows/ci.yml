@@ -131,6 +131,8 @@ jobs:
         run: python3 scripts/checar-fixacao.py
       - name: Imagem da API e do worker
         run: docker build -f deploy/Dockerfile.api -t caderneta-api:ci .
+      - name: A imagem da API acha a versão (releases.yaml)
+        run: docker run --rm caderneta-api:ci python -c "from app import versoes; print(versoes.versao_atual())"
       - name: Imagem do site (build do app + Caddy)
         run: docker build -f deploy/Dockerfile.web -t caderneta-web:ci .
       - name: Valida o compose de produção
