@@ -118,6 +118,15 @@ Opcionais em desenvolvimento (em produção o antivírus é obrigatório):
 | `CADERNETA_CONVERSOR=libreoffice` | converte DOCX em PDF no envio (precisa do `soffice` instalado) |
 | `CADERNETA_RETENCAO_PEDIDOS_DIAS`, `..._RASCUNHO_DIAS`, `..._ANEXOS_DIAS` | prazos de eliminação (365, 90, 365) |
 
+## Migrations do banco
+
+Toda mudança no banco é uma migration do Alembic em `api/migrations/versions/` (`alembic revision -m "o que muda"`), numerada em sequência e com `upgrade()` **e** `downgrade()`.
+
+- **Ida e volta:** `api/tests/test_migracoes.py` sobe as migrations uma a uma guardando o esquema de cada versão (tabelas, colunas, índices, restrições, RLS, políticas, funções, tipos, gatilhos e permissões do papel do app), depois desce uma a uma e compara a cada passo. Um `downgrade()` que esquece algo reprova o teste e diz o que sobrou ou sumiu.
+- **Relatório no PR:** quando um PR mexe em `api/migrations/`, o workflow *Migrations* comenta no PR o SQL de cada migration nova (modo offline do Alembic, sem banco) e aponta o que merece atenção: apagar tabela ou coluna, apagar linhas, mudar tipo, renomear, exigir valor, retirar permissão, desligar RLS, e migrations já publicadas que foram alteradas. Localmente: `python3 scripts/relatorio-migracoes.py --base origin/main --saida relatorio.md`.
+- **Migration publicada não muda:** o `upgrade()` dela já rodou em bancos reais. Corrija com uma migration nova. Só o `downgrade()` pode ser consertado, como foi feito na 0001 (as políticas de RLS agora saem antes das tabelas).
+- **SQL sem rodar:** `alembic upgrade 0016:0017 --sql` imprime o SQL de um passo.
+
 ## Documentação em dois idiomas
 
 O site de documentação é **bilíngue**: o português fica em `website/docs/` e o **inglês** em `website/i18n/en/docusaurus-plugin-content-docs/current/` (mesmos nomes de arquivo). **Toda mudança de documentação atualiza as duas versões.** O CI roda `python3 scripts/checar-traducao.py`, que reprova se faltar uma página em inglês ou se a estrutura (títulos, blocos de código, imagens) divergir. Para ver o inglês localmente: `cd website && npm run build && npm run serve` (o seletor de idioma fica no topo). Os textos legais do app e os artefatos de `.lgpd/` ficam **só em português**, porque aplicam a lei brasileira.

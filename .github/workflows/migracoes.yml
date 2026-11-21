@@ -1,0 +1,53 @@
+# Relatório de migrations no PR (MO.5): o SQL de cada migration nova e as operações que apagam ou reescrevem dados.
+# Um comentário só, atualizado a cada push, e o mesmo texto no resumo da execução. Não conecta em banco nenhum.
+# Fica fora do ci.yml de propósito: só este job escreve no PR, e ele não instala nada além da própria API.
+name: Migrations
+
+on:
+  pull_request:
+    paths:
+      - "api/migrations/**"
+
+permissions:
+  contents: read
+  pull-requests: write  # o comentário do relatório
+
+jobs:
+  relatorio:
+    name: Relatório de migrations
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 0  # a branch base, para achar as migrations novas e as alteradas
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: api/pyproject.toml
+      - run: pip install -e api
+      - name: Relatório
+        run: python3 scripts/relatorio-migracoes.py --base "origin/$GITHUB_BASE_REF" --saida relatorio.md
+      - name: Resumo da execução
+        if: always() && hashFiles('relatorio.md') != ''
+        run: cat relatorio.md >> "$GITHUB_STEP_SUMMARY"
+      # PRs do Dependabot e de forks recebem token só de leitura: o relatório fica no resumo da execução.
+      - name: Comentário no PR
+        if: >-
+          hashFiles('relatorio.md') != ''
+          && github.event.pull_request.head.repo.full_name == github.repository
+          && github.actor != 'dependabot[bot]'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          marca='<!-- relatorio-migracoes -->'
+          { echo "$marca"; head -c 60000 relatorio.md; } > corpo.md
+          id=$(gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments" --paginate \
+            --jq ".[] | select(.user.login == \"github-actions[bot]\" and (.body | startswith(\"$marca\"))) | .id" | head -1)
+          if [ -n "$id" ]; then
+            gh api -X PATCH "repos/$GITHUB_REPOSITORY/issues/comments/$id" -F body=@corpo.md >/dev/null
+          else
+            gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments" -F body=@corpo.md >/dev/null
+          fi
