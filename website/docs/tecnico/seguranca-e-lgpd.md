@@ -34,7 +34,7 @@ O [M8 do roadmap](../roadmap.md) reúne a revisão geral de segurança, licença
 - **Retenção:** notificações, anexos, rascunhos, anotações removidas, aparelhos de push e **desligados** têm prazos e apagamento automático, com aviso antes.
 - **Direitos do titular:** baixar os próprios dados na hora, pedidos com prazo de 15 dias e fila da direção.
 - **Transparência:** política de privacidade e termos públicos, ciência registrada por versão, encarregado informado no app.
-- **Backups:** cifrados, com teste de restauração que confere as chaves.
+- **Backups:** cifrados, com teste de restauração que confere as chaves; cada execução fica registrada e a direção vê um aviso se o backup atrasar, o teste vencer ou o disco ou a memória encherem.
 - **Offline do professor:** cofre cifrado no aparelho, apagado ao sair e em 7 dias sem conexão.
 
 Detalhes do login em [Acesso, convites e 2FA](../funcionalidades/acesso-e-convites.md).
@@ -69,6 +69,6 @@ Detalhes do login em [Acesso, convites e 2FA](../funcionalidades/acesso-e-convit
 ### Desenvolvimento
 
 - Dependências auditadas no CI (`pip-audit`, `npm audit`), auditoria de licenças, SBOM e build das imagens de produção. Dependabot com espera de 7 dias; Actions fixadas pelo commit e imagens pelo digest.
-- Testes automatizados de permissão: para cada perfil, o que **não** pode ver.
+- Testes automatizados de permissão: para cada perfil, o que **não** pode ver. Cobertura mínima na CI (API 93%) e teste de ida e volta de todas as migrations, com relatório do SQL no PR.
 - Dados fictícios em todos os ambientes que não sejam produção; nunca copiar produção para dev.
 - **Falha de segurança:** reporte pelo canal privado do GitHub (aba Security, *Report a vulnerability*), nunca em issue pública. Prazos, escopo e regras de teste de boa-fé no [SECURITY.md](https://github.com/EttoreCSenatore/caderneta/blob/main/SECURITY.md). Como contribuir: [CONTRIBUTING.md](https://github.com/EttoreCSenatore/caderneta/blob/main/CONTRIBUTING.md).

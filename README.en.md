@@ -3,7 +3,7 @@
 **Caderneta** is a lightweight, free-software school platform for Brazilian schools: grades and averages, attendance, notices and messages to families, calendar, exam printing, the student file and school history. It is built to be **private by default** (children's and health data) and to run on a small server.
 
 - Documentation (Portuguese and English): <https://ettorecsenatore.github.io/caderneta/> (English: <https://ettorecsenatore.github.io/caderneta/en/>)
-- Status: milestones M1 to M7 are done; M8 (security and compliance) has its code and documentation ready and is waiting for a lawyer's opinion and a penetration test; M9 (pilot) is being prepared. See the [roadmap](https://ettorecsenatore.github.io/caderneta/en/docs/roadmap).
+- Status: version **0.10.1** ([releases](https://github.com/EttoreCSenatore/caderneta/releases)). Milestones M1 to M7 are done; M8 (security and compliance) has its code and documentation ready and is waiting for a lawyer's opinion and a penetration test; MO (operations and maintenance) is done except the public demo, which depends on hosting; M9 (pilot) is being prepared. See the [roadmap](https://ettorecsenatore.github.io/caderneta/en/docs/roadmap).
 
 ## Quick start
 

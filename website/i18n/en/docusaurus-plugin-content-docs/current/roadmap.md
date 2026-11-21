@@ -19,7 +19,7 @@ added to the feature pages.
 | **M6: History and notes** | Bulk re-enrollment, timeline, versioned notes, school history as PDF | ✅ Done |
 | **M7: Mobile app** | Refined PWA, offline for grades and roll call (app stores left for after the pilot) | ✅ Done |
 | **M8: Compliance and security** | General review of security, licenses and compliance with the LGPD and applicable law, with legal validation | Code and documentation ready; the legal opinion and the penetration test are missing |
-| **MO: Operations and maintenance** | Supply chain, repository files, versions and What's new in the app, operations warnings, migration and coverage tests, test-data tools (done before the pilot) | In progress |
+| **MO: Operations and maintenance** | Supply chain, repository files, versions and What's new in the app, operations warnings, migration and coverage tests, test-data tools (done before the pilot) | MO.1 to MO.7 done (v0.10.1); the public demo is left, which depends on hosting |
 | **M9: Pilot** | Production deployment, backups, pilot with one school (only starts with M8 approved) | Being prepared |
 
 ```mermaid
@@ -243,7 +243,7 @@ Ideas adapted from another open-source management system, [Kaladrius](https://gi
 - [x] **MO.5 Migrations** ([#41](https://github.com/EttoreCSenatore/caderneta/issues/41)): CI test that applies, reverts and applies again; a report on the PR with the SQL of each new migration and the operations that delete data
 - [x] **MO.6 Test data** ([#42](https://github.com/EttoreCSenatore/caderneta/issues/42)): a command that deletes only the demo data (never a real school) and a command that simulates the current week's activity (lessons, roll calls, grades), so the demo does not look idle
 - [x] **MO.7 Test coverage** ([#43](https://github.com/EttoreCSenatore/caderneta/issues/43)): measure API and web coverage and fail CI below a target set from today's number
-- [ ] **MO.8 Public demo** ([#44](https://github.com/EttoreCSenatore/caderneta/issues/44)): a page with the accounts for each role and the made-up data recreated daily; **depends on hosting** (done together with M9)
+- [ ] **MO.8 Public demo** ([#44](https://github.com/EttoreCSenatore/caderneta/issues/44)): a page with the accounts for each role and the made-up data recreated daily; **depends on hosting** (done together with M9). Before that, the demo's school year must follow today's date (today it is fixed at 2026)
 
 ## M9: Pilot (being prepared)
 
