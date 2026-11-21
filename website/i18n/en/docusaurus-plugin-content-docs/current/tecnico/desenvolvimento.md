@@ -66,6 +66,14 @@ The seed creates the fictitious school **Colégio Horizonte (demonstração)** w
 password are documented at the top of `api/app/seed.py`. The principal's office and coordination use 2FA:
 `python -m app.seed --codigo` shows the current code. The seed refuses to run with `CADERNETA_ENV=prod`.
 
+```bash
+python -m app.seed --simular   # brings the demo up to today
+python -m app.seed --remover   # deletes only the demo
+```
+
+- **`--simular`:** adds what is missing since the last seed: lessons and roll calls up to today in the open term, the term's exams whose dates have passed (with grades) and a notice for the week (no e-mail or push). It can run every day from cron: running it again duplicates nothing. It does not run in production.
+- **`--remover`:** deletes the demo school and the `@demo.caderneta.dev` accounts, and nothing else. If the demo school has any account outside that domain, it looks real and the command refuses without deleting anything. In production it requires `--confirmar`.
+
 ## Creating a real school
 
 ```bash
