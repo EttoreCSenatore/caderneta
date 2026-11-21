@@ -11,6 +11,8 @@ build/
 __pycache__/
 *.egg-info/
 .pytest_cache/
+.coverage
+coverage/
 .ruff_cache/
 dist/
 dev-dist/

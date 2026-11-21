@@ -1,3 +1,4 @@
+/// <reference types="vitest/config" />
 import react from '@vitejs/plugin-react';
 import {defineConfig} from 'vite';
 import {VitePWA} from 'vite-plugin-pwa';
@@ -47,4 +48,15 @@ export default defineConfig({
     proxy: {'/api': 'http://127.0.0.1:8000'},
   },
   build: {sourcemap: false},
+  test: {
+    // Cobertura (MO.7): só a lógica de src/lib; as telas são exercitadas pelos testes de ponta a ponta (Playwright).
+    // Metas fixadas um pouco abaixo do número medido: subir quando novos testes entrarem, nunca baixar.
+    coverage: {
+      provider: 'v8',
+      include: ['src/lib/**'],
+      exclude: ['src/lib/**/*.test.*'],
+      reporter: ['text-summary', 'text'],
+      thresholds: {statements: 39, branches: 43, functions: 30, lines: 42},
+    },
+  },
 });

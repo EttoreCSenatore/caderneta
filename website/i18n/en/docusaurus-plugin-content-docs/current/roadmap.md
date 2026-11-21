@@ -242,7 +242,7 @@ Ideas adapted from another open-source management system, [Kaladrius](https://gi
 - [x] **MO.4 Operations warnings** ([#40](https://github.com/EttoreCSenatore/caderneta/issues/40)): every backup is recorded in the database; the school management and the IT person see a banner when the last backup is older than 26 hours or when the server's disk or memory reach the limit (covers part of gap T35)
 - [x] **MO.5 Migrations** ([#41](https://github.com/EttoreCSenatore/caderneta/issues/41)): CI test that applies, reverts and applies again; a report on the PR with the SQL of each new migration and the operations that delete data
 - [x] **MO.6 Test data** ([#42](https://github.com/EttoreCSenatore/caderneta/issues/42)): a command that deletes only the demo data (never a real school) and a command that simulates the current week's activity (lessons, roll calls, grades), so the demo does not look idle
-- [ ] **MO.7 Test coverage** ([#43](https://github.com/EttoreCSenatore/caderneta/issues/43)): measure API and web coverage and fail CI below a target set from today's number
+- [x] **MO.7 Test coverage** ([#43](https://github.com/EttoreCSenatore/caderneta/issues/43)): measure API and web coverage and fail CI below a target set from today's number
 - [ ] **MO.8 Public demo** ([#44](https://github.com/EttoreCSenatore/caderneta/issues/44)): a page with the accounts for each role and the made-up data recreated daily; **depends on hosting** (done together with M9)
 
 ## M9: Pilot (being prepared)

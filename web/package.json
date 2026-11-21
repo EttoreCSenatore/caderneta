@@ -2,7 +2,7 @@
   "name": "caderneta-web",
   "private": true,
   "license": "AGPL-3.0-or-later",
-  "version": "0.10.0",
+  "version": "0.10.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,6 +10,7 @@
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "test:cobertura": "vitest run --coverage",
     "e2e:offline": "node scripts/testar-offline.mjs",
     "screenshots": "node scripts/screenshots.mjs"
   },
@@ -25,6 +26,7 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.3.0",
+    "@vitest/coverage-v8": "~5.1.1",
     "playwright": "^1.65.1",
     "typescript": "^7.0.2",
     "vite": "^8.3.8",

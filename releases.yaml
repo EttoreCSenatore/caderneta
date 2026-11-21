@@ -7,6 +7,16 @@
 # tipo:    novo | melhoria | correcao | seguranca
 # publico: equipe (direção, coordenação, professores) e/ou familia (responsáveis e alunos)
 
+- versao: 0.10.1
+  data: 2026-11-21
+  titulo: Links mais seguros nos textos legais
+  itens:
+    - tipo: seguranca
+      publico: [equipe, familia]
+      texto: >
+        Os links da política de privacidade e dos termos de uso só abrem páginas do próprio app ou
+        sites com conexão segura.
+
 - versao: 0.10.0
   data: 2026-11-20
   titulo: Avisos da instalação para a direção
