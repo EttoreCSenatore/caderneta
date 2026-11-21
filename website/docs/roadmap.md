@@ -242,7 +242,7 @@ Ideias adaptadas de outro sistema open source de gestão, o [Kaladrius](https://
 - [x] **MO.4 Avisos de operação** ([#40](https://github.com/EttoreCSenatore/caderneta/issues/40)): cada backup fica registrado no banco; a direção e o responsável de TI veem uma faixa quando o último backup tem mais de 26 horas ou quando disco ou memória do servidor chegam ao limite (cobre parte da lacuna T35)
 - [x] **MO.5 Migrations** ([#41](https://github.com/EttoreCSenatore/caderneta/issues/41)): teste de aplicar, desfazer e aplicar de novo na CI; relatório no PR com o SQL de cada migration nova e as operações que apagam dados
 - [x] **MO.6 Dados de teste** ([#42](https://github.com/EttoreCSenatore/caderneta/issues/42)): comando que apaga só os dados de demonstração (nunca uma escola real) e comando que simula a atividade da semana atual (aulas, chamadas, notas), para a demonstração não parecer parada
-- [ ] **MO.7 Cobertura de testes** ([#43](https://github.com/EttoreCSenatore/caderneta/issues/43)): medir a cobertura da API e do web e reprovar a CI abaixo de uma meta fixada a partir do número atual
+- [x] **MO.7 Cobertura de testes** ([#43](https://github.com/EttoreCSenatore/caderneta/issues/43)): medir a cobertura da API e do web e reprovar a CI abaixo de uma meta fixada a partir do número atual
 - [ ] **MO.8 Demonstração pública** ([#44](https://github.com/EttoreCSenatore/caderneta/issues/44)): página com as contas de cada papel e os dados fictícios recriados todo dia; **depende da hospedagem** (feito junto com o M9)
 
 ## M9: Piloto (em preparação)

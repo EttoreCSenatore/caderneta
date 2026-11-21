@@ -80,7 +80,8 @@ jobs:
       - run: pip install -e '.[dev]'
       - run: ruff check app tests
       - run: ruff format --check app tests
-      - run: pytest -p no:warnings
+      - name: Testes (com cobertura mínima, MO.7)
+        run: pytest -p no:warnings --cov --cov-report=term-missing:skip-covered
       - run: pip-audit --skip-editable
       - name: SBOM da API (CycloneDX)
         run: pip-audit --skip-editable -f cyclonedx-json -o ../sbom-api.cdx.json
@@ -108,7 +109,8 @@ jobs:
           cache-dependency-path: web/package-lock.json
       - run: npm ci
       - run: npm run typecheck
-      - run: npm test
+      - name: Testes (com cobertura mínima, MO.7)
+        run: npm run test:cobertura
       - run: npm audit --audit-level=high
       - name: SBOM do app web (CycloneDX)
         run: npm sbom --omit=dev --sbom-format cyclonedx > ../sbom-web.cdx.json

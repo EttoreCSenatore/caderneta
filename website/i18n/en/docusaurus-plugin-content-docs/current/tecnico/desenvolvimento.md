@@ -26,6 +26,7 @@ python -m venv .venv && .venv/bin/pip install -e '.[dev]'
 .venv/bin/python -m app.seed         # fictitious demo school
 .venv/bin/uvicorn app.main:app --reload --port 8000
 .venv/bin/pytest                     # tests (use the caderneta_test database)
+.venv/bin/pytest --cov               # with coverage: fails below the target
 ```
 
 Interactive API documentation at `http://localhost:8000/api/docs` (off in production).
@@ -37,8 +38,11 @@ cd web
 npm ci
 npm run dev       # http://localhost:5173 (forwards /api to port 8000)
 npm test
+npm run test:cobertura   # with coverage: fails below the target
 npm run build
 ```
+
+**Minimum coverage (MO.7).** CI runs the tests with coverage and fails below the target. API: 93% of the lines in `app/` (measured: 94%), in `api/pyproject.toml`. Web: only the logic in `src/lib/` (the screens are exercised by the end-to-end tests), with targets of 39% of statements, 43% of branches, 30% of functions and 42% of lines (the measured values), in `web/vite.config.ts`. Targets only go up: when new tests raise coverage, raise the target in the same PR.
 
 ## Documentation screenshots
 

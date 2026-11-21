@@ -26,6 +26,7 @@ python -m venv .venv && .venv/bin/pip install -e '.[dev]'
 .venv/bin/python -m app.seed         # escola fictícia de demonstração
 .venv/bin/uvicorn app.main:app --reload --port 8000
 .venv/bin/pytest                     # testes (usam o banco caderneta_test)
+.venv/bin/pytest --cov               # com cobertura: reprova abaixo da meta
 ```
 
 Documentação interativa da API em `http://localhost:8000/api/docs` (desligada em produção).
@@ -37,8 +38,11 @@ cd web
 npm ci
 npm run dev       # http://localhost:5173 (repassa /api para a porta 8000)
 npm test
+npm run test:cobertura   # com cobertura: reprova abaixo da meta
 npm run build
 ```
+
+**Cobertura mínima (MO.7).** A CI roda os testes com cobertura e reprova abaixo da meta. API: 93% das linhas de `app/` (medido: 94%), em `api/pyproject.toml`. Web: só a lógica de `src/lib/` (as telas são exercitadas pelos testes de ponta a ponta), com metas de 39% das instruções, 43% dos desvios, 30% das funções e 42% das linhas (o medido), em `web/vite.config.ts`. As metas só sobem: quando novos testes elevarem a cobertura, suba a meta no mesmo PR.
 
 ## Screenshots da documentação
 

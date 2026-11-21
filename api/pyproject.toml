@@ -1,6 +1,6 @@
 [project]
 name = "caderneta-api"
-version = "0.10.0"
+version = "0.10.1"
 description = "Caderneta: API da plataforma escolar"
 license = "AGPL-3.0-or-later"
 requires-python = ">=3.13"
@@ -20,7 +20,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=8.4", "httpx>=0.28", "ruff>=0.14", "pip-audit>=2.9"]
+dev = ["pytest>=8.4", "pytest-cov>=7.0", "httpx>=0.28", "ruff>=0.14", "pip-audit>=2.9"]
 
 [build-system]
 requires = ["setuptools>=77"]
@@ -48,3 +48,10 @@ ignore = ["B008", "S101", "SIM108"]
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["S105", "S106", "S608", "E501"]
 "app/seed.py" = ["S105", "S106", "S311"]
+
+[tool.coverage.run]
+source = ["app"]
+
+[tool.coverage.report]
+# Meta (MO.7): fixada um ponto abaixo do medido (94%). Subir quando a cobertura subir, nunca baixar.
+fail_under = 93

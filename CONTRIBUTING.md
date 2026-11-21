@@ -17,7 +17,7 @@ Siga [Como rodar localmente](https://ettorecsenatore.github.io/caderneta/docs/te
 ## Regras do projeto
 
 - **Um assunto por PR.** A branch `main` é protegida: todo PR passa pela CI (lint, testes com Postgres real, auditoria de dependências e licenças, build das imagens) e é integrado com *squash*.
-- **Testes:** mudança de comportamento vem com teste. API: `cd api && .venv/bin/pytest`. Web: `cd web && npm run typecheck && npm test`.
+- **Testes:** mudança de comportamento vem com teste, e a CI reprova abaixo da cobertura mínima (API 93%; web, metas em `web/vite.config.ts`). As metas só sobem. API: `cd api && .venv/bin/pytest`. Web: `cd web && npm run typecheck && npm test`.
 - **Estilo:** `ruff check` e `ruff format` na API (linha de 120); TypeScript estrito no web.
 - **Isolamento entre escolas:** toda tabela nova com dados de uma escola precisa de `escola_id` e de política de Row-Level Security. O teste `test_diario.py` reprova tabela sem RLS.
 - **Dados pessoais (LGPD):** um PR que coleta um dado pessoal novo atualiza o mapa de dados e as lacunas em [`.lgpd/`](.lgpd/). Nunca use dados reais em testes, screenshots ou issues.
@@ -50,7 +50,7 @@ Follow [Running locally](https://ettorecsenatore.github.io/caderneta/en/docs/tec
 ### Project rules
 
 - **One topic per PR.** The `main` branch is protected: every PR goes through CI (lint, tests on real Postgres, dependency and license audit, image build) and is merged with *squash*.
-- **Tests:** a behavior change comes with a test. API: `cd api && .venv/bin/pytest`. Web: `cd web && npm run typecheck && npm test`.
+- **Tests:** a behavior change comes with a test, and CI fails below the minimum coverage (API 93%; web, targets in `web/vite.config.ts`). Targets only go up. API: `cd api && .venv/bin/pytest`. Web: `cd web && npm run typecheck && npm test`.
 - **Style:** `ruff check` and `ruff format` for the API (120-character lines); strict TypeScript for the web app.
 - **Isolation between schools:** every new table with a school's data needs `escola_id` and a Row-Level Security policy. `test_diario.py` fails a table without RLS.
 - **Personal data (LGPD):** a PR that collects a new kind of personal data updates the data map and the gaps in [`.lgpd/`](.lgpd/). Never use real data in tests, screenshots or issues.

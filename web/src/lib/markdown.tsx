@@ -11,7 +11,9 @@ function inline(t: string): ReactNode[] {
     if (m[1] !== undefined) partes.push(<strong key={m.index}>{m[1]}</strong>);
     else {
       const href = m[3];
-      partes.push(href.startsWith('/') || href.startsWith('https://') ? <a key={m.index} href={href}>{m[2]}</a> : m[2]);
+      // só rota do próprio app (/rota, nunca //outro-site) ou https: javascript:, data: e afins viram texto
+      const seguro = (href.startsWith('/') && !href.startsWith('//')) || href.startsWith('https://');
+      partes.push(seguro ? <a key={m.index} href={href}>{m[2]}</a> : m[2]);
     }
     i = m.index + m[0].length;
   }
