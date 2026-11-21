@@ -66,6 +66,14 @@ O seed cria a escola fictícia **Colégio Horizonte (demonstração)** com 136 a
 senha de demonstração estão documentadas no topo de `api/app/seed.py`. A direção e a coordenação usam 2FA:
 `python -m app.seed --codigo` mostra o código atual. O seed recusa rodar com `CADERNETA_ENV=prod`.
 
+```bash
+python -m app.seed --simular   # traz a demonstração até hoje
+python -m app.seed --remover   # apaga só a demonstração
+```
+
+- **`--simular`:** acrescenta o que falta desde o último seed: aulas e chamadas até hoje no bimestre aberto, as provas do bimestre cujas datas já passaram (com notas) e um aviso da semana (sem e-mail nem push). Pode rodar todo dia pelo cron: rodar de novo não duplica nada. Não roda em produção.
+- **`--remover`:** apaga a escola de demonstração e as contas `@demo.caderneta.dev`, e nada mais. Se a escola de demonstração tiver alguma conta de fora desse domínio, ela parece real e o comando recusa sem apagar nada. Em produção exige `--confirmar`.
+
 ## Criar uma escola de verdade
 
 ```bash

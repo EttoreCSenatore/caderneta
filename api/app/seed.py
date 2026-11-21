@@ -1,6 +1,8 @@
 """Dados de demonstração (escola fictícia) para desenvolvimento e screenshots.
 
     python -m app.seed            # apaga e recria a escola de demonstração
+    python -m app.seed --simular  # traz a demonstração até hoje (aulas, chamadas, provas, aviso da semana)
+    python -m app.seed --remover  # apaga só a demonstração (nunca uma escola real); em produção pede --confirmar
 
 Todos os nomes são gerados aleatoriamente e fictícios. Contas de demonstração (só em dev):
 senha `caderneta-demo` para todas; a equipe usa 2FA com o segredo DEMO_TOTP abaixo
@@ -10,7 +12,7 @@ senha `caderneta-demo` para todas; a equipe usa 2FA com o segredo DEMO_TOTP abai
 import random
 import sys
 import uuid
-from datetime import UTC, date, datetime, timedelta
+from datetime import UTC, date, datetime, time, timedelta
 from decimal import Decimal
 
 import pyotp
@@ -27,9 +29,11 @@ from app.models import (
     Atribuicao,
     Aula,
     Avaliacao,
+    Aviso,
     Convite,
     Disciplina,
     Escola,
+    EscopoAviso,
     Evento,
     FichaSaude,
     Frequencia,
@@ -635,8 +639,164 @@ def _seed_m2(db: Session, e: Escola, ano: AnoLetivo, rnd: random.Random) -> tupl
     return n_av, n_aulas
 
 
+DOMINIO_DEMO = "@demo.caderneta.dev"
+
+
+def _escola_demo(db: Session) -> Escola | None:
+    """A escola de demonstração, conferida: todo perfil dela é de conta do domínio de demonstração.
+
+    Uma escola real com o mesmo nome (ou com alguém de fora cadastrado nela) nunca é tocada.
+    """
+    e = db.scalars(select(Escola).where(Escola.nome == NOME_ESCOLA)).first()
+    if e is None:
+        return None
+    de_fora = db.scalar(
+        select(func.count())
+        .select_from(UsuarioPerfil)
+        .join(Usuario, Usuario.id == UsuarioPerfil.usuario_id)
+        .where(UsuarioPerfil.escola_id == e.id, ~Usuario.email.like(f"%{DOMINIO_DEMO}"))
+    )
+    if de_fora:
+        raise SystemExit(
+            f"'{NOME_ESCOLA}' tem {de_fora} conta(s) fora do domínio de demonstração: parece real. Nada feito."
+        )
+    return e
+
+
+def remover(confirmar: bool = False) -> dict[str, int]:
+    """Apaga só a escola de demonstração e as contas do domínio de demonstração (MO.6)."""
+    s = get_settings()
+    if s.env == "prod" and not confirmar:
+        raise SystemExit("Em produção, confirme com --confirmar (apaga só a escola de demonstração).")
+    engine = create_engine(s.owner_database_url)
+    with Session(engine) as db, db.begin():
+        e = _escola_demo(db)
+        escolas = db.execute(delete(Escola).where(Escola.id == e.id)).rowcount if e else 0
+        contas = db.execute(delete(Usuario).where(Usuario.email.like(f"%{DOMINIO_DEMO}"))).rowcount
+    print(f"Removido: {escolas} escola de demonstração e {contas} conta(s) de demonstração.")
+    return {"escolas": escolas, "contas": contas}
+
+
+def simular_semana(hoje: date | None = None) -> dict[str, int]:
+    """Traz a escola de demonstração até hoje: aulas e chamadas que faltam, provas do bimestre e o aviso da semana.
+
+    Pode rodar todo dia (cron): só acrescenta o que ainda não existe. Não roda em produção.
+    """
+    s = get_settings()
+    if s.env == "prod":
+        raise SystemExit("A simulação de atividade não roda em produção.")
+    hoje = hoje or date.today()
+    rnd = random.Random(hoje.toordinal())
+    engine = create_engine(s.owner_database_url)
+    n = {"aulas": 0, "avaliacoes": 0, "avisos": 0}
+    with Session(engine) as db, db.begin():
+        e = _escola_demo(db)
+        if e is None:
+            raise SystemExit("Não há escola de demonstração: rode antes `python -m app.seed`.")
+        periodo = db.scalars(
+            select(Periodo).where(
+                Periodo.escola_id == e.id, Periodo.inicio <= hoje, Periodo.fim >= hoje, Periodo.fechado.is_(False)
+            )
+        ).first()
+        if periodo is not None:
+            for a in db.scalars(select(Atribuicao).where(Atribuicao.escola_id == e.id)):
+                mats = list(db.scalars(select(Matricula).where(Matricula.turma_id == a.turma_id)))
+                ultima = db.scalar(select(func.max(Aula.data)).where(Aula.atribuicao_id == a.id))
+                d = max(periodo.inicio, (ultima or periodo.inicio - timedelta(days=1)) + timedelta(days=1))
+                while d <= hoje:
+                    if d.weekday() in (1, 3):
+                        aula = Aula(escola_id=e.id, atribuicao_id=a.id, data=d, quantidade=2 if d.weekday() == 1 else 1)
+                        db.add(aula)
+                        db.flush()
+                        n["aulas"] += 1
+                        for m in mats:
+                            r = rnd.random()
+                            if r < 0.04:
+                                db.add(
+                                    Frequencia(
+                                        escola_id=e.id, aula_id=aula.id, matricula_id=m.id, status=StatusPresenca.falta
+                                    )
+                                )
+                            elif r < 0.055:
+                                db.add(
+                                    Frequencia(
+                                        escola_id=e.id, aula_id=aula.id, matricula_id=m.id, status=StatusPresenca.atraso
+                                    )
+                                )
+                    d += timedelta(days=1)
+                existentes = set(
+                    db.scalars(
+                        select(Avaliacao.nome).where(
+                            Avaliacao.atribuicao_id == a.id, Avaliacao.periodo_id == periodo.id
+                        )
+                    )
+                )
+                for i, (nome, tipo, peso) in enumerate(
+                    [("Prova 1", "prova", 2), ("Trabalho", "trabalho", 1), ("Prova 2", "prova", 2)]
+                ):
+                    data_av = periodo.inicio + timedelta(days=20 + 18 * i)
+                    if nome in existentes or data_av > hoje:
+                        continue
+                    av = Avaliacao(
+                        escola_id=e.id,
+                        atribuicao_id=a.id,
+                        periodo_id=periodo.id,
+                        nome=nome,
+                        tipo=tipo,
+                        data=data_av,
+                        peso=Decimal(peso),
+                        nota_maxima=Decimal(10),
+                        publicada=False,
+                    )
+                    db.add(av)
+                    db.flush()
+                    n["avaliacoes"] += 1
+                    for m in mats:
+                        v = max(0.0, min(10.0, rnd.gauss(7.0, 1.6)))
+                        db.add(
+                            Nota(
+                                escola_id=e.id,
+                                avaliacao_id=av.id,
+                                matricula_id=m.id,
+                                valor=Decimal(str(round(v * 2) / 2)),
+                            )
+                        )
+        segunda = hoje - timedelta(days=hoje.weekday())
+        inicio_semana = datetime.combine(segunda, time(0), tzinfo=UTC)
+        tem_aviso = db.scalar(
+            select(func.count())
+            .select_from(Aviso)
+            .where(Aviso.escola_id == e.id, Aviso.titulo.like("Semana de %"), Aviso.publicar_em >= inicio_semana)
+        )
+        if not tem_aviso:
+            direcao = db.scalars(select(Usuario).where(Usuario.email == f"direcao{DOMINIO_DEMO}")).first()
+            db.add(
+                Aviso(
+                    escola_id=e.id,
+                    autor_id=direcao.id if direcao else None,
+                    escopo=EscopoAviso.escola,
+                    titulo=f"Semana de {segunda.strftime('%d/%m')}",
+                    corpo=(
+                        "Bom dia, famílias! Lembrem de conferir a agenda da semana no calendário. "
+                        "(Aviso de demonstração.)"
+                    ),
+                    publicar_em=datetime.now(UTC),
+                    notificado_em=datetime.now(UTC),  # demonstração: não dispara e-mail nem push
+                )
+            )
+            n["avisos"] += 1
+    print(
+        f"Simulado até {hoje:%d/%m/%Y}: {n['aulas']} aula(s), {n['avaliacoes']} avaliação(ões), {n['avisos']} aviso(s)."
+    )
+    return n
+
+
 if __name__ == "__main__":
     if "--codigo" in sys.argv:
         print(pyotp.TOTP(DEMO_TOTP).now())
+    elif "--remover" in sys.argv:
+        remover(confirmar="--confirmar" in sys.argv)
+    elif "--simular" in sys.argv:
+        simular_semana()
     else:
         seed()
