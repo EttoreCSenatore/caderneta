@@ -118,6 +118,15 @@ Optional in development (in production the antivirus is mandatory):
 | `CADERNETA_CONVERSOR=libreoffice` | converts DOCX to PDF on upload (needs `soffice` installed) |
 | `CADERNETA_RETENCAO_PEDIDOS_DIAS`, `..._RASCUNHO_DIAS`, `..._ANEXOS_DIAS` | deletion periods (365, 90, 365) |
 
+## Database migrations
+
+Every database change is an Alembic migration in `api/migrations/versions/` (`alembic revision -m "what changes"`), numbered in sequence and with `upgrade()` **and** `downgrade()`.
+
+- **Round trip:** `api/tests/test_migracoes.py` goes up the migrations one by one saving each version's schema (tables, columns, indexes, constraints, RLS, policies, functions, types, triggers and the app role's privileges), then goes down one by one and compares at every step. A `downgrade()` that forgets something fails the test and says what was left over or went missing.
+- **Report on the PR:** when a PR touches `api/migrations/`, the *Migrations* workflow comments on the PR with the SQL of each new migration (Alembic offline mode, no database) and points out what needs attention: dropping a table or column, deleting rows, changing a type, renaming, requiring a value, revoking a privilege, disabling RLS, and already published migrations that were changed. Locally: `python3 scripts/relatorio-migracoes.py --base origin/main --saida relatorio.md`.
+- **A published migration does not change:** its `upgrade()` has already run on real databases. Fix it with a new migration. Only `downgrade()` may be repaired, as was done in 0001 (RLS policies now go before the tables).
+- **SQL without running:** `alembic upgrade 0016:0017 --sql` prints the SQL of one step.
+
 ## Documentation in two languages
 
 The documentation site is **bilingual**: Portuguese lives in `website/docs/` and **English** in `website/i18n/en/docusaurus-plugin-content-docs/current/` (same file names). **Every documentation change updates both versions.** CI runs `python3 scripts/checar-traducao.py`, which fails if an English page is missing or if the structure (headings, code blocks, images) diverges. To see the English locally: `cd website && npm run build && npm run serve` (the language switcher is at the top). The app's legal texts and the `.lgpd/` artifacts stay **in Portuguese only**, because they apply Brazilian law.

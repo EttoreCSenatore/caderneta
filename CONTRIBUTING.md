@@ -23,6 +23,7 @@ Siga [Como rodar localmente](https://ettorecsenatore.github.io/caderneta/docs/te
 - **Dados pessoais (LGPD):** um PR que coleta um dado pessoal novo atualiza o mapa de dados e as lacunas em [`.lgpd/`](.lgpd/). Nunca use dados reais em testes, screenshots ou issues.
 - **Documentação em duas línguas:** toda mudança na documentação (`website/docs/`) atualiza também a versão em inglês (`website/i18n/en/...`). A CI reprova se as duas divergirem (`scripts/checar-traducao.py`). Os textos legais do app e os artefatos de `.lgpd/` ficam só em português.
 - **Dependências:** prefira não adicionar. Se precisar, a licença tem que ser compatível com a AGPL (`scripts/auditar-licencas.py`), e Actions e imagens Docker entram fixadas por commit e digest (`scripts/checar-fixacao.py`).
+- **Migrations:** toda migration tem `downgrade()` que desfaz tudo (o teste `test_migracoes.py` confere passo a passo); migration já publicada não muda, corrige-se com uma nova. O PR recebe um relatório com o SQL e as operações que apagam dados.
 - **Versões:** um PR que muda algo para quem usa acrescenta o item no topo do [`releases.yaml`](releases.yaml) e sobe a versão em `api/pyproject.toml` e `web/package.json` ([Versões e Novidades](https://ettorecsenatore.github.io/caderneta/docs/tecnico/versoes)).
 - **Interface em português do Brasil**, com linguagem simples: quem usa é professor, família e aluno.
 
@@ -55,6 +56,7 @@ Follow [Running locally](https://ettorecsenatore.github.io/caderneta/en/docs/tec
 - **Personal data (LGPD):** a PR that collects a new kind of personal data updates the data map and the gaps in [`.lgpd/`](.lgpd/). Never use real data in tests, screenshots or issues.
 - **Documentation in two languages:** every change to the docs (`website/docs/`) also updates the English version (`website/i18n/en/...`). CI fails if they diverge (`scripts/checar-traducao.py`). The app's legal texts and the `.lgpd/` artifacts stay in Portuguese only.
 - **Dependencies:** prefer not to add them. If you must, the license has to be AGPL-compatible (`scripts/auditar-licencas.py`), and Actions and Docker images come in pinned by commit and digest (`scripts/checar-fixacao.py`).
+- **Migrations:** every migration has a `downgrade()` that undoes everything (`test_migracoes.py` checks it step by step); a published migration does not change, it is fixed with a new one. The PR gets a report with the SQL and the operations that delete data.
 - **Versions:** a PR that changes something for users adds its item at the top of [`releases.yaml`](releases.yaml) and bumps the version in `api/pyproject.toml` and `web/package.json` ([Versions and What's new](https://ettorecsenatore.github.io/caderneta/en/docs/tecnico/versoes)).
 - **The interface is in Brazilian Portuguese**, in plain language: its users are teachers, families and students.
 
