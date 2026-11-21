@@ -59,10 +59,10 @@ caderneta/
 ├── web/          # React PWA, testes (Vitest) e scripts de screenshots e e2e offline
 ├── deploy/       # produção: imagens, Docker Compose, Caddyfile, .env de exemplo, smoke e verificação
 ├── infra/        # desenvolvimento (Postgres, Mailpit), papéis do banco e scripts de backup
-├── scripts/      # auditoria de licenças, gerador do pacote jurídico
+├── scripts/      # licenças, tradução, fixação, notas de versão, relatório de migrations, pacote jurídico
 ├── .lgpd/        # mapa de dados, ROPA, RIPD, LIAs, plano de incidentes, pacote para o advogado
 ├── website/      # esta documentação (Docusaurus, português e inglês)
-└── .github/      # CI: lint, testes, build, auditoria de dependências e licenças, SBOM, imagens, deploy da doc
+└── .github/      # CI (lint, testes com cobertura, auditorias, SBOM, imagens, release, doc), Dependabot, relatório de migrations
 ```
 
 ## Princípios técnicos

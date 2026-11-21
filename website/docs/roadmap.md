@@ -19,7 +19,7 @@ adicionados às páginas de funcionalidade.
 | **M6: Histórico e anotações** | Rematrícula em lote, linha do tempo, anotações versionadas, histórico escolar em PDF | ✅ Concluído |
 | **M7: App de celular** | PWA refinada, offline para notas e chamada (lojas ficam para depois do piloto) | ✅ Concluído |
 | **M8: Conformidade e segurança** | Revisão geral de segurança, licenças e adequação à LGPD e à legislação aplicável, com validação jurídica | Código e documentação prontos; falta o parecer jurídico e o teste de intrusão |
-| **MO: Operação e manutenção** | Cadeia de suprimentos, arquivos do repositório, versões e Novidades no app, avisos de operação, testes de migrations e de cobertura, ferramentas de dados de teste (feito antes do piloto) | Em andamento |
+| **MO: Operação e manutenção** | Cadeia de suprimentos, arquivos do repositório, versões e Novidades no app, avisos de operação, testes de migrations e de cobertura, ferramentas de dados de teste (feito antes do piloto) | MO.1 a MO.7 prontos (v0.10.1); falta a demonstração pública, que depende da hospedagem |
 | **M9: Piloto** | Deploy de produção, backups, piloto com uma escola (só começa com o M8 aprovado) | Em preparação |
 
 ```mermaid
@@ -243,7 +243,7 @@ Ideias adaptadas de outro sistema open source de gestão, o [Kaladrius](https://
 - [x] **MO.5 Migrations** ([#41](https://github.com/EttoreCSenatore/caderneta/issues/41)): teste de aplicar, desfazer e aplicar de novo na CI; relatório no PR com o SQL de cada migration nova e as operações que apagam dados
 - [x] **MO.6 Dados de teste** ([#42](https://github.com/EttoreCSenatore/caderneta/issues/42)): comando que apaga só os dados de demonstração (nunca uma escola real) e comando que simula a atividade da semana atual (aulas, chamadas, notas), para a demonstração não parecer parada
 - [x] **MO.7 Cobertura de testes** ([#43](https://github.com/EttoreCSenatore/caderneta/issues/43)): medir a cobertura da API e do web e reprovar a CI abaixo de uma meta fixada a partir do número atual
-- [ ] **MO.8 Demonstração pública** ([#44](https://github.com/EttoreCSenatore/caderneta/issues/44)): página com as contas de cada papel e os dados fictícios recriados todo dia; **depende da hospedagem** (feito junto com o M9)
+- [ ] **MO.8 Demonstração pública** ([#44](https://github.com/EttoreCSenatore/caderneta/issues/44)): página com as contas de cada papel e os dados fictícios recriados todo dia; **depende da hospedagem** (feito junto com o M9). Antes disso, o ano letivo da demonstração precisa acompanhar a data de hoje (hoje ele é fixo em 2026)
 
 ## M9: Piloto (em preparação)
 

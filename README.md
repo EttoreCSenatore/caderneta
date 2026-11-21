@@ -9,9 +9,8 @@ média é calculada automaticamente; alunos e famílias acompanham notas, faltas
 pelo celular. A escola organiza turmas, calendário, comunicação e a fila de impressão de provas, e o histórico do aluno
 passa de um ano para o outro.
 
-**Status:** marcos M1 a M7 concluídos (fundação, notas e frequência, comunicação, calendário, provas e impressão, histórico e anotações, modo offline e PWA). M8 (segurança e conformidade): código e documentação prontos, faltam o parecer jurídico e o teste de intrusão. M9 (piloto): em preparação.
-Próximos: o app de celular (M7), a revisão de conformidade e segurança (M8) e o piloto (M9). Ainda **não** use com dados reais de alunos
-antes do M8.
+**Status:** versão **0.10.1** ([Novidades](releases.yaml), [releases](https://github.com/EttoreCSenatore/caderneta/releases)). Marcos M1 a M7 concluídos (fundação, notas e frequência, comunicação, calendário, provas e impressão, histórico e anotações, modo offline e PWA). M8 (segurança e conformidade): código e documentação prontos, faltam o parecer jurídico e o teste de intrusão. MO (operação e manutenção): pronto, menos a demonstração pública, que depende da hospedagem. M9 (piloto): em preparação.
+Ainda **não** use com dados reais de alunos antes do parecer jurídico do M8.
 **[Ler a documentação](https://ettorecsenatore.github.io/caderneta/)** · [Roadmap](https://ettorecsenatore.github.io/caderneta/docs/roadmap)
 
 ![Diário de notas](website/static/img/screenshots/diario-notas.png)
@@ -20,7 +19,7 @@ antes do M8.
 
 <img src="website/static/img/screenshots/boletim-celular.png" alt="Boletim no celular" width="240"> <img src="website/static/img/screenshots/chamada-celular.png" alt="Chamada no celular" width="240"> <img src="website/static/img/screenshots/configurar-2fa-celular.png" alt="Configuração do 2FA" width="240"> <img src="website/static/img/screenshots/aluno-inicio-celular-escuro.png" alt="Aluno no celular, tema escuro" width="240">
 
-## Funcionalidades planejadas
+## Funcionalidades
 
 - Notas, médias automáticas com regra configurável e boletim ao vivo
 - Frequência (chamada) com alertas de limite de faltas
@@ -28,7 +27,8 @@ antes do M8.
 - Calendário escolar e de turma, com feriados e dias sem aula
 - Upload de provas e trabalhos com fila de impressão
 - Ficha do aluno com dados de saúde protegidos, histórico e anotações entre anos
-- PWA instalável e, depois, app nas lojas
+- PWA instalável, com notas e chamada sem internet para professores (lojas de aplicativo só depois do piloto)
+- Meus dados (direitos LGPD), textos legais por versão e página de Novidades
 
 ## Rodar localmente
 
@@ -49,9 +49,13 @@ Passo a passo, contas de demonstração e variáveis de ambiente em
 caderneta/
 ├── api/          # FastAPI + SQLAlchemy + Alembic (RLS por escola), testes com Postgres real
 ├── web/          # React + Vite, PWA instalável
-├── infra/        # Docker Compose de desenvolvimento
-├── website/      # documentação (Docusaurus, pt-BR)
-└── .github/      # CI: API, web e docs; deploy da documentação no GitHub Pages
+├── deploy/       # produção: imagens, Docker Compose, Caddy, smoke e verificação
+├── infra/        # Docker Compose de desenvolvimento, papéis do banco e backups cifrados
+├── scripts/      # checagens da CI, notas de versão, relatório de migrations, pacote jurídico
+├── .lgpd/        # mapa de dados, ROPA, RIPD, plano de incidentes, pacote para o advogado
+├── website/      # documentação (Docusaurus, português e inglês)
+├── releases.yaml # versões e Novidades (fonte única)
+└── .github/      # CI, Dependabot, relatório de migrations, releases e deploy da documentação
 ```
 
 ## Segurança

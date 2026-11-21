@@ -34,7 +34,7 @@ Security is a requirement from the first milestone, not a final step.
 - **Retention:** notifications, attachments, drafts, removed notes, push devices and **leavers** have periods and automatic deletion, with notice beforehand.
 - **Data subject rights:** download your own data instantly, requests with a 15-day deadline and a queue for the principal's office.
 - **Transparency:** public privacy policy and terms, acknowledgement recorded per version, DPO shown in the app.
-- **Backups:** encrypted, with a restore test that checks the keys.
+- **Backups:** encrypted, with a restore test that checks the keys; every run is recorded and the school management sees a warning if the backup is late, the test is overdue or the disk or memory fill up.
 - **Teacher offline mode:** encrypted vault on the device, erased on sign-out and after 7 days without a connection.
 
 Login details in [Access, invitations and 2FA](../funcionalidades/acesso-e-convites.md).
@@ -69,6 +69,6 @@ Login details in [Access, invitations and 2FA](../funcionalidades/acesso-e-convi
 ### Development
 
 - Dependencies audited in CI (`pip-audit`, `npm audit`), license audit, SBOM and production-image build. Dependabot with a 7-day wait; Actions pinned to a commit and images by digest.
-- Automated permission tests: for each role, what it **cannot** see.
+- Automated permission tests: for each role, what it **cannot** see. Minimum coverage in CI (API 93%) and a round-trip test of every migration, with an SQL report on the PR.
 - Fictitious data in every non-production environment; never copy production to dev.
 - **Security flaw:** report it through GitHub's private channel (Security tab, *Report a vulnerability*), never in a public issue. Response times, scope and good-faith testing rules in [SECURITY.md](https://github.com/EttoreCSenatore/caderneta/blob/main/SECURITY.md). How to contribute: [CONTRIBUTING.md](https://github.com/EttoreCSenatore/caderneta/blob/main/CONTRIBUTING.md).

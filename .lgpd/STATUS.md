@@ -1,6 +1,6 @@
 # Status LGPD — Caderneta
 
-**Atualizado:** 2026-11-16 · **Cenário:** C, híbrido (código existente do M1 ao M3.3 + funcionalidades novas)
+**Atualizado:** 2026-11-21 (marco MO: avisos de backup e restauração para a direção, T35) · **Cenário:** C, híbrido (código existente do M1 ao M3.3 + funcionalidades novas)
 
 > Este material é **orientação técnica**. Não é parecer jurídico nem certificação de conformidade. A validação final é do M8
 > (advogado(a) de proteção de dados + encarregado da escola). Veja [roadmap](../website/docs/roadmap.md).
